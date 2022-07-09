@@ -56,5 +56,6 @@ function launchApplication() {
 Ext.onReady(function() {
     var timeEntries = Ext.create('TSTrack.store.TimeEntries');
     var projects = Ext.create('TSTrack.store.Projects');
+    var workPackages = Ext.create('TSTrack.store.WorkPackages');
     launchApplication();
 });

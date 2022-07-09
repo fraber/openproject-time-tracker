@@ -1,8 +1,6 @@
 /**
- * List of projects
- * Currently not used, because moving it creates an error
+ * GridPanel with TimeEntries with editing and endless scrolling
  */
-
 Ext.define('TSTrack.view.TimeEntryPanel', {
     alias:  'timeEntryPanel',
     extend: 'Ext.panel.Panel',
@@ -27,18 +25,31 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
              }
             },
            
+            {text: 'Work Package', dataIndex: 'work_package_id', width: 80,
+             editor: 'datefield',
+             renderer: function(v) {
+                 wpStore = Ext.StoreManager.get('WorkPackages');
+                 idx = wpStore.find('id', v)
+                 model = wpStore.getAt(idx);
+                 return model.get('name');
+             }
+            },
+           
             {text: 'Name', dataIndex: 'name', flex: 5},
            
             {text: 'Date', width: 80, dataIndex: 'start',
-             editor: 'datefield',  renderer: function(v) { return Ext.Date.format(v, 'Y-m-d'); }
+             editor: 'datefield',
+             renderer: function(v) { return Ext.Date.format(v, 'Y-m-d'); }
             },
 
-            {text: 'Start', width: 80, dataIndex: 'start',
-             editor: 'datefield',  renderer: function(v) { return Ext.Date.format(v, 'H:i'); }
+            {text: 'Start', width: 60, dataIndex: 'start',
+             editor: 'datefield',
+             renderer: function(v) { return Ext.Date.format(v, 'H:i'); }
             },
 
-            {text: 'End', width: 80, dataIndex: 'end',
-             editor: 'datefield',  renderer: function(v) { return Ext.Date.format(v, 'H:i'); }
+            {text: 'End', width: 60, dataIndex: 'end',
+             editor: 'datefield',
+             renderer: function(v) { return Ext.Date.format(v, 'H:i'); }
             },
 
             {text: 'Note', dataIndex: 'note', flex: 5}
