@@ -7,6 +7,8 @@ Ext.define('TSTrack.model.TimeEntry', {
     idProperty: 'id',
     fields: [
         'id',
+        'project_id',
+        'work_package_id',
         'start',
         'end',
         'name',					// 
