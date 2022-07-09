@@ -1,0 +1,23 @@
+{
+    "name": "openproject-time-tracker",
+    "version": "0.0.1",
+    "description": "OpenProject Time Tracker",
+    "author": "Frank Bergmann (fraber@fraber.de)",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron .",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Frank Bergmann (fraber@fraber.de)",
+    "license": "GPL-3.0-or-later",
+    "devDependencies": {
+        "electron": "^2.0.18"
+    },
+    "dependencies": {
+        "directory-tree": "^2.1.0",
+        "electron-store": "^2.0.0",
+        "file-type": "^10.4.0",
+        "sha1-file": "^1.0.4",
+        "sha1-from-file": "^2.0.1"
+    }
+}
