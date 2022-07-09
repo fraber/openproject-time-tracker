@@ -5,6 +5,7 @@ Ext.define('TSTrack.store.Projects', {
     storeId: 'Projects',
     extend: 'Ext.data.Store',
     model: 'TSTrack.model.Project',
+    autoLoad: false,
 
     data: [
         {id: 3, parent_id: null, name: 'Demo project'},
