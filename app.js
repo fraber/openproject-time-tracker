@@ -28,6 +28,8 @@ var chrome_version = process.versions.chrome;
 var electron_version = process.versions.electron;
 var extjs_version = Ext.getVersion().version;
 
+var gifPath = 'images/';
+
 // Background color to help identify the layout of the views
 var bg_colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff" ];
 
@@ -46,7 +48,14 @@ function launchApplication() {
                 Ext.create('TSTrack.view.LoginPanel'),
                 Ext.create('TSTrack.view.TimeEntryPanel'),
                 Ext.create('TSTrack.view.AboutPanel')
-            ]
+            ],
+            tabBar: {
+                items: [
+                    {xtype: 'tbfill' },
+                    {xtype: 'button', id: 'buttonAdd', icon: gifPath + 'add.png', hidden: true},
+                    {xtype: 'button', id: 'buttonDel', icon: gifPath + 'delete.png', hidden: true}
+                ]
+            }
         }
     });
 }
