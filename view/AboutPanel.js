@@ -1,6 +1,16 @@
 /**
+ * OpenProject Time Tracker
+ * Copyright (c) 2022 Frank Bergmann (fraber@fraber.de)
+ * This code is licensed under the GNU GPL version 2.0 or later
+ *
  * About panel with some information about the application
  */
+
+var node_version = process.versions.node;
+var chrome_version = process.versions.chrome;
+var electron_version = process.versions.electron;
+var extjs_version = Ext.getVersion().version;
+
 Ext.define('TSTrack.view.AboutPanel', {
     alias:  'aboutPanel',
     extend: 'Ext.panel.Panel',

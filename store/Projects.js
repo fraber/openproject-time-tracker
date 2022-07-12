@@ -1,4 +1,8 @@
 /*
+ * OpenProject Time Tracker
+ * Copyright (c) 2022 Frank Bergmann (fraber@fraber.de)
+ * This code is licensed under the GNU GPL version 2.0 or later
+ *
  * DataStore for TimeEntries
  */
 Ext.define('TSTrack.store.Projects', {
@@ -6,7 +10,36 @@ Ext.define('TSTrack.store.Projects', {
     extend: 'Ext.data.Store',
     model: 'TSTrack.model.Project',
     autoLoad: false,
+    autoSync: false,
 
+    proxy: {
+        type:                   'ajax',
+        url:                    'https://community.openproject.org/api/v3/projects',
+        extraParams: {
+            project_id:         0               // Will be set by app before loading                                                                                         
+        },
+        api: {
+            read:               'https://community.openproject.org/api/v3/projects',
+            create:             'https://community.openproject.org/api/v3/projects',
+            update:             'https://community.openproject.org/api/v3/projects',
+            destroy:            'https://community.openproject.org/api/v3/projects',
+        },
+        reader: {
+            type:               'openProjectReader',
+            totalProperty:      'count',
+            root:               '_embedded'
+        },
+        writer: {
+            type:               'json',
+            rootProperty:       'data'
+        }
+    },
+
+    
+});
+
+
+/*
     data: [
         {id: 3, parent_id: null, name: 'Demo project'},
         {id: 4, parent_id: null, name: 'Scrum project'},
@@ -15,5 +48,5 @@ Ext.define('TSTrack.store.Projects', {
         {id: 7, parent_id: 6,    name: 'Dev-large-child'},
         {id: 8, parent_id: null, name: 'Dev-custom-fields'}
     ]
-});
+*/
 
