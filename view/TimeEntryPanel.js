@@ -26,10 +26,28 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
                     if (me.debug) console.log('TimeEntryPanel.cellediting.beforeedit');
                     return true;
                 },
-                // Invalid values values from the editor may cause "save" operations to fail.
+                // Check values from the editor may cause "save" operations to fail.
                 validateedit: function(editor, context, eOpts) {
                     var me = this;
                     if (me.debug) console.log('TimeEntryPanel.cellediting.validateedit');
+
+                    // We use multiple fields with fieldId + fieldTitle,
+                    // and we also want to set the fieldTitle when changing the fieldId.
+                    var idField = context.field;
+                    var lastTwoChars = idField.substring(idField.length - 2, idField.length);
+                    if ("Id" == lastTwoChars) { // only use this for combinations of Id+Title
+                        var baseField = idField.substring(0, idField.length - 2);
+                        var titleField = baseField+"Title";
+                        
+                        var editor = context.column.getEditor();
+                        var idValue = context.value;
+                        var record = context.record;
+                        var displayField = editor.displayField;
+                        
+                        var displayValue = editor.rawValue;
+                        record.set(titleField, displayValue);
+                    }
+                    
                     return true;
                 }
             }
@@ -37,9 +55,8 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
     ],
 
     columns: [
-        {text: 'Id', dataIndex: 'id', align: 'right', width: 20, hidden: true},
-        
-        {text: 'Project', dataIndex: 'project_id', width: 80,
+        {text: 'Id', dataIndex: 'id', align: 'right', width: 60, hidden: false},       
+        {text: 'Project', dataIndex: 'projectId', width: 80,
          editor: {
              xtype: 'combobox',
              store: 'Projects',
@@ -47,15 +64,10 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
              queryMode: 'local',
              matchFieldWidth: false
          },
-         renderer: function(v) {
-             projectStore = Ext.StoreManager.get('Projects');
-             idx = projectStore.find('id', v)
-             model = projectStore.getAt(idx);
-             return model.get('name');
-         }
+         renderer: function(v, el, model, col, row, timeEntriesStore, gridView) { return model.get('projectTitle'); }
         },
-       
-        {text: 'Work Package', dataIndex: 'work_package_id', width: 80,
+
+        {text: 'Work Package', dataIndex: 'workPackageId', width: 80,
          editor: {
              xtype: 'combobox',
              store: 'WorkPackages',
@@ -63,14 +75,13 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
              queryMode: 'local',
              matchFieldWidth: false
          },
-         renderer: function(v) {
-             wpStore = Ext.StoreManager.get('WorkPackages');
-             idx = wpStore.find('id', v)
-             model = wpStore.getAt(idx);
-             return model.get('name');
-         }
+         renderer: function(v, el, model) { return model.get('workPackageTitle'); }
         },
-       
+
+        {text: 'Hours', dataIndex: 'hours', width: 80, editor: 'textfield'},
+
+
+/*        
         {text: 'Name', dataIndex: 'name', flex: 5, editor: 'textfield'},
 
         // ToDo: Changing the date will set start to 00:00, so we have to override
@@ -89,7 +100,7 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
          editor: {xtype: 'timefield', format: 'H:i', increment: 60},
          renderer: function(v) { return Ext.Date.format(v, 'H:i'); }
         },
-
+*/
         {text: 'Note', dataIndex: 'note', flex: 5, editor: 'textfield'}
     ]
 });

@@ -15,9 +15,7 @@ Ext.define('TSTrack.store.Projects', {
     proxy: {
         type:                   'ajax',
         url:                    'https://community.openproject.org/api/v3/projects',
-        extraParams: {
-            project_id:         0               // Will be set by app before loading                                                                                         
-        },
+        headers:                { Authorization: "Basic "+openproject_token },
         api: {
             read:               'https://community.openproject.org/api/v3/projects',
             create:             'https://community.openproject.org/api/v3/projects',
@@ -25,17 +23,13 @@ Ext.define('TSTrack.store.Projects', {
             destroy:            'https://community.openproject.org/api/v3/projects',
         },
         reader: {
-            type:               'openProjectReader',
-            totalProperty:      'count',
-            root:               '_embedded'
+            type:               'openProjectReader'
         },
         writer: {
             type:               'json',
             rootProperty:       'data'
         }
-    },
-
-    
+    }    
 });
 
 

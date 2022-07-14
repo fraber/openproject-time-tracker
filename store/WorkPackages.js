@@ -9,17 +9,39 @@ Ext.define('TSTrack.store.WorkPackages', {
     storeId: 'WorkPackages',
     extend: 'Ext.data.Store',
     model: 'TSTrack.model.WorkPackage',
+    autoLoad: false,
+    autoSync: false,
 
-    // Date from Project #3 (Demo Project):
-    data: [
-        {id: 34, parent_id: null, level: 0,  name: 'Start of project'},
-        {id: 35, parent_id: null, level: 0,  name: 'Organize open source conference'},
-        {id: 36, parent_id: null, level: 0,  name: 'Set date and location of conference'},
-        {id: 37, parent_id: null, level: 0,  name: 'Setup conference website'},
-        {id: 38, parent_id: null, level: 0,  name: 'Invite attendees to conference'},
-        {id: 39, parent_id: null, level: 0,  name: 'Conference'},
-        {id: 40, parent_id: null, level: 0,  name: 'Follow-up tasks'},
-        {id: 41, parent_id: null, level: 0,  name: 'Upload presentations to website'},
-        {id: 42, parent_id: null, level: 0,  name: 'Party for conference supporters :-)'}
-    ]
+    proxy: {
+        type:                   'ajax',
+        url:                    'https://community.openproject.org/api/v3/work_packages',
+        extraParams:            { filters: '[{"project":{"operator":"=","values":["14"]}}]' },
+        headers:                { Authorization: "Basic "+openproject_token },
+        api: {
+            read:               'https://community.openproject.org/api/v3/work_packages',
+            create:             'https://community.openproject.org/api/v3/work_packages',
+            update:             'https://community.openproject.org/api/v3/work_packages',
+            destroy:            'https://community.openproject.org/api/v3/work_packages',
+        },
+        reader: {
+            type:               'openProjectReader'
+        },
+        writer: {
+            type:               'json',
+            rootProperty:       'data'
+        }
+    }    
 });
+
+
+/*
+    data: [
+        {id: 3, parent_id: null, name: 'Demo project'},
+        {id: 4, parent_id: null, name: 'Scrum project'},
+        {id: 5, parent_id: null, name: 'Dev-empty'},
+        {id: 6, parent_id: null, name: 'Dev-large'},
+        {id: 7, parent_id: 6,    name: 'Dev-large-child'},
+        {id: 8, parent_id: null, name: 'Dev-custom-fields'}
+    ]
+*/
+

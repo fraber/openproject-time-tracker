@@ -18,6 +18,7 @@ Ext.define('TSTrack.view.MainPanel', {
     items: {
         xtype: 'tabpanel',
         id: 'tabPanel',
+        activeTab: 1,
         layout: 'fit',
         items: [
             Ext.create('TSTrack.view.LoginPanel'),
@@ -27,7 +28,7 @@ Ext.define('TSTrack.view.MainPanel', {
         tabBar: {
             items: [
                 {xtype: 'tbfill' },
-                {xtype: 'button', id: 'buttonAdd', icon: gifPath + 'add.png', hidden: true},
+                {xtype: 'button', id: 'buttonAdd', icon: gifPath + 'add.png', hidden: false},
                 {xtype: 'button', id: 'buttonDel', icon: gifPath + 'delete.png', hidden: false}
             ]
         }

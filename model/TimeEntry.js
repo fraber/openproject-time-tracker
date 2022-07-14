@@ -11,7 +11,24 @@ Ext.define('TSTrack.model.TimeEntry', {
     idProperty: 'id',
     fields: [
         'id',
-        'project_id',
+        '_type',
+        
+        'hours',
+        'spentOn',
+
+        'comment', // { format: "plain", html: "blabla", raw: "blablub" }
+        'activityId', // { href: "/api/v3/time_entries/activities/9", title: "Development" }
+        'activityTitle',
+        'userId', // { href: "/api/v3/users/74087", title: "Frank Bergmann" }
+        'userTitle',
+        'projectId', // { href: "/api/v3/projects/14", title: "OpenProject" }
+        'projectTitle',
+        'workPackageId', // { href: "/api/v3/work_packages/41530", title: "Copy a project shall also copy file_link" }
+        'workPackageTitle',
+        
+        'createdAt',
+        'updatedAt',
+
         'work_package_id',
         'start',
         'end',
