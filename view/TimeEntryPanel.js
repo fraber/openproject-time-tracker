@@ -55,7 +55,13 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
     ],
 
     columns: [
-        {text: 'Id', dataIndex: 'id', align: 'right', width: 60, hidden: false},       
+        {text: 'Id', dataIndex: 'id', align: 'right', width: 60, hidden: true},
+        {text: 'Date', width: 80, dataIndex: 'spentOn', editor: 'datefield',
+         renderer: function(v) {
+             return v;
+             return Ext.Date.format(v, 'Y-m-d');
+         }
+        },
         {text: 'Project', dataIndex: 'projectId', width: 80,
          editor: {
              xtype: 'combobox',
@@ -79,6 +85,7 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
         },
 
         {text: 'Hours', dataIndex: 'hours', width: 80, editor: 'textfield'},
+        {text: 'Comment', dataIndex: 'comment', flex: 5, editor: 'textfield'}
 
 
 /*        
@@ -86,10 +93,6 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
 
         // ToDo: Changing the date will set start to 00:00, so we have to override
         // the save method of the editor and add the start _time_ to it.
-        {text: 'Date', width: 80, dataIndex: 'start',
-         editor: 'datefield',
-         renderer: function(v) { return Ext.Date.format(v, 'Y-m-d'); }
-        },
 
         {text: 'Start', width: 60, dataIndex: 'start',
          editor: {xtype: 'timefield', format: 'H:i', increment: 60},
@@ -101,6 +104,5 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
          renderer: function(v) { return Ext.Date.format(v, 'H:i'); }
         },
 */
-        {text: 'Note', dataIndex: 'note', flex: 5, editor: 'textfield'}
     ]
 });

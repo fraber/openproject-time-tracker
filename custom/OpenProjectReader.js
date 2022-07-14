@@ -112,11 +112,17 @@ Ext.define('TSTrack.custom.OpenProjectReader', {
     readModel: function(model, options) {
         var me = this;
 
+        // Remove structure around comment, which is a special data structure
+        if (options.comment) {
+            options["comment"] = options.comment.raw;
+        }
+        
         // Use ExtJS instantiation for the basic values (id, ...)
         var inst = Ext.create(model, options);
         var data = inst["data"];
 
-        // Check for additional fields in links section
+        // Check for additional fields in links section and write data
+        // directly without set(...) to avoid dirty flag
         var links = options._links;
         Object.keys(links).forEach(function(key) {
             var val = links[key];
@@ -134,8 +140,6 @@ Ext.define('TSTrack.custom.OpenProjectReader', {
                 data[keyTitle] = title;
             }
         });
-        // inst.dirty = false;
-        // inst["dirty"] = false;
         return inst;
     }
 

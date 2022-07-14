@@ -35,25 +35,10 @@ Ext.define('TSTrack.store.TimeEntries', {
 
 
 /*
-    data: [
-{id: 1, project_id: 3, work_package_id: 39, start: new Date('2022-07-09 11:00'), end: new Date('2022-07-09 11:40'), name: 'First entry', note: 'asdf'},
-{id: 2, project_id: 3, work_package_id: 39, start: new Date('2022-07-09 11:41'), end: new Date('2022-07-09 12:12'), name: 'Second entry', note: 'asdf2'},
-{id: 3, project_id: 3, work_package_id: 39, start: new Date('2022-07-09 14:02'), end: new Date('2022-07-09 15:48'), name: 'Thrird entry', note: 'asdf3'},
-{id: 4, project_id: 3, work_package_id: 39, start: new Date('2022-07-09 16:23'), end: new Date('2022-07-09 18:46'), name: 'Fourth entry', note: 'asdf4'},
-    ]
-*/
-
-
-
-/*
 https://community.openproject.org/api/v3/time_entries
-
-
-
-filters=[{ "work_package": { "operator": "=", "values": ["1", "2"] } }, { "project": { "operator": "=", "values": ["1"] } }]
-
-      filters=[{"project":{"operator":"=","values":["14"]}}]
-      filters=[{"user":{"operator":"=","values":["74087"]}}]
+filters=[{"work_package":{"operator": "=", "values": ["1", "2"]}}, {"project":{"operator":"=","values":["1"]}}]
+filters=[{"project":{"operator":"=","values":["14"]}}]
+filters=[{"user":{"operator":"=","values":["74087"]}}]
 
 {
    "_links" : {
