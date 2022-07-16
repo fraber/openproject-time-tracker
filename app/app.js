@@ -25,6 +25,7 @@ Ext.require([
     'TSTrack.view.LoginPanel',
     'TSTrack.view.TimeEntryPanel',
     
+    'TSTrack.controller.IpcController',
     'TSTrack.controller.StoreLoadCoordinator',
     'TSTrack.controller.LoginPanelController',
     'TSTrack.controller.TimeEntryPanelController'
@@ -44,7 +45,13 @@ function launchApplication(debug) {
     // Main application panel with viewport and all the other panels
     var mainPanel = Ext.create('TSTrack.view.MainPanel');
 
-    // Manually launch and attach the controllers to work around Ext.application quirks
+    // Manually launch controllers to work around Ext.application quirks
+
+    // Inter-Process Controller - Handle communication with Electron
+    // Doesn't do much at the moment...
+    var ipcController = Ext.create('TSTrack.controller.IpcController');
+    ipcController.init(this).onLaunch(this);
+
     var loginPanelController = Ext.create('TSTrack.controller.LoginPanelController');
     // loginPanelController.init(this).onLaunch(this);
     var timeEntryPanelController = Ext.create('TSTrack.controller.TimeEntryPanelController');
@@ -82,7 +89,7 @@ Ext.onReady(function() {
     // Load the stores
     timeEntries.load({callback: function(r, op, success) {if (!success) alert('Store: TimeEntries load failed');}});
     projects.load({callback: function(r, op, success) {if (!success) alert('Store: Projects load failed');}});
-    workPackages.load({callback: function(r, op, success) { if (!success) alert('Store: WorkPackages load failed');}});
+    // workPackages.load({callback: function(r, op, success) { if (!success) alert('Store: WorkPackages load failed');}});
 
     // Launch application without waiting for StoreLoadCoordinator
     launchApplication(debug);                                       // Launch the actual application.

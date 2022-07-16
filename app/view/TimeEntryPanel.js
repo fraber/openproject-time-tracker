@@ -56,10 +56,26 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
 
     columns: [
         {text: 'Id', dataIndex: 'id', align: 'right', width: 60, hidden: true},
-        {text: 'Date', width: 80, dataIndex: 'spentOn', editor: 'datefield',
+        {text: 'Date', width: 80, dataIndex: 'spentOn',
+         editor: {
+             xtype: 'datefield',
+             format : "Y-m-d",
+             altFormats : "m/d/Y|n/j/Y|n/j/y|m/j/y|n/d/y|m/j/Y|n/d/Y|m-d-y|m-d-Y|m/d|m-d|md|mdy|mdY|d|Y-m-d|n-j|n/j",
+             disabledDaysText : "Disabled",
+             disabledDatesText : "Disabled",
+             minText : "The date in this field must be equal to or after {0}",
+             maxText : "The date in this field must be equal to or before {0}",
+             invalidText : "{0} is not a valid date - it must be in the format {1}",
+             triggerCls : Ext.baseCSSPrefix + 'form-date-trigger',
+             showToday : true,
+             initTime: '12', // 24 hour format
+             initTimeFormat: 'H',
+             matchFieldWidth: false,
+             startDay: 0
+         },
          renderer: function(v) {
+             if (v instanceof Date) return Ext.Date.format(v, 'Y-m-d');
              return v;
-             return Ext.Date.format(v, 'Y-m-d');
          }
         },
         {text: 'Project', dataIndex: 'projectId', width: 80,
@@ -79,7 +95,30 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
              store: 'WorkPackages',
              displayField: 'name', valueField: 'id',
              queryMode: 'local',
-             matchFieldWidth: false
+             matchFieldWidth: false,
+             listeners: {
+                 activate: function() {
+                     // alert('activate');
+                 },
+                 focus: function() {
+                     // Send out an asynchroneous load() to WorkPackages
+                     console.log('TimeEntryPanel.WorkPackages.expand: Started');
+
+                     var workPackages = Ext.StoreManager.get('WorkPackages');
+                     workPackages.getProxy().extraParams = {
+                         pageSize: 1000,
+                         filters: '[{"project":{"operator":"=","values":["14"]}}]'
+                     };
+                     workPackages.load({callback: function(r, op, success) { if (!success) alert('Store: WorkPackages load failed');}});
+                     console.log('TimeEntryPanel.WorkPackages.expand: Started');
+                 },
+                 enable: function() {
+                     // alert('enable');
+                 },
+                 expand: function() {
+                     // alert('expand');
+                 }
+             }
          },
          renderer: function(v, el, model) { return model.get('workPackageTitle'); }
         },

@@ -23,10 +23,10 @@ let win = null					// Global reference to main window
 
 function createWindow () {
     // Persistent state
-    const Store = require('electron-store');
-    const state_store = new Store({ name: 'state' });
-    w = state_store.get('win.width', 600)
-    h = state_store.get('win.height', 800)
+    const ElectronStore = require('electron-store');
+    const stateStore = new ElectronStore({ name: 'state' });
+    w = stateStore.get('win.width', 600)
+    h = stateStore.get('win.height', 800)
 
     // Create the browser window.
     win = new BrowserWindow({
@@ -54,8 +54,9 @@ function createWindow () {
 
     // The user resized the window: persist the new size
     win.on('resize', () => {
+        // console.log('main.js: onResize: ');
         s = win.getSize()
-        state_store.set({win:{width:s[0],height:s[1]}})
+        stateStore.set({win:{width:s[0],height:s[1]}})
     })
 }
 
@@ -80,16 +81,16 @@ function create_tray_icon () {
     tray = new Tray('./app/images/tray.png')
     const contextMenu = Menu.buildFromTemplate([
         {label: 'Sync', click: sync},
-//        {label: 'Show', click: showWindow},
-//        {label: 'Hide', click: hideWindow},
+        {label: 'Show', click: showWindow},
+        {label: 'Hide', click: hideWindow},
         {label: 'Toggle Window', click: toggleWindow},
         {label: 'Quit', click: closeWindow}
     ])
-    tray.setToolTip('OpenProject Time Tracker')
+    tray.setToolTip('TSTrack - OpenProject Time Tracker')
     tray.setContextMenu(contextMenu)
 
     // Works in Windows, but not in Linux
-    tray.on ('click', toggleWindow)
+    tray.on('click', toggleWindow)
 
     // Create window and start application, but don't show by default
     createWindow();
@@ -101,7 +102,7 @@ function create_tray_icon () {
     setTimeout(function(){
         console.log('main.js: delayed login');
         sync(null, null, null, 'login');                          // Send "login" message
-    }, 500);
+    }, 1500);
 }
 
 // This method will be called when Electron has finished
