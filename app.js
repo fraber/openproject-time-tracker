@@ -4,33 +4,6 @@
  * This code is licensed under the GNU GPL version 2.0 or later
  */
 
-/* ToDo:
-- Login page
-        - Get token from OpenProject
-        - Somehow get the current user's ID
-- Create new entries
-- Fix grid fields
-        - Date field doesn't work yet
-        - Project field doesn't get all 57 projects - deal with pagination
-        - Don't write TimeEntry.updatedAt to server
-        - Show PT5H as 5 hours...
-        - Load work packages per project on-demand
-        - New field activty "activity" : { "href" : "/api/v3/time_entries/activities/9", "title" : "Development" }
-- Write data back to server
-        - Write comment with format: plain and html: "<p>...plain...</p>"
-        - Delete data on server
-          "delete" : { "href" : "/api/v3/time_entries/27157", "method" : "delete" },
-          "updateImmediately" : { "href" : "/api/v3/time_entries/27157", "method" : "patch" },
-          "update" : { "href" : "/api/v3/time_entries/27157/form", "method" : "post" },
-- Make grid a grouped grid with groupings as TimeEntries
-  and details as TimeIntervalEntries
-- Do interval logging with break detection
-- Other:
-       - Make Electron font bigger and prettier
-       - Update to newer version of Electron
-       - Create Electron Windows installer
-*/
-
 // Load Electron inter process communication (IPC)
 const {ipcRenderer} = require('electron')
 
@@ -87,20 +60,20 @@ Ext.onReady(function() {
 
     // Setup stores
     var projects = Ext.create('TSTrack.store.Projects');
-     var timeEntries = Ext.create('TSTrack.store.TimeEntries');
+    var timeEntries = Ext.create('TSTrack.store.TimeEntries');
     var workPackages = Ext.create('TSTrack.store.WorkPackages');
 
     // Store Coodinator starts app after all stores have been loaded:
     var ganttCoordinator = Ext.create('TSTrack.controller.StoreLoadCoordinator', {
         debug: debug,
         stores: [
-            'Projects',
+            'Projects',                                                       // We don't need the projects for the drop-down when launching...
             'TimeEntries'
         ],
         listeners: {
             load: function() {
                 if ("boolean" == typeof this.loadedP) { return; }               // Check if the application was launched before
-                launchApplication(debug);                                       // Launch the actual application.
+  //              launchApplication(debug);                                       // Launch the actual application.
                 this.loadedP = true;                                            // Mark the application as launched
             }
         }
@@ -110,6 +83,9 @@ Ext.onReady(function() {
     timeEntries.load({callback: function(r, op, success) {if (!success) alert('Store: TimeEntries load failed');}});
     projects.load({callback: function(r, op, success) {if (!success) alert('Store: Projects load failed');}});
     workPackages.load({callback: function(r, op, success) { if (!success) alert('Store: WorkPackages load failed');}});
+
+    // Launch application without waiting for StoreLoadCoordinator
+    launchApplication(debug);                                       // Launch the actual application.
 });
 
 

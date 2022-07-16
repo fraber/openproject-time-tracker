@@ -15,7 +15,7 @@ Ext.define('TSTrack.store.WorkPackages', {
     proxy: {
         type:                   'ajax',
         url:                    'https://community.openproject.org/api/v3/work_packages',
-        extraParams:            { filters: '[{"project":{"operator":"=","values":["14"]}}]' },
+        extraParams:            { pageSize: 1000, filters: '[{"project":{"operator":"=","values":["14"]}}]' },
         headers:                { Authorization: "Basic "+openproject_token },
         api: {
             read:               'https://community.openproject.org/api/v3/work_packages',

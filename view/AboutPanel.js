@@ -21,7 +21,7 @@ Ext.define('TSTrack.view.AboutPanel', {
             	        'OpenProject Time Tracking',
             	        'Version 1.0.0',
             	        'Copyright &copy; 2022 Frank Bergmann (fraber@fraber.de)',
-            	        'This code is licensed under the GNU GPL version 2.0 or later',
+            	        'This code is licensed under the GNU GPL version 3.0.',
             	        '',
             	        '<table>' +
             	            '<tr><td>Node version</td><td>'     + node_version     + '</td></tr>' +

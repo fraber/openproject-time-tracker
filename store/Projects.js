@@ -15,6 +15,7 @@ Ext.define('TSTrack.store.Projects', {
     proxy: {
         type:                   'ajax',
         url:                    'https://community.openproject.org/api/v3/projects',
+        extraParams:            { pageSize: 1000 },
         headers:                { Authorization: "Basic "+openproject_token },
         api: {
             read:               'https://community.openproject.org/api/v3/projects',
