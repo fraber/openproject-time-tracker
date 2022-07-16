@@ -45,6 +45,7 @@ date, user and work package) instead of interval times
 in order to make the semantics of the data directly
 compatible.
 
+- Moved application folders below app/ for prettier GitHub listing (0.1h)
 - Connect stores to OpenProject REST interface (1h)
 - Write JSON reader for OpenProject REST format with links (3h)
 - Implemented HTTP basic authentication for all stores (2h)

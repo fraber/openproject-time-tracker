@@ -41,7 +41,7 @@ function createWindow () {
         }
     })
 
-    win.loadFile('index.html')			// and load the index.html of the app.
+    win.loadFile('app/index.html')			// and load the index.html of the app.
     win.webContents.openDevTools()		// Open the DevTools.
 
     // The user pressed the close button: cleanup
@@ -77,7 +77,7 @@ function sync (arg1, arg2, arg, verb) {
 }
 
 function create_tray_icon () {
-    tray = new Tray('./images/tray.png')
+    tray = new Tray('./app/images/tray.png')
     const contextMenu = Menu.buildFromTemplate([
         {label: 'Sync', click: sync},
 //        {label: 'Show', click: showWindow},
