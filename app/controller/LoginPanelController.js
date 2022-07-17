@@ -16,79 +16,58 @@ Ext.define('TSTrack.controller.LoginPanelController', {
     refs: [
         { ref: 'mainPanel', selector: '#mainPanel'},
         { ref: 'tabPanel', selector: '#tabPanel'},
-        { ref: 'loginPanel', selector: '#panel #login'}
+        { ref: 'loginPanel', selector: '#loginPanel'},
+        { ref: 'timeEntryPanel', selector: '#timeEntryPanel'}
     ],
 
     /* Default values for the configuration data */
-    configDefaults: {
-        url:        'https://community.openproject.org',
-        email:      'f.bergmann@openproject.com',
-        password:   'normal',
-        topdir:     './topdir',
+    loginDefaults: {
+        url:        'http://172.16.193.143:4200',
         token:      '0b4c1f6619c4ab3e8ac2c2007b59dc3ec18df9df0b2e2c72e013cdd8ac95201c'
     },
 
+    // Object for clean login information
+    configData: {
+        changed: false,
+        url: null,
+        token: null
+    },
+    
     // This is called before the viewport is created
     init: function() {
-        console.log ('TimeEntryPanelController.init: controller initialization');
+        console.log ('LoginPanelController.init: controller initialization');
         this.control({
-            '#panel #config field': { change: this.onFieldChanged },
-            '#panel toolbar > button': { click: this.onButtonClicked },
-            '#panel #projects': { select: this.onProjectSelectedInProjects },
-            '#panel #files combobox': { select: this.onProjectSelectedInFiles },
+            '#loginPanel field': { change: this.onFieldChanged },
+            '#loginPanel toolbar > button': { click: this.onButtonClicked },
         });
+        return this;
     },
 
     // This is called after the viewport is created
     onLaunch: function() {
-        console.log ('TimeEntryPanelController.onLaunch: controller onLaunch');
-
+        console.log ('LoginPanelController.onLaunch: controller onLaunch');
         this.initConfiguration ();
-        this.recoverState ();
     },
 
     /* Initialize the configuration data */
     initConfiguration: function () {
-        var configPanel = this.getConfigPanel();
-        console.log('Gui.initConfiguration: config('+configPanel.id+')');
+        var me = this;
+        var loginPanel = me.getLoginPanel();
+        console.log('LoginPanelController.initConfiguration: config('+loginPanel.id+')');
 
-        const Store = require ('electron-store');
-        const configStore = new Store ({name: 'config'});
+        const ElectronStore = require ('electron-store');
+        const configStore = new ElectronStore ({name: 'config'});
 
         // Initialize each configuration value to the saved one
         // or to the default value if none is already saved.
-        var defaults = this.configDefaults;
+        var defaults = me.loginDefaults;
         for (var name in defaults) {
-            var d = defaults[name];
-            var v = configStore.get(name, d);
-            var e = configPanel.down('[name='+name+']');
-            e.setValue(v);
-            this.configData[name] = v;
-            /* Save the configuration value whenever it changes */
-            e.on('change', function() {
-                var name = this.name;
-                var value = this.getValue();
-                console.log ('Gui.initConfiguration.onChange('+name+'): changed to '+value+') - saving to configStore');
-                configStore.set(name, value);
-            });
+            var defaultValue = defaults[name];
+            var value = configStore.get(name, defaultValue);
+            var field = loginPanel.down('[name='+name+']');
+            field.setValue(value);
+            me.configData[name] = value;
         }
-    },
-
-    /* Recover the application state */
-    recoverState: function () {
-        var panel = this.getPanel();
-        console.log('Gui.recoverState: panel('+panel.id+')');
-
-        const Store = require ('electron-store');
-        const stateStore = new Store ({name: 'state'});
-
-        var w = stateStore.get('panel.width', 500);
-        var h = stateStore.get('panel.height', 300);
-        panel.setSize(w,h);
-        panel.on ('resize', function() {
-            var s = panel.getSize();
-            stateStore.set({panel: s});
-        });
     },
 
     /************************************************************
@@ -96,12 +75,18 @@ Ext.define('TSTrack.controller.LoginPanelController', {
      ************************************************************/
 
     onFieldChanged: function (field, newValue, oldValue, eOpts) {
+        var me = this;
         var name = field.name;
-        console.log ('Gui.onFieldChanged: field('+name+') changed from oldValue('+oldValue+') to newValue('+newValue+') eOpts('+eOpts+')');
-        if (name in this.configDefaults && this.configData[name] != newValue) {
-            console.log ('Gui.onFieldChanged: field('+name+') changed from('+this.configData[name]+') to('+newValue+')');
-            this.configData[name] = newValue;
-            this.configData.changed = true;
+        console.log('LoginPanelController.onFieldChanged: field('+name+') changed from oldValue('+oldValue+') to newValue('+newValue+') eOpts('+eOpts+')');
+
+        const ElectronStore = require ('electron-store');
+        const configStore = new ElectronStore ({name: 'config'});
+
+        if (name in me.loginDefaults && me.configData[name] != newValue) {
+            console.log ('LoginPanelController.onFieldChanged: field('+name+') changed from('+me.configData[name]+') to('+newValue+')');
+            me.configData[name] = newValue;
+            me.configData.changed = true;
+            configStore.set(name, newValue);
         }
     },
 
@@ -110,54 +95,125 @@ Ext.define('TSTrack.controller.LoginPanelController', {
      ************************************************************/
 
     onButtonClicked: function (button, event, eOpts) {
-        console.log ('Gui.onButtonClicked: button clicked button('+button.getText()+') action('+button.action+') event('+event+') eOpts('+eOpts+')');
+        var me = this;
+        // console.log ('LoginPanelController.onButtonClicked: button clicked button('+button.getText()+') action('+button.action+')');
         switch (button.action) {
         case 'login':
-            console.log('Gui.onButtonClicked: login clicked');
-            if (this.formIsValid()) {
-                this.connectionController.login();
+            console.log('LoginPanelController.onButtonClicked: onLogin');
+            if (me.formIsValid()) {
+                me.login();
             } else {
-                console.log('Connection.login: form is not valid - cancelling request');
                 alert('Form is not valid');
+                console.log('Connection.login: form is not valid - cancelling request');
             }
             break;
         case 'projects':
-            console.log('Gui.onButtonClicked: projects clicked');
-            this.connectionController.loadProjects();
+            console.log('LoginPanelController.onButtonClicked: projects clicked');
+            me.connectionController.loadProjects();
             break;
         case 'sync':
-            console.log('Gui.onButtonClicked: sync clicked');
-            //this.connectionController.syncExecOperations();
-            this.connectionController.syncAll();
+            console.log('LoginPanelController.onButtonClicked: sync clicked');
+            //me.connectionController.syncExecOperations();
+            me.connectionController.syncAll();
             break;
         case 'commit':
-            console.log('Gui.onButtonClicked: commit clicked');
-            this.connectionController.syncExecOperationsNonEasy();
+            console.log('LoginPanelController.onButtonClicked: commit clicked');
+            me.connectionController.syncExecOperationsNonEasy();
             break;
         }
     },
 
+    /**
+     * Check that the credentials (URL + token) are correct
+     */
+    login: function() {
+        var me = this;
+        console.log('LoginPanelController.login: Starting');
+
+        var configData = me.configData;
+        var url = configData.url + '/api/v3/users/me'
+        // var url = configData.url + '/api/v3/work_packages'
+        console.log ('LoginPanelController.login: url('+configData.url+') token('+configData.token+')');
+        Ext.Ajax.request({
+            defaultHeaders: { Authorization: "Basic " + configData.token },
+            url: url,
+            callback: function (options, success, response) {
+                var responseJsonString = response.responseText;
+                var responseObject = JSON.parse(responseJsonString);
+
+                if (!success) {
+                    console.log('LoginPanelController.login: not successfull');
+                    Ext.Msg.alert('Login failed', 'Message from server: "'+responseObject.message+'"');
+                    return;
+                }
+
+                if (!responseObject) {
+                    console.log('LoginPanelController.login: error parsing responseText='+responseText);
+                    // FIXME: Write some message somewhere
+                    alert('LoginPanelController.login: error parsing responseText='+responseText);
+                    return;
+                }
+                var type = responseObject._type;
+                var userName = responseObject.name;
+                var userId = responseObject.id;
+                var userStatus = responseObject.status
+
+                if (userName.toLowerCase() == "anonymous") {
+                    console.log('LoginPanelController.login: got Anonymous user, which means auth was not successfull');
+                    Ext.Msg.alert('Login failed', 'The server/token combination is incorrect.<br>Please request a new token.');
+                    return;                    
+                }
+                if (!type || !userId || !userName || !userStatus) {
+                    console.log('LoginPanelController.login: no type or id responseText='+responseText);
+                    alert('LoginPanelController.login: no type or id responseText='+responseText);
+                    // FIXME: Write some message somewhere
+                    return;
+                }
+
+                // Save configuration information
+                configData.userId = userId;
+                configData.userName = userName;
+                configData.userStatus = userStatus;
+
+                // Activate the TimeEntry panel
+                var tabPanel = me.getTabPanel();
+                var timeEntryPanel = tabPanel.child('#timeEntryPanel');
+                timeEntryPanel.tab.show();
+                tabPanel.setActiveTab(timeEntryPanel);
+
+                // Load stores
+                var timeEntriesStore = Ext.getStore('TimeEntries');
+                var proxy = timeEntriesStore.getProxy();
+                proxy.url = configData.url+"/api/v3/time_entries";
+                proxy.extraParams = {
+                    pageSize: 1000,
+                    // filters: '[{"user":{"operator":"=","values":["'+configData.userId+'"]}}]'
+                };
+                proxy.headers = { Authorization: "Basic " + configData.token };
+                timeEntriesStore.load({
+                    callback: function(r, op, success) {
+                        if (!success) alert('Store: TimeEntries load failed');
+                    }
+                });
+            }
+        });
+
+        console.log('LoginPanelController.login: Finished');
+    },
+    
     /* Check if the form data is valid */
     formIsValid: function () {
-        var config = this.getConfigPanel();
+        var me = this;
+        var config = me.getLoginPanel();
+        var loginForm = config.down('[name=loginForm]');
+        var formIsValid = loginForm.isValid();
 
-        this.configData.url = config.down('[name=url]').getValue();
-        this.configData.email = config.down('[name=email]').getValue();
-        this.configData.password = config.down('[name=password]').getValue();
-        this.configData.topdir = config.down('[name=topdir]').getValue();
-        this.configData.form_is_valid = config.getForm().isValid();
+        if (formIsValid) {
+            me.configData.url = config.down('[name=url]').getValue();
+            me.configData.token = config.down('[name=token]').getValue();
+        }
 
-        var msg  = [
-            'form ' + (this.configData.form_is_valid ? 'is' : 'is not') + ' valid and '
-                + (this.configData.changed ? 'is' : 'is not') + ' changed',
-            'URL     : "' + this.configData.url + '"',
-            'Email   : "' + this.configData.email + '"',
-            'Password: "' + this.configData.password + '"',
-            'Topdir  : "' + this.configData.topdir + '"'
-        ].join('\n');
-
-        console.log (msg);
-        return this.configData.form_is_valid;
+        return formIsValid;
     }
 
 });

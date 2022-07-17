@@ -14,15 +14,17 @@ Ext.define('TSTrack.store.Projects', {
 
     proxy: {
         type:                   'ajax',
-        url:                    'https://community.openproject.org/api/v3/projects',
+/*
+        url:                    'http://localhost/api/v3/projects',
         extraParams:            { pageSize: 1000 },
         headers:                { Authorization: "Basic "+openproject_token },
         api: {
-            read:               'https://community.openproject.org/api/v3/projects',
-            create:             'https://community.openproject.org/api/v3/projects',
-            update:             'https://community.openproject.org/api/v3/projects',
-            destroy:            'https://community.openproject.org/api/v3/projects',
+            read:               'http://localhost/api/v3/projects',
+            create:             'http://localhost/api/v3/projects',
+            update:             'http://localhost/api/v3/projects',
+            destroy:            'http://localhost/api/v3/projects',
         },
+*/
         reader: {
             type:               'openProjectReader'
         },

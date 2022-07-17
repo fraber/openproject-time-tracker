@@ -14,6 +14,7 @@ Ext.define('TSTrack.store.TimeEntries', {
 
     proxy: {
         type:                   'ajax',
+/*
         url:                    'https://community.openproject.org/api/v3/time_entries',
         extraParams:            { pageSize: 1000, filters: '[{"user":{"operator":"=","values":["74087"]}}]' },
         headers:                { Authorization: "Basic "+openproject_token },
@@ -23,6 +24,7 @@ Ext.define('TSTrack.store.TimeEntries', {
             update:             'https://community.openproject.org/api/v3/time_entries',
             destroy:            'https://community.openproject.org/api/v3/time_entries',
         },
+*/
         reader: {
             type:               'openProjectReader'
         },

@@ -50,12 +50,25 @@ function launchApplication(debug) {
     // Inter-Process Controller - Handle communication with Electron
     // Doesn't do much at the moment...
     var ipcController = Ext.create('TSTrack.controller.IpcController');
-    ipcController.init(this).onLaunch(this);
-
+    ipcController.init(this);
     var loginPanelController = Ext.create('TSTrack.controller.LoginPanelController');
-    // loginPanelController.init(this).onLaunch(this);
+    loginPanelController.init(this);
     var timeEntryPanelController = Ext.create('TSTrack.controller.TimeEntryPanelController');
-    timeEntryPanelController.init(this).onLaunch(this);
+    timeEntryPanelController.init(this);
+
+    var controllers = {
+        ipcController: ipcController,
+        loginPanelController: loginPanelController,
+        timeEntryPanelController: timeEntryPanelController
+    };
+    ipcController.controllers = controllers;
+    loginPanelController.controllers = controllers;
+    timeEntryPanelController.controllers = controllers;
+
+    // Now launching the controllers:
+    ipcController.onLaunch(this);
+    loginPanelController.onLaunch(this);
+    timeEntryPanelController.onLaunch(this);
 }
 
 
@@ -70,29 +83,14 @@ Ext.onReady(function() {
     var timeEntries = Ext.create('TSTrack.store.TimeEntries');
     var workPackages = Ext.create('TSTrack.store.WorkPackages');
 
-    // Store Coodinator starts app after all stores have been loaded:
-    var ganttCoordinator = Ext.create('TSTrack.controller.StoreLoadCoordinator', {
-        debug: debug,
-        stores: [
-            'Projects',                                                       // We don't need the projects for the drop-down when launching...
-            'TimeEntries'
-        ],
-        listeners: {
-            load: function() {
-                if ("boolean" == typeof this.loadedP) { return; }               // Check if the application was launched before
-  //              launchApplication(debug);                                       // Launch the actual application.
-                this.loadedP = true;                                            // Mark the application as launched
-            }
-        }
-    });
-
     // Load the stores
-    timeEntries.load({callback: function(r, op, success) {if (!success) alert('Store: TimeEntries load failed');}});
-    projects.load({callback: function(r, op, success) {if (!success) alert('Store: Projects load failed');}});
+    // timeEntries.load({callback: function(r, op, success) {if (!success) alert('Store: TimeEntries load failed');}});
+    // projects.load({callback: function(r, op, success) {if (!success) alert('Store: Projects load failed');}});
     // workPackages.load({callback: function(r, op, success) { if (!success) alert('Store: WorkPackages load failed');}});
 
+    
     // Launch application without waiting for StoreLoadCoordinator
-    launchApplication(debug);                                       // Launch the actual application.
+    launchApplication(debug);
 });
 
 

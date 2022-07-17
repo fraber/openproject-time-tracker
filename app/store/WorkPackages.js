@@ -14,15 +14,17 @@ Ext.define('TSTrack.store.WorkPackages', {
 
     proxy: {
         type:                   'ajax',
-        url:                    'https://community.openproject.org/api/v3/work_packages',
-        extraParams:            { pageSize: 1000, filters: '[{"project":{"operator":"=","values":["14"]}}]' },
-        headers:                { Authorization: "Basic "+openproject_token },
+/*
+        url:                    'http://localhost/api/v3/work_packages', // to be replaced:
+        extraParams:            {}, // to be replaced: pageSize: 1000, filters: '[{"project":{"operator":"=","values":["14"]}}]' },
+        headers:                {}, // to be replaced: Authorization: "Basic "+openproject_token },
         api: {
-            read:               'https://community.openproject.org/api/v3/work_packages',
-            create:             'https://community.openproject.org/api/v3/work_packages',
-            update:             'https://community.openproject.org/api/v3/work_packages',
-            destroy:            'https://community.openproject.org/api/v3/work_packages',
+            read:               'http://localhost/api/v3/work_packages',
+            create:             'http://localhost/api/v3/work_packages',
+            update:             'http://localhost/api/v3/work_packages',
+            destroy:            'http://localhost/api/v3/work_packages',
         },
+*/
         reader: {
             type:               'openProjectReader'
         },

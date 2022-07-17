@@ -18,7 +18,7 @@ Ext.define('TSTrack.view.MainPanel', {
     items: {
         xtype: 'tabpanel',
         id: 'tabPanel',
-        activeTab: 1,
+        activeTab: 0,
         layout: 'fit',
         items: [
             Ext.create('TSTrack.view.LoginPanel'),

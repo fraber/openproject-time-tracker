@@ -11,7 +11,8 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
     title: 'Time Entry',
     id: 'timeEntryPanel',
     debug: 0,
-
+    hidden: true,
+    
     store: 'TimeEntries',
     emptyText: 'No time entries available',
 
