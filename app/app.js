@@ -34,8 +34,6 @@ Ext.require([
 // Global (URL) path to where images are stored, used by image buttons etc.
 var gifPath = 'images/';
 
-openproject_token = "YXBpa2V5OjBiNGMxZjY2MTljNGFiM2U4YWMyYzIwMDdiNTlkYzNlYzE4ZGY5ZGYwYjJlMmM3MmUwMTNjZGQ4YWM5NTIwMWM=";
-
 // The actual application GUI with the main tab panel
 function launchApplication(debug) {
     var projects = Ext.StoreManager.get('Projects');
@@ -87,7 +85,6 @@ Ext.onReady(function() {
     // timeEntries.load({callback: function(r, op, success) {if (!success) alert('Store: TimeEntries load failed');}});
     // projects.load({callback: function(r, op, success) {if (!success) alert('Store: Projects load failed');}});
     // workPackages.load({callback: function(r, op, success) { if (!success) alert('Store: WorkPackages load failed');}});
-
     
     // Launch application without waiting for StoreLoadCoordinator
     launchApplication(debug);

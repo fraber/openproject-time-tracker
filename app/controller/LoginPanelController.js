@@ -123,6 +123,10 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         }
     },
 
+    basicAuthBase64: function(token) {
+        return new Buffer.from("apikey"+":" + token).toString('base64');
+    },
+    
     /**
      * Check that the credentials (URL + token) are correct
      */
@@ -132,72 +136,94 @@ Ext.define('TSTrack.controller.LoginPanelController', {
 
         var configData = me.configData;
         var url = configData.url + '/api/v3/users/me'
-        // var url = configData.url + '/api/v3/work_packages'
-        console.log ('LoginPanelController.login: url('+configData.url+') token('+configData.token+')');
-        Ext.Ajax.request({
-            defaultHeaders: { Authorization: "Basic " + configData.token },
-            url: url,
-            callback: function (options, success, response) {
-                var responseJsonString = response.responseText;
-                var responseObject = JSON.parse(responseJsonString);
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.setRequestHeader('Authorization', "Basic " + me.basicAuthBase64(configData.token));
+        xhr.onload = function (event) {
+            var response = this;
 
-                if (!success) {
-                    console.log('LoginPanelController.login: not successfull');
-                    Ext.Msg.alert('Login failed', 'Message from server: "'+responseObject.message+'"');
-                    return;
-                }
-
-                if (!responseObject) {
-                    console.log('LoginPanelController.login: error parsing responseText='+responseText);
-                    // FIXME: Write some message somewhere
-                    alert('LoginPanelController.login: error parsing responseText='+responseText);
-                    return;
-                }
-                var type = responseObject._type;
-                var userName = responseObject.name;
-                var userId = responseObject.id;
-                var userStatus = responseObject.status
-
-                if (userName.toLowerCase() == "anonymous") {
-                    console.log('LoginPanelController.login: got Anonymous user, which means auth was not successfull');
-                    Ext.Msg.alert('Login failed', 'The server/token combination is incorrect.<br>Please request a new token.');
-                    return;                    
-                }
-                if (!type || !userId || !userName || !userStatus) {
-                    console.log('LoginPanelController.login: no type or id responseText='+responseText);
-                    alert('LoginPanelController.login: no type or id responseText='+responseText);
-                    // FIXME: Write some message somewhere
-                    return;
-                }
-
-                // Save configuration information
-                configData.userId = userId;
-                configData.userName = userName;
-                configData.userStatus = userStatus;
-
-                // Activate the TimeEntry panel
-                var tabPanel = me.getTabPanel();
-                var timeEntryPanel = tabPanel.child('#timeEntryPanel');
-                timeEntryPanel.tab.show();
-                tabPanel.setActiveTab(timeEntryPanel);
-
-                // Load stores
-                var timeEntriesStore = Ext.getStore('TimeEntries');
-                var proxy = timeEntriesStore.getProxy();
-                proxy.url = configData.url+"/api/v3/time_entries";
-                proxy.extraParams = {
-                    pageSize: 1000,
-                    // filters: '[{"user":{"operator":"=","values":["'+configData.userId+'"]}}]'
-                };
-                proxy.headers = { Authorization: "Basic " + configData.token };
-                timeEntriesStore.load({
-                    callback: function(r, op, success) {
-                        if (!success) alert('Store: TimeEntries load failed');
-                    }
-                });
+            if (response.status != 200) {
+                console.log('LoginPanelController.login: not successfull');
+                Ext.Msg.alert('Login failed', 'Message from server: "'+responseObject.message+'"');
+                return;
             }
-        });
 
+            var responseJsonString = response.responseText;
+            var responseObject = JSON.parse(responseJsonString);
+            if (!responseObject) {
+                console.log('LoginPanelController.login: error parsing responseText='+responseText);
+                // FIXME: Write some message somewhere
+                alert('LoginPanelController.login: error parsing responseText='+responseText);
+                return;
+            }
+            var type = responseObject._type;
+            var userName = responseObject.name;
+            var userId = responseObject.id;
+            var userStatus = responseObject.status
+
+            if (userName.toLowerCase() == "anonymous") {
+                console.log('LoginPanelController.login: got Anonymous user, which means auth was not successfull');
+                Ext.Msg.alert('Login failed', 'The server/token combination is incorrect.');
+                return;                    
+            }
+            if (!type || !userId || !userName || !userStatus) {
+                console.log('LoginPanelController.login: no type or id responseText='+responseText);
+                alert('LoginPanelController.login: no type or id responseText='+responseText);
+                // FIXME: Write some message somewhere
+                return;
+            }
+
+            // Save configuration information
+            configData.id = userId;
+            configData.name = userName;
+            configData.status = userStatus;
+            configData.avatar = responseObject.avatar;
+            configData.first_name = responseObject.firstName;
+            configData.last_name = responseObject.lastName;
+            configData.login = responseObject.login;
+            configData.email = responseObject.email;
+            configData.language = responseObject.language
+            
+            console.log(configData);
+            
+            // Activate the TimeEntry panel
+            var tabPanel = me.getTabPanel();
+            var timeEntryPanel = tabPanel.child('#timeEntryPanel');
+            timeEntryPanel.tab.show();
+            tabPanel.setActiveTab(timeEntryPanel);
+
+            // Load Projects store
+            var projectsStore = Ext.getStore('Projects');
+            var proxy = projectsStore.getProxy();
+            proxy.url = configData.url+"/api/v3/projects";
+            proxy.extraParams = {
+                pageSize: 1000
+            };
+            proxy.headers = { Authorization: "Basic " + me.basicAuthBase64(configData.token) };
+            projectsStore.load({
+                callback: function(r, op, success) {
+                    if (!success) alert('Store: Projects load failed');
+                }
+            });
+
+            // Load TimeEntries store
+            var timeEntriesStore = Ext.getStore('TimeEntries');
+            var proxy = timeEntriesStore.getProxy();
+            proxy.url = configData.url+"/api/v3/time_entries";
+            proxy.extraParams = {
+                pageSize: 1000,
+                // filters: '[{"user":{"operator":"=","values":["'+configData.userId+'"]}}]'
+            };
+            proxy.headers = { Authorization: "Basic " + me.basicAuthBase64(configData.token) };
+            timeEntriesStore.load({
+                callback: function(r, op, success) {
+                    if (!success) alert('Store: TimeEntries load failed');
+                }
+            });
+            
+        }
+        xhr.send();
+        
         console.log('LoginPanelController.login: Finished');
     },
     
