@@ -121,7 +121,7 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
     loadProjectWorkPackages: function(projectId) {
         var me = this;
         
-        var workPackages = Ext.StoreManager.get('WorkPackages');
+        var workPackages = Ext.StoreManager.get('WorkPackageStore');
         var lastProjectId = workPackages.lastProjectId;
         if (lastProjectId && lastProjectId == projectId) return; // skip if already loaded
         

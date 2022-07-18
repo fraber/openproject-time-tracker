@@ -52,9 +52,6 @@ compatible with OpenProject and simplify Panel/Store/Model.
           "updateImmediately" :
           { "href" : "/api/v3/time_entries/27157",
             "method" : "patch" },
-          "update" :
-          { "href" : "/api/v3/time_entries/27157/form",
-             "method" : "post" },
 
 = V0.2.0 (no release defined yet)
 
@@ -142,7 +139,7 @@ Use hard-coded data in order to produce a GUI quickly.
   - TimeEntriesPanel with Tab configuration
   - AboutPanel with component versions
 - Write column configuration for TimeEntryPanel (2h)
-  - Projects ComboBox with projects store
+  - Projects ComboBox with ProjectStore
   - WorkPackages ComboBox
   - Date and Time fields with config for start-stop
   - Other text fields

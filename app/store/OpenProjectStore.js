@@ -10,16 +10,15 @@ Ext.define('TSTrack.store.OpenProjectStore', {
     autoLoad: false,
 
     proxy: {
-        type:                   'ajax',
-        reader: {
-            type:               'openProjectReader'
-        },
-        writer: {
-            type:               'json',
-            rootProperty:       'data'
-        }
+        type: 'ajax',
+        reader: { type: 'openProjectReader' },
+        writer: { type: 'json' }
     },
 
+    /**
+     * Custom OpenProject function adding Basic Auth and filters
+     * to the store proxy before loading.
+     */
     loadWithAuth: function(configData, filters) {
         var me = this;
         var proxy = me.proxy;

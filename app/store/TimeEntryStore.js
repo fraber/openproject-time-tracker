@@ -5,9 +5,9 @@
  *
  * DataStore for TimeEntries
  */
-Ext.define('TSTrack.store.TimeEntries', {
+Ext.define('TSTrack.store.TimeEntryStore', {
     extend:             'TSTrack.store.OpenProjectStore',
-    storeId:            'TimeEntries',
+    storeId:            'TimeEntryStore',
     model:              'TSTrack.model.TimeEntry',
     autoSync: true,
     sorters: [

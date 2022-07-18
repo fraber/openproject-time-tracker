@@ -62,8 +62,8 @@ edition is sufficient for TSTrack (see limitations below).
 
 # Limitations
 
-* Only 1000 objects can be loaded for Projects,
-  WorkPackages or TimeEntries per week.
+* Only 1000 objects can be loaded for ProjectStore,
+  WorkPackageStore or TimeEntryStore per week.
 * OpenProject + TSTrack standard edition are built
   for <200 users tracking time concurrently.
   Please contact us (mailto:fraber@fraber.de) for larger

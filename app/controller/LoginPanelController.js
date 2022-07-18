@@ -121,10 +121,9 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         return formIsValid;
     },
 
-        /**
-     * Check that the credentials (host + token) are correct
-     * and load stores for Projects and TimeEntries 
-     * (no WorkPackages yet!)
+    /**
+     * Check that the credentials (host + token) are correct and 
+     * load stores for Projects and TimeEntries (no WorkPackages yet!)
      */
     login: function() {
         var me = this;
@@ -190,9 +189,9 @@ Ext.define('TSTrack.controller.LoginPanelController', {
             tabPanel.setActiveTab(timeEntryPanel);
 
             // Load stores for Projects and TimeEntries
-            Ext.getStore('Projects').loadWithAuth(configData);
+            Ext.getStore('ProjectStore').loadWithAuth(configData);
             var timeEntriesFilters = '[{"user":{"operator":"=","values":["74087"]}}]';
-            Ext.getStore('TimeEntries').loadWithAuth(configData, timeEntriesFilters);
+            Ext.getStore('TimeEntryStore').loadWithAuth(configData, timeEntriesFilters);
         }
         xhr.send();
         

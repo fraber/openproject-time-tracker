@@ -13,7 +13,7 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
     debug: 0,
     hidden: true,
     
-    store: 'TimeEntries',
+    store: 'TimeEntryStore',
     emptyText: 'No time entries available',
 
     // Enable in-line editing
@@ -82,7 +82,7 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
         {text: 'Project', dataIndex: 'projectId', width: 80,
          editor: {
              xtype: 'combobox',
-             store: 'Projects',
+             store: 'ProjectStore',
              displayField: 'name', valueField: 'id',
              queryMode: 'local',
              matchFieldWidth: false,
@@ -103,7 +103,7 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
         {text: 'Work Package', dataIndex: 'workPackageId', width: 80,
          editor: {
              xtype: 'combobox',
-             store: 'WorkPackages',
+             store: 'WorkPackageStore',
              displayField: 'subject', valueField: 'id',
              queryMode: 'local',
              matchFieldWidth: false

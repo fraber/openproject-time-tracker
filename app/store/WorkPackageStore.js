@@ -5,8 +5,8 @@
  *
  * DataStore for WorkPackages
  */
-Ext.define('TSTrack.store.WorkPackages', {
-    storeId: 'WorkPackages',
+Ext.define('TSTrack.store.WorkPackageStore', {
+    storeId: 'WorkPackageStore',
     extend: 'TSTrack.store.OpenProjectStore',
     model: 'TSTrack.model.WorkPackage',
 

@@ -21,9 +21,9 @@ Ext.require([
     'TSTrack.model.WorkPackage',
 
     'TSTrack.store.OpenProjectStore',
-    'TSTrack.store.TimeEntries',
-    'TSTrack.store.Projects',
-    'TSTrack.store.WorkPackages',
+    'TSTrack.store.TimeEntryStore',
+    'TSTrack.store.ProjectStore',
+    'TSTrack.store.WorkPackageStore',
 
     'TSTrack.view.AboutPanel',
     'TSTrack.view.LoginPanel',
@@ -40,17 +40,15 @@ var gifPath = 'images/';
 
 // The actual application GUI with the main tab panel
 function launchApplication(debug) {
-    var projects = Ext.StoreManager.get('Projects');
-    var timeEntries = Ext.StoreManager.get('TimeEntries');
-    var workPackages = Ext.StoreManager.get('WorkPackages');
+    // Create 
+    var projects = Ext.StoreManager.get('ProjectStore');
+    var timeEntries = Ext.StoreManager.get('TimeEntryStore');
+    var workPackages = Ext.StoreManager.get('WorkPackageStore');
 
     // Main application panel with viewport and all the other panels
     var mainPanel = Ext.create('TSTrack.view.MainPanel');
 
     // Manually launch controllers to work around Ext.application quirks
-
-    // Inter-Process Controller - Handle communication with Electron
-    // Doesn't do much at the moment...
     var ipcController = Ext.create('TSTrack.controller.IpcController');
     ipcController.init(this);
     var loginPanelController = Ext.create('TSTrack.controller.LoginPanelController');
@@ -73,22 +71,17 @@ function launchApplication(debug) {
     timeEntryPanelController.onLaunch(this);
 }
 
-
-// Setup stores before calling launchApplication
+/**
+ * Setup stores before calling launchApplication
+ */
 Ext.onReady(function() {
-    Ext.QuickTips.init();                                                       // No idea why this is necessary, but it is...
-    // Ext.getDoc().on('contextmenu', function(ev) { ev.preventDefault(); });   // Disable Right-click context menu on browser background
+    Ext.QuickTips.init(); // No idea why this is necessary, but it seems to be...
     var debug = 0;
 
-    // Setup stores
-    var projects = Ext.create('TSTrack.store.Projects');
-    var timeEntries = Ext.create('TSTrack.store.TimeEntries');
-    var workPackages = Ext.create('TSTrack.store.WorkPackages');
-
-    // Load the stores
-    // timeEntries.load({callback: function(r, op, success) {if (!success) alert('Store: TimeEntries load failed');}});
-    // projects.load({callback: function(r, op, success) {if (!success) alert('Store: Projects load failed');}});
-    // workPackages.load({callback: function(r, op, success) { if (!success) alert('Store: WorkPackages load failed');}});
+    // Setup stores but don't load them yet. Loading happens after login.
+    var projects = Ext.create('TSTrack.store.ProjectStore');
+    var timeEntries = Ext.create('TSTrack.store.TimeEntryStore');
+    var workPackages = Ext.create('TSTrack.store.WorkPackageStore');
     
     // Launch application without waiting for StoreLoadCoordinator
     launchApplication(debug);
