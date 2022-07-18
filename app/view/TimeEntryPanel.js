@@ -85,7 +85,17 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
              store: 'Projects',
              displayField: 'name', valueField: 'id',
              queryMode: 'local',
-             matchFieldWidth: false
+             matchFieldWidth: false,
+             listeners: {
+                 change: function(editor, event, event2) {
+                     var me = this;
+                     console.log('TimeEntryPanel.Project.change: Started');
+                     var grid = this.up('grid');
+                     grid.fireEvent('projectchange', me);
+                     
+                     console.log('TimeEntryPanel.Project.change: Finished');
+                 }
+             }
          },
          renderer: function(v, el, model, col, row, timeEntriesStore, gridView) { return model.get('projectTitle'); }
         },
@@ -94,32 +104,9 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
          editor: {
              xtype: 'combobox',
              store: 'WorkPackages',
-             displayField: 'name', valueField: 'id',
+             displayField: 'subject', valueField: 'id',
              queryMode: 'local',
-             matchFieldWidth: false,
-             listeners: {
-                 activate: function() {
-                     // alert('activate');
-                 },
-                 focus: function() {
-                     // Send out an asynchroneous load() to WorkPackages
-                     console.log('TimeEntryPanel.WorkPackages.expand: Started');
-
-                     var workPackages = Ext.StoreManager.get('WorkPackages');
-                     workPackages.getProxy().extraParams = {
-                         pageSize: 1000,
-                         filters: '[{"project":{"operator":"=","values":["14"]}}]'
-                     };
-                     workPackages.load({callback: function(r, op, success) { if (!success) alert('Store: WorkPackages load failed');}});
-                     console.log('TimeEntryPanel.WorkPackages.expand: Started');
-                 },
-                 enable: function() {
-                     // alert('enable');
-                 },
-                 expand: function() {
-                     // alert('expand');
-                 }
-             }
+             matchFieldWidth: false
          },
          renderer: function(v, el, model) { return model.get('workPackageTitle'); }
         },
@@ -130,15 +117,12 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
 
 /*        
         {text: 'Name', dataIndex: 'name', flex: 5, editor: 'textfield'},
-
         // ToDo: Changing the date will set start to 00:00, so we have to override
         // the save method of the editor and add the start _time_ to it.
-
         {text: 'Start', width: 60, dataIndex: 'start',
          editor: {xtype: 'timefield', format: 'H:i', increment: 60},
          renderer: function(v) { return Ext.Date.format(v, 'H:i'); }
         },
-
         {text: 'End', width: 60, dataIndex: 'end',
          editor: {xtype: 'timefield', format: 'H:i', increment: 60},
          renderer: function(v) { return Ext.Date.format(v, 'H:i'); }

@@ -68,7 +68,15 @@ compatible with OpenProject and simplify Panel/Store/Model.
        - Refactor code to move folders below ~/app/
          (for better GitHub display)
 
+Bugs:
 - Add a mailto: link for authors to send out emails quickly
+- Modifying the date (spentOn) column, the editor writes
+  a Date object instead of an ISO date
+- After changing the project, the WorkPackages drop-down
+  shows the ID of the last WP, instead of the title
+
+ToDo:
+- Check that configData.host does not have trailing slash ("/")
 
 = V1.0.0 (no release defined yet)
 

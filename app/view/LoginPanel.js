@@ -30,11 +30,11 @@ Ext.define('TSTrack.view.LoginPanel', {
         items: [
             {
                 xtype: 'textfield',
-                name: 'url',
+                name: 'host',
                 inputType: 'url',
                 regexp: '/(((^https?)|(^ftp)):\/\/((([\-\w]+\.)+\w{2,3}(\/[%\-\w]+(\.\w{2,})?)*(([\w\-\.\?\\\/+@&#;`~=%!]*)(\.\w{2,})?)*)|(localhost|LOCALHOST))\/?)/',
-                fieldLabel: 'Server URL',
-                emptyText: '192.168.0.1:80 - the URL of your OpenProject server',
+                fieldLabel: 'Server Host',
+                emptyText: 'http://192.168.0.1:8000 - the host name of your OpenProject server',
             }, {
                 xtype: 'textfield',
                 name: 'token',

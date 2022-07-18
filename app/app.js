@@ -14,12 +14,16 @@ Ext.require([
     'Ext.*',
 
     'TSTrack.custom.OpenProjectReader',
+    // 'TSTrack.custom.OpenProjectWriter',
     
     'TSTrack.model.TimeEntry',
     'TSTrack.model.Project',
+    'TSTrack.model.WorkPackage',
 
+    'TSTrack.store.OpenProjectStore',
     'TSTrack.store.TimeEntries',
     'TSTrack.store.Projects',
+    'TSTrack.store.WorkPackages',
 
     'TSTrack.view.AboutPanel',
     'TSTrack.view.LoginPanel',
@@ -31,7 +35,7 @@ Ext.require([
     'TSTrack.controller.TimeEntryPanelController'
 ])
 
-// Global (URL) path to where images are stored, used by image buttons etc.
+// Global path to where images are stored, used by image buttons etc.
 var gifPath = 'images/';
 
 // The actual application GUI with the main tab panel
@@ -62,7 +66,7 @@ function launchApplication(debug) {
     ipcController.controllers = controllers;
     loginPanelController.controllers = controllers;
     timeEntryPanelController.controllers = controllers;
-
+    
     // Now launching the controllers:
     ipcController.onLaunch(this);
     loginPanelController.onLaunch(this);

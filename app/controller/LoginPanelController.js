@@ -22,14 +22,14 @@ Ext.define('TSTrack.controller.LoginPanelController', {
 
     /* Default values for the configuration data */
     loginDefaults: {
-        url:        'http://172.16.193.143:4200',
+        host:        'http://172.16.193.143:4200',
         token:      '0b4c1f6619c4ab3e8ac2c2007b59dc3ec18df9df0b2e2c72e013cdd8ac95201c'
     },
 
     // Object for clean login information
     configData: {
         changed: false,
-        url: null,
+        host: null,
         token: null
     },
     
@@ -37,7 +37,6 @@ Ext.define('TSTrack.controller.LoginPanelController', {
     init: function() {
         console.log ('LoginPanelController.init: controller initialization');
         this.control({
-            '#loginPanel field': { change: this.onFieldChanged },
             '#loginPanel toolbar > button': { click: this.onButtonClicked },
         });
         return this;
@@ -70,30 +69,24 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         }
     },
 
-    /************************************************************
-     * Configuration data changes
-     ************************************************************/
-
-    onFieldChanged: function (field, newValue, oldValue, eOpts) {
+    /**
+     * Write the configData into Electron-store for persistence
+     * for the next session.
+     */
+    saveConfigData: function () {
         var me = this;
-        var name = field.name;
-        console.log('LoginPanelController.onFieldChanged: field('+name+') changed from oldValue('+oldValue+') to newValue('+newValue+') eOpts('+eOpts+')');
 
         const ElectronStore = require ('electron-store');
         const configStore = new ElectronStore ({name: 'config'});
 
-        if (name in me.loginDefaults && me.configData[name] != newValue) {
-            console.log ('LoginPanelController.onFieldChanged: field('+name+') changed from('+me.configData[name]+') to('+newValue+')');
-            me.configData[name] = newValue;
-            me.configData.changed = true;
-            configStore.set(name, newValue);
-        }
+        for (var key in me.configData) {
+            configStore.set(key, me.configData[key]);
+        };
     },
 
-    /************************************************************
-     * Button actions
-     ************************************************************/
-
+    /**
+     * Handle Login button
+     */
     onButtonClicked: function (button, event, eOpts) {
         var me = this;
         // console.log ('LoginPanelController.onButtonClicked: button clicked button('+button.getText()+') action('+button.action+')');
@@ -107,38 +100,41 @@ Ext.define('TSTrack.controller.LoginPanelController', {
                 console.log('Connection.login: form is not valid - cancelling request');
             }
             break;
-        case 'projects':
-            console.log('LoginPanelController.onButtonClicked: projects clicked');
-            me.connectionController.loadProjects();
-            break;
-        case 'sync':
-            console.log('LoginPanelController.onButtonClicked: sync clicked');
-            //me.connectionController.syncExecOperations();
-            me.connectionController.syncAll();
-            break;
-        case 'commit':
-            console.log('LoginPanelController.onButtonClicked: commit clicked');
-            me.connectionController.syncExecOperationsNonEasy();
+        default:
+            console.log('LoginPanelController.onButtonClicked: unknown action='+button.action);
             break;
         }
     },
-
-    basicAuthBase64: function(token) {
-        return new Buffer.from("apikey"+":" + token).toString('base64');
-    },
     
-    /**
-     * Check that the credentials (URL + token) are correct
+    /* Check if the data in the form is valid */
+    formIsValid: function () {
+        var me = this;
+        var config = me.getLoginPanel();
+        var loginForm = config.down('[name=loginForm]');
+        var formIsValid = loginForm.isValid();
+
+        if (formIsValid) {
+            me.configData.host = config.down('[name=host]').getValue();
+            me.configData.token = config.down('[name=token]').getValue();
+        }
+
+        return formIsValid;
+    },
+
+        /**
+     * Check that the credentials (host + token) are correct
+     * and load stores for Projects and TimeEntries 
+     * (no WorkPackages yet!)
      */
     login: function() {
         var me = this;
         console.log('LoginPanelController.login: Starting');
 
         var configData = me.configData;
-        var url = configData.url + '/api/v3/users/me'
+        var url = configData.host + '/api/v3/users/me'
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url);
-        xhr.setRequestHeader('Authorization', "Basic " + me.basicAuthBase64(configData.token));
+        xhr.setRequestHeader('Authorization', "Basic " + new Buffer.from("apikey"+":" + configData.token).toString('base64') );
         xhr.onload = function (event) {
             var response = this;
 
@@ -185,6 +181,7 @@ Ext.define('TSTrack.controller.LoginPanelController', {
             configData.language = responseObject.language
             
             console.log(configData);
+            me.saveConfigData();
             
             // Activate the TimeEntry panel
             var tabPanel = me.getTabPanel();
@@ -192,54 +189,13 @@ Ext.define('TSTrack.controller.LoginPanelController', {
             timeEntryPanel.tab.show();
             tabPanel.setActiveTab(timeEntryPanel);
 
-            // Load Projects store
-            var projectsStore = Ext.getStore('Projects');
-            var proxy = projectsStore.getProxy();
-            proxy.url = configData.url+"/api/v3/projects";
-            proxy.extraParams = {
-                pageSize: 1000
-            };
-            proxy.headers = { Authorization: "Basic " + me.basicAuthBase64(configData.token) };
-            projectsStore.load({
-                callback: function(r, op, success) {
-                    if (!success) alert('Store: Projects load failed');
-                }
-            });
-
-            // Load TimeEntries store
-            var timeEntriesStore = Ext.getStore('TimeEntries');
-            var proxy = timeEntriesStore.getProxy();
-            proxy.url = configData.url+"/api/v3/time_entries";
-            proxy.extraParams = {
-                pageSize: 1000,
-                // filters: '[{"user":{"operator":"=","values":["'+configData.userId+'"]}}]'
-            };
-            proxy.headers = { Authorization: "Basic " + me.basicAuthBase64(configData.token) };
-            timeEntriesStore.load({
-                callback: function(r, op, success) {
-                    if (!success) alert('Store: TimeEntries load failed');
-                }
-            });
-            
+            // Load stores for Projects and TimeEntries
+            Ext.getStore('Projects').loadWithAuth(configData);
+            var timeEntriesFilters = '[{"user":{"operator":"=","values":["74087"]}}]';
+            Ext.getStore('TimeEntries').loadWithAuth(configData, timeEntriesFilters);
         }
         xhr.send();
         
         console.log('LoginPanelController.login: Finished');
-    },
-    
-    /* Check if the form data is valid */
-    formIsValid: function () {
-        var me = this;
-        var config = me.getLoginPanel();
-        var loginForm = config.down('[name=loginForm]');
-        var formIsValid = loginForm.isValid();
-
-        if (formIsValid) {
-            me.configData.url = config.down('[name=url]').getValue();
-            me.configData.token = config.down('[name=token]').getValue();
-        }
-
-        return formIsValid;
     }
-
 });

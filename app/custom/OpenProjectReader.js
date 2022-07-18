@@ -72,50 +72,14 @@ Ext.define('TSTrack.custom.OpenProjectReader', {
     },
 
     /**
-     * Create a single model based on Openproject data.
-     * OP likes to return objects using structures like:
-     * project: { href: "/api/v3/projects/14", title: "OpenProject" }
-     * So in addition to instantiate the model, we'll check
-     * in the "link" section for these type of structures.
-     */
-    readModelBasedOnFields: function(model, options) {
-        var me = this;
-
-        // Use ExtJS instantiation for the basic values (id, ...)
-        var inst = Ext.create(model, options);
-
-        // Check for additional fields in links section
-        var fields = inst.fields.keys;
-        fields.forEach(function(field) {
-            var linkForField = options._links[field];
-            if (linkForField) {
-                var href = linkForField.href;
-                if (href) {
-                    var hrefPieces = href.split("/");
-                    var lastPiece = hrefPieces[hrefPieces.length-1];
-                    var lastPieceInt = parseInt(lastPiece);
-                    inst.set(field, lastPieceInt);
-                }
-                var title = linkForField.title;
-                if (title) {
-                    var fieldName = field+"_title";
-                    inst.set(fieldName, title);
-                }
-            }
-        });
-        return inst;
-    },
-
-    /**
      * Read model based on _links section in options
      */
     readModel: function(model, options) {
         var me = this;
 
         // Remove structure around comment, which is a special data structure
-        if (options.comment) {
-            options["comment"] = options.comment.raw;
-        }
+        if (options.comment) { options["comment"] = options.comment.raw; }
+        if (options.description) { options["description"] = options.description.raw; }
         
         // Use ExtJS instantiation for the basic values (id, ...)
         var inst = Ext.create(model, options);

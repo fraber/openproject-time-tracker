@@ -6,33 +6,20 @@
  * DataStore for TimeEntries
  */
 Ext.define('TSTrack.store.TimeEntries', {
-    extend:             'Ext.data.Store',
+    extend:             'TSTrack.store.OpenProjectStore',
     storeId:            'TimeEntries',
-    model:              'TSTrack.model.TimeEntry',  // fields: ['id', 'start', 'end', 'name', 'note']
-    autoLoad: false,
-    autoSync: false,
-
+    model:              'TSTrack.model.TimeEntry',
+    autoSync: true,
+    sorters: [
+        {property: 'spentOn', direction: 'DESC'},
+        {property: 'start', direction: 'DESC'}
+    ],
     proxy: {
-        type:                   'ajax',
-/*
-        url:                    'https://community.openproject.org/api/v3/time_entries',
-        extraParams:            { pageSize: 1000, filters: '[{"user":{"operator":"=","values":["74087"]}}]' },
-        headers:                { Authorization: "Basic "+openproject_token },
-        api: {
-            read:               'https://community.openproject.org/api/v3/time_entries',
-            create:             'https://community.openproject.org/api/v3/time_entries',
-            update:             'https://community.openproject.org/api/v3/time_entries',
-            destroy:            'https://community.openproject.org/api/v3/time_entries',
-        },
-*/
-        reader: {
-            type:               'openProjectReader'
-        },
-        writer: {
-            type:               'json',
-            rootProperty:       'data'
-        }
-    }
+        type: 'ajax',
+        urlPath: '/api/v3/time_entries',
+        reader: { type: 'openProjectReader' },
+//        writer: { type: 'openProjectWriter' }
+    }    
 });
 
 
