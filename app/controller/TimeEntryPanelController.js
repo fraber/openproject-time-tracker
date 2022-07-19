@@ -93,6 +93,18 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
         lastData['spentOn'] = new Date().toISOString().substring(0,10); // today
         lastData['start'] = "";
         lastData['end'] = "";
+        lastData["hours"] = "PT2H",
+
+        lastData['_links.project.href'] = "/api/v3/projects/3";
+        lastData['_links.project.title'] = "Demo Project";
+        // lastData['_links.user.href'] = "/api/v3/users/9";
+        // lastData['_links.user.title'] = "Frank Bergmann";
+        lastData['_links.activity.href'] = "/api/v3/time_entries/activities/14";
+        lastData['_links.activity.title'] = "Management";
+        lastData['_links.workPackage.href'] = "/api/v3/work_packages/37";
+        lastData['_links.workPackage.title'] = "Bla";        
+        lastData['comment.raw'] = 'asdf asdf asdf asdf';
+        lastData['comment.format'] = 'plain';
         
         var t = Ext.create('TSTrack.model.TimeEntry', lastData);
         timeEntries.insert(0, t);

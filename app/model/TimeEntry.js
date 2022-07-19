@@ -29,6 +29,13 @@ Ext.define('TSTrack.model.TimeEntry', {
         'createdAt',
         'updatedAt',
 
+        '_links.project.href',
+        '_links.project.title',
+        // '_links.user.href',
+        // '_links.user.title',
+        '_links.activity.href',
+        '_links.activity.title',
+
         'work_package_id',
         'start',
         'end',
@@ -36,3 +43,16 @@ Ext.define('TSTrack.model.TimeEntry', {
         'note'
     ]
 });
+
+/*
+            "_links" : {
+               "user" : {
+                  "href" : "/api/v3/users/74087",
+                  "title" : "Frank Bergmann"
+               },
+               "project" : {
+                  "href" : "/api/v3/projects/14",
+                  "title" : "OpenProject"
+               }
+            }
+*/

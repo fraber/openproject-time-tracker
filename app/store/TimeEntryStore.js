@@ -19,6 +19,7 @@ Ext.define('TSTrack.store.TimeEntryStore', {
         urlPath: '/api/v3/time_entries',
         reader: { type: 'openProjectReader' },
 //        writer: { type: 'openProjectWriter' }
+        writer: { type: 'json', expandData: true }
     }    
 });
 

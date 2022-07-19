@@ -14,7 +14,7 @@ Ext.require([
     'Ext.*',
 
     'TSTrack.custom.OpenProjectReader',
-    // 'TSTrack.custom.OpenProjectWriter',
+    'TSTrack.custom.OpenProjectWriter',
     
     'TSTrack.model.TimeEntry',
     'TSTrack.model.Project',
