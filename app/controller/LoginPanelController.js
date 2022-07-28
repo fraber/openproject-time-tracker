@@ -23,7 +23,7 @@ Ext.define('TSTrack.controller.LoginPanelController', {
     /* Default values for the configuration data */
     loginDefaults: {
         host:        'http://172.16.193.143:4200',
-        token:      '0b4c1f6619c4ab3e8ac2c2007b59dc3ec18df9df0b2e2c72e013cdd8ac95201c'
+        token:      '9b4c1f6619c4ab3e8ac2c2007b59dc3ec18df9df0b2e2c72e013cdd8ac95201c'
     },
 
     // Object for clean login information

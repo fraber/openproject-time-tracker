@@ -1,14 +1,8 @@
-Roadmap for TSTrack Time Tracking
-=================================
+Roadmap for TSTrack OpenProject Time Tracking
+=============================================
 
-[//]: # Communicate the product's strategy to stakeholders:
-[//]: # Users, developers and OpenProject team
-
-TSTrack Time Tracking provides a user-friendy implementation
-of the first crucial step in the financial management process
-chain for project management that reaches from capturing time
-to progres tracking, budget management, earned value management
-and project billing.
+TSTrack implements the first step of the
+financial management process chain for projects.
 TSTrack uses [OpenProject](https://openproject.com) as the
 back-end and is 100% open-source (GPL V3, both front-end and
 back-end) with enterprise options available.

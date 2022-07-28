@@ -1,63 +1,72 @@
-
 TSTrack Time Tracker for OpenProject
 ====================================
 
 Desktop time tracker integrated with OpenProject
 
-[screenshot]
+![screenshot](/app/images/screenshot.png?raw=true "Screenshot")
 
-
-### Features - currently available
+### Features
+* time tracking per hour with Excel style editor
 * desktop application with tray icon for Windows, Linux and Mac
 * 100% open-source (GPL V3)
-* time tracking per hour with Excel style cell editing
 * integration with [OpenProject](https://openproject.com)
+  back-end (GPL V3)
 
 ### Features - available soon
-* time tracking with start-stop timer
+* start-stop timer and time tracking per minute
 * idle time detection
-* calendar view with drag-and-drop
+* calendar view with drag-and-drop editing
 * export as CSV
 
 
-# Quick start for a single user
+# Quick start
 
-1. Setup an account at the public OpenSource server
-   https://community.openproject.org.
-   Click on "Sign in" -> "Create a new account"
-
-2. Install TSTrack (on Linux, please see below for Windows and Mac):
-   git clone htts://github.com/fraber/tstrack
+1. Install TSTrack:<br>
+   These instrunctions work for any recent Linux variant,
+   please see below for Windows and Mac.<br>
+   ```
+   git clone htts://github.com/fraber/openproject-time-tracker
    npm install
    npm start
+   ```
 
-3. Enter your name and credentials in the TSTrack login page
+2. Setup some OpenProject account:<br>
+   [Install OpenProject locally](https://www.openproject.org/docs/installation-and-operations/)
+   or create an account on the [OpenProject community server](https://community.openproject.org).
+   Click "Sign in" and "Create a new account".
 
-4. Start logging hours
+3. Get the OpenProject API token:<br>
+   In OpenProject go to Profile image -> My Account ->
+   Access tokens and identify the line with "API".
+   Click on Create or Reset in the Action column and
+   copy the token.
 
-community.openproject.org does not allow you to create your
-own projects or work packages, so please see the next section.
+4. Enter credentials in TSTrack:<br>
+   Enter the host name of your server and your API token in
+   the TSTrack login page.
+
+5. Start logging hours
 
 
-# Quick start for enterprise (big and small)
 
-As an enterprise, you basically want to run your own
-[OpenProject](https://openproject.com) server. Please visit:
-https://www.openproject.org/docs/installation-and-operations/installation/
-The rest basically works like above.
+# Enterprise Operations
 
-OpenProject is 100% open source (GPL V3), and for community
+As an enterprise, you basically need to
+[run your own OpenProject server](https://www.openproject.org/docs/installation-and-operations/).
+OpenProject is 100% open source (GPL V3) and the community
 edition is sufficient for TSTrack (see limitations below).
 
+https://www.openproject.org/docs/installation-and-operations
+The rest basically works like above.
 
-# Enterprise Options
+### Enterprise options available
 
 * support contracts and other technical and legal options
 * dual-licensing under different license terms
-* use your CI/CD for the TSTrack GUI
+* GUI customization (use your corporate identity/design)
 * option to store start-stop times on the server side
   (see limitations below)
-* please contact mailto:fraber@fraber.de for details
+* please contact the author (fraber@fraber.de) for details
 
 
 # Limitations
@@ -81,13 +90,9 @@ edition is sufficient for TSTrack (see limitations below).
   author for enterprise options (fraber@fraber.de).
 
 
-# Installation
+# Installers for Windows and Mac
 
-* Currently, you have to install TSTrack manually as
-  described in the Quick start.
-* Being based on [Electron](https://electronjs.org),
-  we are working to create installers for Windows,
-  Linux and Mac.
+* will soon be available, please contact fraber@fraber.de
 
 
 # Development
@@ -98,3 +103,6 @@ edition is sufficient for TSTrack (see limitations below).
   ExtJS 4.2 JavaScript library.
 * This GitHub repo contains everything you need to
   develop and to create new versions.
+* ToDo: Only include the minified version of the ExtJS
+  libraries
+* ToDo: Explain how to get the GPL V3 version of ExtJS
