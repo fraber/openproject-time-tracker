@@ -37,6 +37,8 @@ compatible with OpenProject and simplify Panel/Store/Model.
 - Login page
         - Get token from OpenProject
         - Somehow get the current user's ID
+	- Show the user data in the login screen in grey
+	  (because they are defined on the OpenProject side)
 - Write data back to server
         - Write comment with format: plain and html:
           "<p>...plain...</p>"

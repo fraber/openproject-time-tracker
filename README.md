@@ -5,14 +5,14 @@ Desktop time tracker integrated with OpenProject
 
 ![screenshot](/app/images/screenshot.png?raw=true "Screenshot")
 
-### Features
+#### Features
 * time tracking per hour with Excel style editor
 * desktop application with tray icon for Windows, Linux and Mac
 * 100% open-source (GPL V3)
 * integration with [OpenProject](https://openproject.com)
   back-end (GPL V3)
 
-### Features - available soon
+#### Features - available soon
 * start-stop timer and time tracking per minute
 * idle time detection
 * calendar view with drag-and-drop editing
@@ -25,7 +25,7 @@ Desktop time tracker integrated with OpenProject
    These instrunctions work for any recent Linux variant,
    please see below for Windows and Mac.<br>
    ```
-   git clone htts://github.com/fraber/openproject-time-tracker
+   git clone https://github.com/fraber/openproject-time-tracker
    npm install
    npm start
    ```
@@ -51,8 +51,9 @@ Desktop time tracker integrated with OpenProject
 
 # Enterprise Operations
 
-As an enterprise, you basically need to
-[run your own OpenProject server](https://www.openproject.org/docs/installation-and-operations/).
+As an enterprise you want to
+[run your own OpenProject server](https://www.openproject.org/docs/installation-and-operations/)
+or contract a [cloud server](https://www.openproject.org/pricing/?mode=cloud).
 OpenProject is 100% open source (GPL V3) and the community
 edition is sufficient for TSTrack (see limitations below).
 
@@ -71,12 +72,12 @@ The rest basically works like above.
 
 # Limitations
 
+Currently:
 * Only 1000 objects can be loaded for ProjectStore,
   WorkPackageStore or TimeEntryStore per week.
 * OpenProject + TSTrack standard edition are built
   for <200 users tracking time concurrently.
-  Please contact us (mailto:fraber@fraber.de) for larger
-  organizations.
+  Please contact us for larger organizations.
 * OpenProject community does not have the infrastructure
   (data-model, API, reports, ...) to handle start-stop
   information on the server side. It can store the amount
