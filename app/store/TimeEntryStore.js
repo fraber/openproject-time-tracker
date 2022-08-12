@@ -18,8 +18,8 @@ Ext.define('TSTrack.store.TimeEntryStore', {
         type: 'ajax',
         urlPath: '/api/v3/time_entries',
         reader: { type: 'openProjectReader' },
-//        writer: { type: 'openProjectWriter' }
-        writer: { type: 'json', expandData: true }
+        writer: { type: 'openProjectWriter', expandData: true }
+//        writer: { type: 'json', expandData: true }
     }    
 });
 

@@ -9,60 +9,58 @@ Ext.define('TSTrack.custom.OpenProjectWriter', {
     extend : 'Ext.data.writer.Json',
     alias: 'writer.openProjectWriter',
 
-    // writeRecords: function(request, data) { return this.super(request, data);  },
-
-    /**
-     * Write a single value into data
-     */
-    writeValue: function(data, field, record){
-        var name = field[this.nameProperty],
-            dateFormat = this.dateFormat || field.dateWriteFormat || field.dateFormat,
-            value = record.get(field.name);
-
-        // Allow the nameProperty to yield a numeric value which may be zero.
-        // For example, using a field's numeric mapping to write an array for output.
-        if (name == null) {
-            name = field.name;
-        }
-
-        if (field.serialize) {
-            alert('serialize');
-            data[name] = field.serialize(value, record);
-        } else if (field.type === Ext.data.Types.DATE && dateFormat && Ext.isDate(value)) {
-            alert('dateformat');
-            data[name] = Ext.Date.format(value, dateFormat);
-        } else {
-
-            switch(name) {
-            case 'comment':
-                break;
-            default:
-                
+    getExpandedData: function(data) {
+        var dataLength = data.length,
+            i = 0,
+            item,
+            prop,
+            nameParts,
+            j,
+            tempObj,
+            
+            toObject = function(name, value) {
+                var o = {};
+                o[name] = value;
+                return o;
+            };
+        
+        for (; i < dataLength; i++) {
+            item = data[i];
+            
+            for (prop in item) {
+                if (item.hasOwnProperty(prop)) {
+                    // e.g. my.nested.property: 'foo'
+                    nameParts = prop.split('.');
+                    j = nameParts.length - 1;
+                    
+                    if (j > 0) {
+                        // Initially this will be the value 'foo'.
+                        // Equivalent to rec['my.nested.property']
+                        tempObj = item[prop];
+                        
+                        for (; j > 0; j--) {
+                            // Starting with the value above, we loop inside out, assigning the
+                            // current object as the value for the parent name. Work all
+                            // the way up until only the root name is left to assign.
+                            tempObj = toObject(nameParts[j], tempObj);
+                        }
+                        
+                        // At this point we'll have all child properties rolled up into a single
+                        // object like `{ nested: { property: 'foo' }}`. Now add the root name
+                        // (e.g. 'my') to the record data if needed (do not overwrite existing):
+                        item[nameParts[0]] = item[nameParts[0]] || {};
+                        // Since there could be duplicate names at any level of the nesting be sure
+                        // to merge rather than assign when setting the object as the value:
+                        Ext.Object.merge(item[nameParts[0]], tempObj);
+                        // Finally delete the original mapped property from the record
+                        delete item[prop];
+                    }
+                }
             }
-
-            // ToDo: Transform baseName to /api/v3/xyz/...
-            
-            // Check for *Id + *Title combination and write to links
-            var len = name.length;
-            var nameBase = name.substring(0, len-2);
-            var namePostfix = name.substring(len-2);
-            var nameTitle = nameBase+'Title';
-            var modelHasField = record.data.hasOwnProperty(nameTitle);
-            var nameUrlPath = "/api/v3/"+baseName+"/";
-            
-            if (namePostfix = 'Id' && modelHasField) {
-                // write out _link with property
-                var titleValue = record.get(nameTitle);
-                var link = { href: nameUrlPath+value, title: titleValue }
-                var links = data["_links"];
-                links["project"] = link
-            } else {
-                // Just write out normally.
-                data[name] = value;
-            }
-            
         }
+        return data;
     }
+
 /*
     "_links" : {
         "project" : {

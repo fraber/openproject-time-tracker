@@ -16,21 +16,30 @@ Ext.define('TSTrack.model.TimeEntry', {
         'hours',
         'spentOn',
 
-        'comment', // { format: "plain", html: "blabla", raw: "blablub" }
-        'activityId', // { href: "/api/v3/time_entries/activities/9", title: "Development" }
+	// { format: "plain", html: "blabla", raw: "blablub" }
+        'comment',
+	
+	// { href: "/api/v3/time_entries/activities/9", title: "Development" }
+        'activityId',
         'activityTitle',
-        'userId', // { href: "/api/v3/users/74087", title: "Frank Bergmann" }
+	
+	// { href: "/api/v3/users/74087", title: "Frank Bergmann" }
+        'userId',
         'userTitle',
-        'projectId', // { href: "/api/v3/projects/14", title: "OpenProject" }
-        'projectTitle',
-        'workPackageId', // { href: "/api/v3/work_packages/41530", title: "Copy a project shall also copy file_link" }
+
+	// { href: "/api/v3/projects/14", title: "OpenProject" }
+        { name: 'projectId', type: 'auto', mapping: '_links.project.href'},
+        { name: 'projectTitle', type: 'string', mapping: '_links.project.title'},
+
+	// { href: "/api/v3/work_packages/41530", title: "Copy a project shall also copy file_link" }
+	'workPackageId',
         'workPackageTitle',
         
         'createdAt',
         'updatedAt',
 
-        '_links.project.href',
-        '_links.project.title',
+        // '_links.project.href',
+        // '_links.project.title',
         // '_links.user.href',
         // '_links.user.title',
         '_links.activity.href',

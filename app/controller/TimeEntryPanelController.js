@@ -95,8 +95,12 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
         lastData['end'] = "";
         lastData["hours"] = "PT2H",
 
-        lastData['_links.project.href'] = "/api/v3/projects/3";
-        lastData['_links.project.title'] = "Demo Project";
+        // lastData['_links.project.href'] = "/api/v3/projects/3";
+        // lastData['_links.project.title'] = "Demo Project";
+
+	lastData['projectId'] = 3;
+	lastData['projectTitle'] = "Demo Project";
+	
         // lastData['_links.user.href'] = "/api/v3/users/9";
         // lastData['_links.user.title'] = "Frank Bergmann";
         lastData['_links.activity.href'] = "/api/v3/time_entries/activities/14";
