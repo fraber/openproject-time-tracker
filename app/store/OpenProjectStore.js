@@ -29,8 +29,25 @@ Ext.define('TSTrack.store.OpenProjectStore', {
         proxy.headers = { Authorization: "Basic " + new Buffer.from("apikey"+":" + configData.token).toString('base64') };
         me.load({
             callback: function(r, op, success) {
-                if (!success) alert('Store '+me.storeId+' load failed');
+                if (!success)
+		    alert('Store '+me.storeId+' load failed'); // ToDo: replace with Ext.Message
+                if (success)
+		    console.log(me.debugStoreValues());
             }
         });
+    },
+
+
+    debugStoreValues: function() {
+	var me = this,
+	    line,
+	    lines = [me.$className];
+
+	me.each(function(record) {
+	    line = JSON.stringify(record.data);
+	    lines.push(line);
+	});
+
+	return lines.join("\n");
     }
 });

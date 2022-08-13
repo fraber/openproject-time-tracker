@@ -35,8 +35,8 @@ Ext.define('TSTrack.custom.OpenProjectReader', {
     },
 
      /**
-     * Reads a JSON object and returns a ResultSet. Uses the internal getTotal and getSuccess extractors to
-     * retrieve meta data from the response, and extractData to turn the JSON data into model instances.
+     * Reads a JSON object and returns a ResultSet. 
+     * Implements custom getTotal and getSuccess extractors.
      * @param {Object} data The raw JSON data
      * @return {Ext.data.ResultSet} A ResultSet containing model instances and meta data about the results
      */
@@ -59,52 +59,76 @@ Ext.define('TSTrack.custom.OpenProjectReader', {
         return resultSet;
     },
 
-    readModels: function(elements) {
-        var me = this;
+    /**
+     * Convert an array of JSON objects into an array of Models
+     */
+    readModels: function(objs) {
+        var me = this,
+            inst,
+            modelInstances = [];
         
-        var models = [];
-        elements.forEach(function(el) {
-            var model = me.readModel(me.model, el);
-            if (model) models.push(model)
+        objs.forEach(function(obj) {
+            inst = me.readModel(me.model, obj);
+            if (inst) modelInstances.push(inst)
         });
 
-        return models;
+        return modelInstances;
     },
 
     /**
-     * Read model based on _links section in options
+     * Parse a single JSON object to create a Model.
+     * Deals with mappings in the Model to extract the values
+     * from the right attributes on the JSON object.
      */
-    readModel: function(model, options) {
-        var me = this;
+    readModel: function(model, json) {
+        var me = this,
+            modelFields = me.model.getFields(),
+            inst,
+            field,
+            mapping,
+            mappingFn;
 
-        // Remove structure around comment, which is a special data structure
-        if (options.comment) { options["comment"] = options.comment.raw; }
-        if (options.description) { options["description"] = options.description.raw; }
-        
-        // Use ExtJS instantiation for the basic values (id, ...)
-        var inst = Ext.create(model, options);
-        var data = inst["data"];
+        // Check for model fields with mappings.
+        // Mapped values will overwrite "flat" values.
+        for (var i = 0; i < modelFields.length; i++) {
+            field = modelFields[i];
+            mapping = field.jsonMapping;
+            mappingFn = field.fromJsonFn;
+            if (mapping) {
+                var val = me.readModelAttribute(json, mapping);
+                if (val) {
+                    if (mappingFn) {
+                        val = mappingFn.call(model, val);
+                    }
+                    json[field.name] = val;
+                }
+            }
+        }
 
-        // Check for additional fields in links section and write data
-        // directly without set(...) to avoid dirty flag
-        var links = options._links;
-        Object.keys(links).forEach(function(key) {
-            var val = links[key];
-            var href = val.href;
-            var keyId = key+"Id";
-            if (href && data.hasOwnProperty(keyId)) {
-                var hrefPieces = href.split("/");
-                var lastPiece = hrefPieces[hrefPieces.length-1];
-                var lastPieceInt = parseInt(lastPiece);
-                data[keyId] = lastPieceInt;
-            }
-            var title = val.title;
-            var keyTitle = key+"Title";
-            if (title && data.hasOwnProperty(keyTitle)) {
-                data[keyTitle] = title;
-            }
-        });
+        // Create a base model from mapped values
+        inst = Ext.create(model, json);
+
         return inst;
-    }
+    },
 
+    /**
+     * Extract a specific value from an object using a path
+     * (= array of attributes)
+     */
+    readModelAttribute(object, pathString) {
+        var obj = object,
+            pathArray = pathString.split('.'),
+            prop;
+
+        for (var i = 0; i < pathArray.length; i++) {
+            prop = pathArray[i];
+            if (!obj.hasOwnProperty(prop)) {
+                return null;
+            }
+
+            obj = obj[prop];
+        }
+        return obj;
+    }
+    
 });

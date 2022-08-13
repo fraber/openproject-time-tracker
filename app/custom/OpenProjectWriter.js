@@ -10,10 +10,13 @@ Ext.define('TSTrack.custom.OpenProjectWriter', {
     alias: 'writer.openProjectWriter',
 
     getExpandedData: function(data) {
-        var dataLength = data.length,
+        var me = this,
+            dataLength = data.length,
             i = 0,
             item,
-            prop,
+            prop,                                 // The property of the model
+            modelFields = me.model.getFields(),
+            mapping,                              // Where to map the property to REST output
             nameParts,
             j,
             tempObj,
@@ -23,20 +26,36 @@ Ext.define('TSTrack.custom.OpenProjectWriter', {
                 o[name] = value;
                 return o;
             };
-        
+
         for (; i < dataLength; i++) {
             item = data[i];
             
             for (prop in item) {
                 if (item.hasOwnProperty(prop)) {
-                    // e.g. my.nested.property: 'foo'
-                    nameParts = prop.split('.');
+                    mapping = prop;                    // e.g. my.nested.property: 'foo'
+
+		    // Search for the matching field in the model
+                    var modelField = null;
+                    for (var i = 0; i < modelFields.length; i++) {
+                        var field = modelFields[i];
+                        if (field.name === prop) {
+                            modelField = field;
+                            break;
+                        }
+                    }
+                    if (modelField && modelField.jsonMapping)
+                        mapping = modelField.jsonMapping;
+    
+                    nameParts = mapping.split('.');
                     j = nameParts.length - 1;
                     
                     if (j > 0) {
                         // Initially this will be the value 'foo'.
                         // Equivalent to rec['my.nested.property']
                         tempObj = item[prop];
+                        if (modelField.toJsonFn) {
+                            tempObj = modelField.toJsonFn.call(item, tempObj);
+                        }
                         
                         for (; j > 0; j--) {
                             // Starting with the value above, we loop inside out, assigning the

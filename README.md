@@ -25,7 +25,7 @@ Desktop time tracker integrated with OpenProject
    These instrunctions work for any recent Linux variant,
    please see below for Windows and Mac.<br>
    ```
-   git clone https://github.com/fraber/openproject-time-tracker
+   git clone git@github.com:fraber/openproject-time-tracker.git
    npm install
    npm start
    ```

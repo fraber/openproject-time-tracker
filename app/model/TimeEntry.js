@@ -10,58 +10,67 @@ Ext.define('TSTrack.model.TimeEntry', {
     extend: 'Ext.data.Model',
     idProperty: 'id',
     fields: [
-        'id',
-        '_type',
+        { name: 'id', type: 'int' },
+        { name: '_type', type: 'string' },
         
-        'hours',
-        'spentOn',
-
-	// { format: "plain", html: "blabla", raw: "blablub" }
-        'comment',
+        { name: 'spentOn', type: 'string' },
+        { name: 'hours', type: 'string' },
 	
-	// { href: "/api/v3/time_entries/activities/9", title: "Development" }
-        'activityId',
-        'activityTitle',
-	
-	// { href: "/api/v3/users/74087", title: "Frank Bergmann" }
-        'userId',
-        'userTitle',
+        { name: 'createdAt', type: 'date' },
+        { name: 'updatedAt', type: 'date' },
 
-	// { href: "/api/v3/projects/14", title: "OpenProject" }
-        { name: 'projectId', type: 'auto', mapping: '_links.project.href'},
-        { name: 'projectTitle', type: 'string', mapping: '_links.project.title'},
+	{ name: 'start', type: 'date' },
+        { name: 'end', type: 'date' },
 
-	// { href: "/api/v3/work_packages/41530", title: "Copy a project shall also copy file_link" }
-	'workPackageId',
-        'workPackageTitle',
-        
-        'createdAt',
-        'updatedAt',
+	// comment: { format: "plain", html: "blabla", raw: "blablub" }
+        {
+	    name: 'comment',
+	    type: 'string',
+	    jsonMapping: 'comment',
+	    toJsonFn: function(com) { return "{format: \"plain\", html: \""+com+"\", raw: \""+com+"\"}"; },
+	    fromJsonFn: function(obj) { return obj.raw; }
+	},
 
-        // '_links.project.href',
-        // '_links.project.title',
-        // '_links.user.href',
-        // '_links.user.title',
-        '_links.activity.href',
-        '_links.activity.title',
+	// activity: { href: "/api/v3/time_entries/activities/9", title: "Development" }
+        {
+	    name: 'activityId',
+	    type: 'int',
+	    jsonMapping: '_links.activity.href',
+	    toJsonFn: function(id) { return "/api/v3/time_entries/activities/"+id; },
+	    fromJsonFn: globalFromJsonLastPathSegment
+	},
+        {
+	    name: 'activityTitle',
+	    type: 'string',
+	    jsonMapping: '_links.activity.title'
+	},
 
-        'work_package_id',
-        'start',
-        'end',
-        'name',
-        'note'
+	// project: { href: "/api/v3/projects/14", title: "OpenProject" }
+        {
+	    name: 'projectId',
+	    type: 'int',
+	    jsonMapping: '_links.project.href',
+	    toJsonFn: function(id) { return "/api/v3/projects/"+id; },
+	    fromJsonFn: globalFromJsonLastPathSegment
+	},
+        {
+	    name: 'projectTitle',
+	    type: 'string',
+	    jsonMapping: '_links.project.title'
+	},
+
+	// workPackage: { href: "/api/v3/work_packages/41530", title: "Copy a project shall also copy file_link" }
+        {
+	    name: 'workPackageId',
+	    type: 'int',
+	    jsonMapping: '_links.workPackage.href',
+	    toJsonFn: function(id) { return "/api/v3/work_packages/"+id; },
+	    fromJsonFn: globalFromJsonLastPathSegment
+	},
+        {
+	    name: 'workPackageTitle',
+	    type: 'string',
+	    jsonMapping: '_links.workPackage.title'
+	}
     ]
 });
-
-/*
-            "_links" : {
-               "user" : {
-                  "href" : "/api/v3/users/74087",
-                  "title" : "Frank Bergmann"
-               },
-               "project" : {
-                  "href" : "/api/v3/projects/14",
-                  "title" : "OpenProject"
-               }
-            }
-*/

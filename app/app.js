@@ -38,6 +38,19 @@ Ext.require([
 // Global path to where images are stored, used by image buttons etc.
 var gifPath = 'images/';
 
+// Global functions to extract parts of JSON
+// ToDo: Move to Reader or similar object
+var globalFromJsonLastPathSegment = function(str) {
+    if (!str) return null;
+    if ("string" != typeof(str)) {
+        console.log('globalFromJsonLastPathSegment: found non-string argument');
+        console.log(str);
+        return null;
+    }
+    var pieces = str.split("/");
+    return pieces[pieces.length-1]
+};
+
 // The actual application GUI with the main tab panel
 function launchApplication(debug) {
     // Create 

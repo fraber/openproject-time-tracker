@@ -136,15 +136,15 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         xhr.setRequestHeader('Authorization', "Basic " + new Buffer.from("apikey"+":" + configData.token).toString('base64') );
         xhr.onload = function (event) {
             var response = this;
+            var responseJsonString = response.responseText;
+            var responseObject = JSON.parse(responseJsonString);
 
             if (response.status != 200) {
                 console.log('LoginPanelController.login: not successfull');
-                Ext.Msg.alert('Login failed', 'Message from server: "'+responseObject.message+'"');
+                Ext.Msg.alert('Login failed', 'Message from server:<br><pre>'+responseObject.message+'</pre>');
                 return;
             }
 
-            var responseJsonString = response.responseText;
-            var responseObject = JSON.parse(responseJsonString);
             if (!responseObject) {
                 console.log('LoginPanelController.login: error parsing responseText='+responseText);
                 // FIXME: Write some message somewhere
