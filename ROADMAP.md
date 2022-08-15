@@ -67,6 +67,10 @@ Bugs:
   a Date object instead of an ISO date
 - After changing the project, the WorkPackages drop-down
   shows the ID of the last WP, instead of the title
+- Saving an entry with empty WP causes OP API error
+  (because workPackageId is integer with default 0)
+- Comment updates to "raw" instead of string
+
 
 ToDo:
 - Check that configData.host does not have trailing slash ("/")
@@ -114,6 +118,7 @@ Done
   string: changed type of column to Date (0.5h)
 - Customized AJAX Proxy to create custom URL for update
   to TimeEntry API (1h)
+- Implemented DELETE, selecting next item after delete (1h)
 
 
 = V0.0.1: Mock-Up with static data (finished 2022-07-09)

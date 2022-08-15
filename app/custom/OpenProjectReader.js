@@ -41,11 +41,16 @@ Ext.define('TSTrack.custom.OpenProjectReader', {
      * @return {Ext.data.ResultSet} A ResultSet containing model instances and meta data about the results
      */
     readRecords : function(data) {
-        var me = this;
+        var me = this,
+            embedded,
+            elements = null,
+            records = [];
         
-        var embedded = data._embedded;
-        var elements = embedded.elements;
-        var records = me.readModels(elements);
+        embedded = data._embedded;
+        if (embedded) {  // OpenProject normally returns elements, except for DELETE
+            elements = embedded.elements;
+            records = me.readModels(elements);
+        }
 
         var resultSet = {
             count: records.length,

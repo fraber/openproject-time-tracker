@@ -127,8 +127,14 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
         var lastSelected = selectionModel.getLastSelected();
         if (!lastSelected) return;
 
-        lastSelected.remove(); // Check if that works with store
+	// Find the next model below lastSelected
+	var idx = store.find('id', lastSelected.get('id'));
+	var nextSelected = store.getAt(idx+1);
+	if (nextSelected) {
+	    selectionModel.select(nextSelected)
+	}
 
+	store.remove(lastSelected); // Remove triggers destroy using the proxy of the store
     },
 
     /**

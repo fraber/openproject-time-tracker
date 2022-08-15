@@ -21,8 +21,8 @@ Ext.define('TSTrack.store.TimeEntryStore', {
         api: {
             // read: works with urlPath above
             // create: works with urlPath above
-            update: '/api/v3/time_entries/'
-            // destroy:            '/intranet-rest/data-source/project-task-tree-action?action=delete'
+            update: '/api/v3/time_entries/',
+            destroy: '/api/v3/time_entries/'
 	},
 	
         reader: { type: 'openProjectReader' },
@@ -42,7 +42,7 @@ Ext.define('TSTrack.store.TimeEntryStore', {
 
 	    if (this.api[request.action]) {
 		var url = this.host + this.api[request.action];
-		if (request.action == 'update') {
+		if (['update', 'destroy'].includes(request.action)) {
 		    var timeEntryId = request.records[0].get('id');
 		    url = url + timeEntryId;
 		}
