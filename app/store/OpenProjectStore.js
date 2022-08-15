@@ -23,6 +23,7 @@ Ext.define('TSTrack.store.OpenProjectStore', {
         var me = this;
         var proxy = me.proxy;
         var urlPath = proxy.urlPath; if (!urlPath) alert('urlPath not set in store: '+me.storeId);
+	proxy.host = configData.host; // add host as additional var, used in proxy getUrl()
         proxy.url = configData.host + urlPath;
         proxy.extraParams = { pageSize: 1000 };
         if (filters) proxy.extraParams['filter'] = filters;

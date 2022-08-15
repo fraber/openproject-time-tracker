@@ -17,9 +17,41 @@ Ext.define('TSTrack.store.TimeEntryStore', {
     proxy: {
         type: 'ajax',
         urlPath: '/api/v3/time_entries',
+
+        api: {
+            // read: works with urlPath above
+            // create: works with urlPath above
+            update: '/api/v3/time_entries/'
+            // destroy:            '/intranet-rest/data-source/project-task-tree-action?action=delete'
+	},
+	
         reader: { type: 'openProjectReader' },
-        writer: { type: 'openProjectWriter', expandData: true }
-//        writer: { type: 'json', expandData: true }
+        writer: { type: 'openProjectWriter', expandData: true },
+
+	actionMethods: {
+	    create: 'POST',
+            read: 'GET',
+            update: 'PATCH',
+            destroy: 'DELETE'
+	},
+
+	getUrl: function(request) {
+	    console.log(request);
+	    if (request.url)
+		return request.url;
+
+	    if (this.api[request.action]) {
+		var url = this.host + this.api[request.action];
+		if (request.action == 'update') {
+		    var timeEntryId = request.records[0].get('id');
+		    url = url + timeEntryId;
+		}
+		return url;
+	    }
+	    
+	    if (this.url)
+		return this.url; // read operation
+	}
     }    
 });
 

@@ -88,8 +88,6 @@ Incorporate feedback from V1.0 launch
 
 
 
-
-
 Done
 ====
 
@@ -111,6 +109,11 @@ Done
 - Electron (1h)
   - Handle resize
   - Keep window size across sessions
+- Rewrite of Reader and Writer for OpenProject API (7h)
+- Date-picker for log date writes Date instead of a ISO date
+  string: changed type of column to Date (0.5h)
+- Customized AJAX Proxy to create custom URL for update
+  to TimeEntry API (1h)
 
 
 = V0.0.1: Mock-Up with static data (finished 2022-07-09)

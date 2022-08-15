@@ -64,15 +64,9 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
              altFormats : "m/d/Y|n/j/Y|n/j/y|m/j/y|n/d/y|m/j/Y|n/d/Y|m-d-y|m-d-Y|m/d|m-d|md|mdy|mdY|d|Y-m-d|n-j|n/j",
              disabledDaysText : "Disabled",
              disabledDatesText : "Disabled",
-             minText : "The date in this field must be equal to or after {0}",
-             maxText : "The date in this field must be equal to or before {0}",
              invalidText : "{0} is not a valid date - it must be in the format {1}",
-             triggerCls : Ext.baseCSSPrefix + 'form-date-trigger',
-             showToday : true,
-             initTime: '12', // 24 hour format
-             initTimeFormat: 'H',
              matchFieldWidth: false,
-             startDay: 0
+             startDay: 1
          },
          renderer: function(v) {
              if (v instanceof Date) return Ext.Date.format(v, 'Y-m-d');

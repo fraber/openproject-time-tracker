@@ -17,6 +17,7 @@ Ext.define('TSTrack.custom.OpenProjectWriter', {
             prop,                                 // The property of the model
             modelFields = me.model.getFields(),
             mapping,                              // Where to map the property to REST output
+            mappingFn = null,
             nameParts,
             j,
             tempObj,
@@ -33,8 +34,9 @@ Ext.define('TSTrack.custom.OpenProjectWriter', {
             for (prop in item) {
                 if (item.hasOwnProperty(prop)) {
                     mapping = prop;                    // e.g. my.nested.property: 'foo'
+		    mappingFn = null;
 
-		    // Search for the matching field in the model
+                    // Search for the matching field in the model
                     var modelField = null;
                     for (var i = 0; i < modelFields.length; i++) {
                         var field = modelFields[i];
@@ -43,18 +45,26 @@ Ext.define('TSTrack.custom.OpenProjectWriter', {
                             break;
                         }
                     }
-                    if (modelField && modelField.jsonMapping)
+                    if (modelField && modelField.jsonMapping) {
                         mapping = modelField.jsonMapping;
+                        mappingFn = modelField.toJsonFn
+                    }
     
                     nameParts = mapping.split('.');
                     j = nameParts.length - 1;
-                    
+
+                    // No hierarchical mapping: just convert
+                    if (j == 0 && mappingFn) {
+                        item[mapping] = mappingFn.call(item, item[prop]);
+                    }
+
+                    // Hierarchical mapping: Convert and write to mapping
                     if (j > 0) {
                         // Initially this will be the value 'foo'.
                         // Equivalent to rec['my.nested.property']
                         tempObj = item[prop];
                         if (modelField.toJsonFn) {
-                            tempObj = modelField.toJsonFn.call(item, tempObj);
+                            tempObj = mappingFn.call(item, tempObj);
                         }
                         
                         for (; j > 0; j--) {
