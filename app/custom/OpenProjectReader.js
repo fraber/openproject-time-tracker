@@ -49,6 +49,7 @@ Ext.define('TSTrack.custom.OpenProjectReader', {
             console.log('OpenProjectReader.readRecords: Found invalid null argument');
             return null;
         case 'Collection':   // Read a collection of objects
+        case 'WorkPackageCollection':
             return me.readRecordsCollection(data);
         default:             // Read a single object
             return me.readRecordsObject(data);
