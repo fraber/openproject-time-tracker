@@ -1,11 +1,13 @@
 Roadmap for TSTrack OpenProject Time Tracking
 =============================================
 
-TSTrack implements the first step of the
-financial management process chain for projects.
-TSTrack uses [OpenProject](https://openproject.com) as the
-back-end and is 100% open-source (GPL V3, both front-end and
-back-end) with enterprise options available.
+TSTrack implements time tracking as the first step
+a financial management process chain for projects.
+
+- V0.3.0: Container for additional features: In planning
+- V0.2.0: Start/Stop with grouping: In planning
+- V0.1.0: MVP witout start/stop: In development, no release date yet
+- V0.0.1: Static mock-up: Released
 
 
 = V0.1.0: MVP based on TimeEntries (no release defined yet)
@@ -15,39 +17,23 @@ Uses the OpenProject TimeEntries semantics (just date, user
 and work package) instead of interval times to stay 100%
 compatible with OpenProject and simplify Panel/Store/Model.
 
-- spentOn DateField apparently writes a Data back into the
-  model in the ColumnConfig in
-  Ext.grid.plugin.CellEditing.onEditComplete: => change to Y-m-d
-
-- WorkPackges ComboBox:
-  - Load WorkPackages store for the selected project on activation
-  
 - TimeEntryPanel: Fix column configuration and editors
-        - Date field doesn't work yet
-        - Don't write TimeEntry.updatedAt to server
-        - Show PT5H as 5 hours...
-        - Load work packages per project on-demand
-        - New field activty "activity" : { "href" : "/api/v3/
-          time_entries/activities/9",
-          "title" : "Development" }
-- TimeEntryPanel CRUD:
-  - Create new entries
-  - Delete entries
-  - Save and reload buttons
-- Login page
-        - Get token from OpenProject
-        - Somehow get the current user's ID
-	- Show the user data in the login screen in grey
-	  (because they are defined on the OpenProject side)
-- Write data back to server
-        - Write comment with format: plain and html:
-          "<p>...plain...</p>"
-        - Delete data on server
-          "delete" : { "href" : "/api/v3/time_entries/27157",
-                     "method" : "delete" },
-          "updateImmediately" :
-          { "href" : "/api/v3/time_entries/27157",
-            "method" : "patch" },
+	- Show PT5H as 5 hours...
+	- New field activty "activity"
+- Editing:
+	- Save only when valid (at least with valid WorkPackage)
+	- Show error message when saving(?)
+	- Save edited values with:
+		- cell.change (excluding Project)?
+		- selection.change?
+- Handle strange data:
+	- Projects without work packages(?)
+	- When connected to test database from Jens
+
+Bugs:
+	- WPs are shown as numbers in some situations.
+	  Create debugging tab with WorkPackages?
+
 
 = V0.2.0 (no release defined yet)
 
@@ -55,25 +41,28 @@ compatible with OpenProject and simplify Panel/Store/Model.
   details as TimeIntervalEntries
 - Do interval logging with break detection
 - Other:
-       - Make Electron font bigger and prettier
-       - Update to newer version of Electron
-       - Create Electron Windows installer
-       - Refactor code to move folders below ~/app/
-         (for better GitHub display)
+	- Make Electron font bigger and prettier
+	- Update to newer version of Electron
+	- Create Electron Windows installer
+	- Refactor code to move folders below ~/app/
+	  (for better GitHub display)
+	- Login page
+	- Show the user data in the login screen in grey
+	  (because they are defined on the OpenProject side)
+	- WorkPackage select: Deal with community.op.org
+	  5000 WPs using search while you type
 
 Bugs:
 - Add a mailto: link for authors to send out emails quickly
-- Modifying the date (spentOn) column, the editor writes
-  a Date object instead of an ISO date
 - After changing the project, the WorkPackages drop-down
   shows the ID of the last WP, instead of the title
 - Saving an entry with empty WP causes OP API error
   (because workPackageId is integer with default 0)
-- Comment updates to "raw" instead of string
-
 
 ToDo:
 - Check that configData.host does not have trailing slash ("/")
+
+
 
 = V1.0.0 (no release defined yet)
 
@@ -106,19 +95,31 @@ Done
 - Increased pageSize to 1000 for all stores (0.5h)
 - StoreLoadController: load stores before app launch (1h)
 - TimeEntryPanelController: logic for (+)/(-) buttons (1.5h)
-- LoginPanelController: Just a stub with some refs (0.5h)
+- TimeEntryPanel: Fix column configuration and editors
+	- spentOn DateField writes a Data instead of a
+	  Y-m-d string in CellEditing.onEditComplete (0.2h)
+	- Don't write TimeEntry.updatedAt to server (0.1h)
+	- Load work packages per project on-demand (0.1)
+- LoginPanelController:
+	- Just a stub with some refs (0.5h)
+	- Get user ID (0.5h)
+	- Stores: Load with OP token (1h)
 - Start README.md (1h)
 - Start ROADMAP.md (1h)
 - TimeEntryController: onButtonAdd with SelectionModel (1h)
 - Electron (1h)
   - Handle resize
   - Keep window size across sessions
+- WorkPackges ComboBox: Load WPs after project change (1h)
 - Rewrite of Reader and Writer for OpenProject API (7h)
 - Date-picker for log date writes Date instead of a ISO date
   string: changed type of column to Date (0.5h)
 - Customized AJAX Proxy to create custom URL for update
   to TimeEntry API (1h)
 - Implemented DELETE, selecting next item after delete (1h)
+- Implemented ADD, with single object parsing in OPReader and
+  modified mapping in OPWriter (3h)
+
 
 
 = V0.0.1: Mock-Up with static data (finished 2022-07-09)

@@ -36,7 +36,6 @@ Ext.define('TSTrack.store.TimeEntryStore', {
 	},
 
 	getUrl: function(request) {
-	    console.log(request);
 	    if (request.url)
 		return request.url;
 

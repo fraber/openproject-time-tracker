@@ -10,7 +10,16 @@ Ext.define('TSTrack.model.TimeEntry', {
     extend: 'Ext.data.Model',
     idProperty: 'id',
     fields: [
-        { name: 'id', type: 'int' },
+        {
+	    name: 'id',
+	    type: 'int',
+	    jsonMapping: 'id',
+	    toJsonFn: function(v) {
+		// Don't create JSON for an id=0 (new object)
+		if (v == 0) return null;
+		return v;
+	    }
+	},
         { name: '_type', type: 'string' },
         
         {
@@ -38,8 +47,13 @@ Ext.define('TSTrack.model.TimeEntry', {
             name: 'comment',
             type: 'string',
             jsonMapping: 'comment',
-            toJsonFn: function(com) { return "{format: \"plain\", html: \""+com+"\", raw: \""+com+"\"}"; },
-            fromJsonFn: function(obj) { return obj.raw; }
+            toJsonFn: function(com) {
+		return {format: "plain", html: com, raw: com};
+		return "{\"format\": \"plain\", \"html\": \""+com+"\", \"raw\": \""+com+"\"}";
+	    },
+            fromJsonFn: function(obj) {
+		return obj.raw;
+	    }
         },
 
         // activity: { href: "/api/v3/time_entries/activities/9", title: "Development" }

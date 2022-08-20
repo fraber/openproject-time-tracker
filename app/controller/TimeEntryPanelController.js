@@ -21,6 +21,9 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
         { ref: 'buttonDel', selector: '#buttonDel'},
     ],
 
+    // Keep track of the last model selected
+    lastModel: null,
+    
     // This is called before the viewport is created
     init: function() {
         console.log ('TimeEntryPanelController.init:');
@@ -67,8 +70,10 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
         
     },
 
-    // Create a new TimeEntry model at the top of the list,
-    // copying data from the currently selected (last) entry
+    /**
+     * Create a new TimeEntry model at the top of the list,
+     * copying data from the currently selected (last) entry
+     */
     onButtonAdd: function() {
         console.log ('TimeEntryPanelController.onButtonAdd:');
         var me = this;
@@ -92,26 +97,13 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
         delete lastData.updatedAt;
         lastData['spentOn'] = new Date().toISOString().substring(0,10); // today
         lastData['start'] = "";
-        lastData['end'] = "";
-        lastData["hours"] = "PT2H",
+        lastData['end'] = "";       
 
-        // lastData['_links.project.href'] = "/api/v3/projects/3";
-        // lastData['_links.project.title'] = "Demo Project";
-
-	lastData['projectId'] = 3;
-	lastData['projectTitle'] = "Demo Project";
-	
-        // lastData['_links.user.href'] = "/api/v3/users/9";
-        // lastData['_links.user.title'] = "Frank Bergmann";
-        lastData['_links.activity.href'] = "/api/v3/time_entries/activities/14";
-        lastData['_links.activity.title'] = "Management";
-        lastData['_links.workPackage.href'] = "/api/v3/work_packages/37";
-        lastData['_links.workPackage.title'] = "Bla";        
-        lastData['comment.raw'] = 'asdf asdf asdf asdf';
-        lastData['comment.format'] = 'plain';
-        
         var t = Ext.create('TSTrack.model.TimeEntry', lastData);
-        timeEntries.insert(0, t);
+	
+        var added = timeEntries.insert(0, t);
+	
+	console.log(timeEntries.debugStoreValues());
     },
 
     onButtonDel: function() {
@@ -127,14 +119,15 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
         var lastSelected = selectionModel.getLastSelected();
         if (!lastSelected) return;
 
-	// Find the next model below lastSelected
-	var idx = store.find('id', lastSelected.get('id'));
-	var nextSelected = store.getAt(idx+1);
-	if (nextSelected) {
-	    selectionModel.select(nextSelected)
-	}
+        // Find the next model below lastSelected
+        var idx = store.find('id', lastSelected.get('id'));
+        var nextSelected = store.getAt(idx+1);
+        if (nextSelected) {
+            selectionModel.select(nextSelected)
+        }
 
-	store.remove(lastSelected); // Remove triggers destroy using the proxy of the store
+        store.remove(lastSelected); // Remove triggers destroy using the proxy of the store
+	console.log(store.debugStoreValues());
     },
 
     /**
@@ -159,10 +152,13 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
      * A user has modified the project in some editor.
      * So let's load the work packages for that project.
      */
-    onProjectChange: function(field) {
+    onProjectChange: function(field, combo, b, c, d, e) {
         var me = this;
         console.log('TimeEntryPanelController.onProjectChange:');
         var projectId = field.getValue();
+
+	me.lastModel.set('workPackageId', 0);
+	
         me.loadProjectWorkPackages(projectId);
     },
 
@@ -172,7 +168,12 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
      * referenced in this row.
      */
     onSelectionChange: function(rowModel, selectedEntries, event) {
+	var me = this;
+	
         var model = selectedEntries[0]; if (!model) return;
+
+	me.lastModel = model;
+	
         var projectId = model.get('projectId'); if (!projectId) return;
         this.loadProjectWorkPackages(projectId);
     }

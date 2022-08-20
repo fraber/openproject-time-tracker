@@ -38,7 +38,6 @@ Ext.define('TSTrack.store.OpenProjectStore', {
         });
     },
 
-
     debugStoreValues: function() {
 	var me = this,
 	    line,

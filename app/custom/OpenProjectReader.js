@@ -42,10 +42,52 @@ Ext.define('TSTrack.custom.OpenProjectReader', {
      */
     readRecords : function(data) {
         var me = this,
+            type = data._type;
+
+        switch (type) {
+        case null:           // This should not happen, really
+            console.log('OpenProjectReader.readRecords: Found invalid null argument');
+            return null;
+        case 'Collection':   // Read a collection of objects
+            return me.readRecordsCollection(data);
+        default:             // Read a single object
+            return me.readRecordsObject(data);
+        }
+    },
+
+    /**
+     * OpenProject has indicated that the _type of data is not "Collection",
+     * so it should be a single object.
+     */
+    readRecordsObject: function(data) {
+        var me = this,
+            inst,
+            records = [];
+        
+        inst = me.readModel(me.model, data);
+        if (inst) records.push(inst);
+
+        var resultSet = {
+            count: records.length,
+            message: "",
+            records: records,
+            success: true,
+            total: records.length,
+            totalRecords: records.length
+        };
+        
+        return resultSet;
+    },
+
+    /**
+     * OpenProject has indicated that the _type of data is "Collection".
+     */
+    readRecordsCollection: function(data) {
+        var me = this,
             embedded,
             elements = null,
             records = [];
-        
+
         embedded = data._embedded;
         if (embedded) {  // OpenProject normally returns elements, except for DELETE
             elements = embedded.elements;

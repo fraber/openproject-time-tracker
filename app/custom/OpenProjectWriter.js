@@ -20,6 +20,7 @@ Ext.define('TSTrack.custom.OpenProjectWriter', {
             mappingFn = null,
             nameParts,
             j,
+            v,
             tempObj,
             
             toObject = function(name, value) {
@@ -34,7 +35,7 @@ Ext.define('TSTrack.custom.OpenProjectWriter', {
             for (prop in item) {
                 if (item.hasOwnProperty(prop)) {
                     mapping = prop;                    // e.g. my.nested.property: 'foo'
-		    mappingFn = null;
+                    mappingFn = null;
 
                     // Search for the matching field in the model
                     var modelField = null;
@@ -55,7 +56,13 @@ Ext.define('TSTrack.custom.OpenProjectWriter', {
 
                     // No hierarchical mapping: just convert
                     if (j == 0 && mappingFn) {
-                        item[mapping] = mappingFn.call(item, item[prop]);
+                        // Check for NULL value and skip in that case
+                        v = mappingFn.call(item, item[prop]);
+                        if (v == null) {
+                            delete item[prop];
+                            continue;
+                        }
+                        item[mapping] = v;
                     }
 
                     // Hierarchical mapping: Convert and write to mapping
@@ -65,6 +72,10 @@ Ext.define('TSTrack.custom.OpenProjectWriter', {
                         tempObj = item[prop];
                         if (modelField.toJsonFn) {
                             tempObj = mappingFn.call(item, tempObj);
+                            if (tempObj == null) {
+                                delete item[prop];
+                                continue
+                            }
                         }
                         
                         for (; j > 0; j--) {

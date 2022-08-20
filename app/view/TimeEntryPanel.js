@@ -56,7 +56,7 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
     ],
 
     columns: [
-        {text: 'Id', dataIndex: 'id', align: 'right', width: 60, hidden: true},
+        {text: 'Id', dataIndex: 'id', align: 'right', width: 40, hidden: false},
         {text: 'Date', width: 80, dataIndex: 'spentOn',
          editor: {
              xtype: 'datefield',
@@ -83,9 +83,10 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
              listeners: {
                  change: function(editor, event, event2) {
                      var me = this;
+
                      console.log('TimeEntryPanel.Project.change: Started');
                      var grid = this.up('grid');
-                     grid.fireEvent('projectchange', me);
+                     grid.fireEvent('projectchange', me, editor);
                      
                      console.log('TimeEntryPanel.Project.change: Finished');
                  }
@@ -104,6 +105,19 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
          },
          renderer: function(v, el, model) { return model.get('workPackageTitle'); }
         },
+
+/* Need to implement ActivityStore and load per project similar to WPs(?)
+        {text: 'Activity', dataIndex: 'activityId', width: 80,
+         editor: {
+             xtype: 'combobox',
+             store: 'ActivityStore',
+             displayField: 'subject', valueField: 'id',
+             queryMode: 'local',
+             matchFieldWidth: false
+         },
+         renderer: function(v, el, model) { return model.get('activityTitle'); }
+        },
+*/
 
         {text: 'Hours', dataIndex: 'hours', width: 80, editor: 'textfield'},
         {text: 'Comment', dataIndex: 'comment', flex: 5, editor: 'textfield'}
