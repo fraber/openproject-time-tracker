@@ -31,8 +31,17 @@ compatible with OpenProject and simplify Panel/Store/Model.
 	- When connected to test database from Jens
 
 Bugs:
+        - When creating a new line/entry the red triangles should
+	  appear indicating this is not yet saved.
+	- Trying to log hours to a project without perms causes
+	  a correct error message from the server, which is not
+	  correctly interpreted yet.
 	- WPs are shown as numbers in some situations.
 	  Create debugging tab with WorkPackages?
+	- TimeEntryPanelController.onCellChange:
+		- isValid() doesn't check PT5H...
+		- A failing sync() returns an undefined
+		  success callback variable.
 
 
 = V0.2.0 (no release defined yet)

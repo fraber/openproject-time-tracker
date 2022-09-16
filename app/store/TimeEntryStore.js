@@ -9,7 +9,7 @@ Ext.define('TSTrack.store.TimeEntryStore', {
     extend:             'TSTrack.store.OpenProjectStore',
     storeId:            'TimeEntryStore',
     model:              'TSTrack.model.TimeEntry',
-    autoSync: true,
+    autoSync:           false, // handled by TimeEntryController
     sorters: [
         {property: 'spentOn', direction: 'DESC'},
         {property: 'start', direction: 'DESC'}
@@ -23,35 +23,68 @@ Ext.define('TSTrack.store.TimeEntryStore', {
             // create: works with urlPath above
             update: '/api/v3/time_entries/',
             destroy: '/api/v3/time_entries/'
-	},
-	
+        },
+        
         reader: { type: 'openProjectReader' },
         writer: { type: 'openProjectWriter', expandData: true },
 
-	actionMethods: {
-	    create: 'POST',
+        success: function(a) { alert('proxy success'); },
+        failure: function(a) { alert('proxy failure'); },
+
+        actionMethods: {
+            create: 'POST',
             read: 'GET',
             update: 'PATCH',
             destroy: 'DELETE'
-	},
+        },
 
-	getUrl: function(request) {
-	    if (request.url)
-		return request.url;
+        /**
+         * ToDo: Not sure why we're overwriting this method...
+         * ... and what's the difference.
+         */
+        getUrl: function(request) {
+            if (request.url)
+                return request.url;
 
-	    if (this.api[request.action]) {
-		var url = this.host + this.api[request.action];
-		if (['update', 'destroy'].includes(request.action)) {
-		    var timeEntryId = request.records[0].get('id');
-		    url = url + timeEntryId;
-		}
-		return url;
-	    }
-	    
-	    if (this.url)
-		return this.url; // read operation
-	}
-    }    
+            if (this.api[request.action]) {
+                var url = this.host + this.api[request.action];
+                if (['update', 'destroy'].includes(request.action)) {
+                    var timeEntryId = request.records[0].get('id');
+                    url = url + timeEntryId;
+                }
+                return url;
+            }
+            
+            if (this.url)
+                return this.url; // read operation
+        },
+
+        /**
+         * Extract an exception object from an error reponse.
+         * Takes the message property of the
+         * response (if possible), rather than statusText.
+         *
+         * @param {Ext.data.Operation} operation The operation
+         * @param {Object} response The response
+         */
+        setException: function(operation, response) {
+
+            var statusText = response.statusText; // default original
+            
+            try {
+                var data = Ext.decode(response.responseText); // try OpenProject reply
+                statusText = data.message;
+            } catch (e) {
+                // Nothing, ignore...
+            }
+            
+            operation.setException({
+                status: response.status,
+                statusText: statusText
+            });
+        }
+
+    }
 });
 
 

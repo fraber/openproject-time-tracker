@@ -10,16 +10,12 @@ Ext.define('TSTrack.store.WorkPackageStore', {
     extend: 'TSTrack.store.OpenProjectStore',
     model: 'TSTrack.model.WorkPackage',
 
-    autoSync: false,
+    autoSync: false, // handle loads programatically (onCellChange and beforeEdit)
+    projectId: null, // store the project to which the WorkPackages belong
 
     proxy: {
         type:                   'ajax',
         urlPath:                '/api/v3/work_packages',
-/*
-        url:                    'http://localhost/api/v3/work_packages', // to be replaced:
-        extraParams:            { pageSize: 1000, filters: '[{"project":{"operator":"=","values":["14"]}}]' },
-        headers:                { Authorization: "Basic "+openproject_token },
-*/
         reader: {
             type:               'openProjectReader'
         },
@@ -27,5 +23,13 @@ Ext.define('TSTrack.store.WorkPackageStore', {
             type:               'json',
             rootProperty:       'data'
         }
-    }    
+    },
+
+    workPackageNameFromId: function(id) {
+	var me = this;
+	var idx = me.find('id', id);
+	var model = me.getAt(idx);
+	if (model) return model.get('subject');
+	return "undefined";
+    }
 });

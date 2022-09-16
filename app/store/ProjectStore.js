@@ -16,5 +16,14 @@ Ext.define('TSTrack.store.ProjectStore', {
         urlPath: '/api/v3/projects',
         reader: {type: 'openProjectReader'},
         writer: {type: 'json'}
+    },
+
+    projectNameFromId: function(projectId) {
+	var me = this;
+	var idx = me.find('id', projectId);
+	var project = me.getAt(idx);
+	if (project) return project.get('name');
+	return "undefined";
     }
+
 });

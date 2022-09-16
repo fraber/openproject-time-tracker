@@ -37,6 +37,7 @@ Ext.require([
 
 // Global path to where images are stored, used by image buttons etc.
 var gifPath = 'images/';
+var controllers = null;
 
 // Global functions to extract parts of JSON
 // ToDo: Move to Reader or similar object
@@ -54,9 +55,9 @@ var globalFromJsonLastPathSegment = function(str) {
 // The actual application GUI with the main tab panel
 function launchApplication(debug) {
     // Create 
-    var projects = Ext.StoreManager.get('ProjectStore');
-    var timeEntries = Ext.StoreManager.get('TimeEntryStore');
-    var workPackages = Ext.StoreManager.get('WorkPackageStore');
+    var projectStore = Ext.StoreManager.get('ProjectStore');
+    var timeEntrieStore = Ext.StoreManager.get('TimeEntryStore');
+    var workPackageStore = Ext.StoreManager.get('WorkPackageStore');
 
     // Main application panel with viewport and all the other panels
     var mainPanel = Ext.create('TSTrack.view.MainPanel');
@@ -69,7 +70,8 @@ function launchApplication(debug) {
     var timeEntryPanelController = Ext.create('TSTrack.controller.TimeEntryPanelController');
     timeEntryPanelController.init(this);
 
-    var controllers = {
+    // Create global list of controllers before launching them
+    controllers = {
         ipcController: ipcController,
         loginPanelController: loginPanelController,
         timeEntryPanelController: timeEntryPanelController
@@ -92,9 +94,9 @@ Ext.onReady(function() {
     var debug = 0;
 
     // Setup stores but don't load them yet. Loading happens after login.
-    var projects = Ext.create('TSTrack.store.ProjectStore');
-    var timeEntries = Ext.create('TSTrack.store.TimeEntryStore');
-    var workPackages = Ext.create('TSTrack.store.WorkPackageStore');
+    var projectStore = Ext.create('TSTrack.store.ProjectStore');
+    var timeEntrieStore = Ext.create('TSTrack.store.TimeEntryStore');
+    var workPackageStore = Ext.create('TSTrack.store.WorkPackageStore');
     
     // Launch application without waiting for StoreLoadCoordinator
     launchApplication(debug);

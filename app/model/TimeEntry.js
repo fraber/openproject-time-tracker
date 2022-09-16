@@ -97,5 +97,13 @@ Ext.define('TSTrack.model.TimeEntry', {
             type: 'string',
             jsonMapping: '_links.workPackage.title'
         }
+    ],
+    validations: [
+        {type: 'presence', field: 'spentOn'},
+        {type: 'presence', field: 'hours'},
+        {type: 'format',   field: 'hours', matcher: /^PT[0-9]+H.*/},
+        {type: 'presence', field: 'activityId'},
+        {type: 'presence', field: 'projectId'},
+        {type: 'presence', field: 'workPackageId'}
     ]
 });
