@@ -98,6 +98,14 @@ Ext.define('TSTrack.model.TimeEntry', {
             jsonMapping: '_links.workPackage.title'
         }
     ],
+
+    /**
+     * These validations are not used by forms or similar.
+     * Instead Model.validate() is called manually in
+     * CellSelectionModel.onCellChange in order to check if
+     * the user has finished editing the entry so that it
+     * can be saved.
+     */
     validations: [
         {type: 'presence', field: 'spentOn'},
         {type: 'presence', field: 'hours'},

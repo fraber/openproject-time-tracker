@@ -28,6 +28,7 @@ Ext.define('TSTrack.view.MainPanel', {
         tabBar: {
             items: [
                 {xtype: 'tbfill' },
+                {xtype: 'button', id: 'buttonDebug', icon: gifPath + 'bug.png', hidden: false},
                 {xtype: 'button', id: 'buttonSave', icon: gifPath + 'disk.png', hidden: false},
                 {xtype: 'button', id: 'buttonReload', icon: gifPath + 'arrow_refresh.png', hidden: false},
                 {xtype: 'button', id: 'buttonAdd', icon: gifPath + 'add.png', hidden: false},

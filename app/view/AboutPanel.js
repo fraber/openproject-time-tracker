@@ -20,7 +20,7 @@ Ext.define('TSTrack.view.AboutPanel', {
     html: [
             	        'OpenProject Time Tracking',
             	        'Version 1.0.0',
-            	        'Copyright &copy; 2022 Frank Bergmann (fraber@fraber.de)',
+            	        'Copyright &copy; 2022 Frank Bergmann (<a href="mailto:fraber@fraber.de">fraber@fraber.de</a>)',
             	        'This code is licensed under the GNU GPL version 3.0.',
             	        '',
             	        '<table>' +

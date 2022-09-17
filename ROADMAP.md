@@ -20,29 +20,19 @@ compatible with OpenProject and simplify Panel/Store/Model.
 - TimeEntryPanel: Fix column configuration and editors
 	- Show PT5H as 5 hours...
 	- New field activty "activity"
-- Editing:
-	- Save only when valid (at least with valid WorkPackage)
-	- Show error message when saving(?)
-	- Save edited values with:
-		- cell.change (excluding Project)?
-		- selection.change?
-- Handle strange data:
+- Handle edge cases:
 	- Projects without work packages(?)
 	- When connected to test database from Jens
-
-Bugs:
+- Bugs:
+	- When adding multiple new entries, there may be
+	  unforeseen behavior when saving, and multiple error
+	  messages from the server (Operation.Exceptions)
         - When creating a new line/entry the red triangles should
-	  appear indicating this is not yet saved.
-	- Trying to log hours to a project without perms causes
-	  a correct error message from the server, which is not
-	  correctly interpreted yet.
-	- WPs are shown as numbers in some situations.
-	  Create debugging tab with WorkPackages?
-	- TimeEntryPanelController.onCellChange:
-		- isValid() doesn't check PT5H...
-		- A failing sync() returns an undefined
-		  success callback variable.
-
+	  appear indicating that this data is not yet saved.
+- ToDo:
+	- Check that configData.host does not have trailing slash ("/")
+	- Check ToDo's in the source code
+	- Remove sync code in main.js and other places
 
 = V0.2.0 (no release defined yet)
 
@@ -60,17 +50,6 @@ Bugs:
 	  (because they are defined on the OpenProject side)
 	- WorkPackage select: Deal with community.op.org
 	  5000 WPs using search while you type
-
-Bugs:
-- Add a mailto: link for authors to send out emails quickly
-- After changing the project, the WorkPackages drop-down
-  shows the ID of the last WP, instead of the title
-- Saving an entry with empty WP causes OP API error
-  (because workPackageId is integer with default 0)
-
-ToDo:
-- Check that configData.host does not have trailing slash ("/")
-
 
 
 = V1.0.0 (no release defined yet)
@@ -126,9 +105,49 @@ Done
 - Customized AJAX Proxy to create custom URL for update
   to TimeEntry API (1h)
 - Implemented DELETE, selecting next item after delete (1h)
-- Implemented ADD, with single object parsing in OPReader and
-  modified mapping in OPWriter (3h)
-
+- Implemented ADD, with single object parsing in
+  OpenProjectReader and modified mapping in
+  OpenProjectWriter (3h)
+- Moved from automatic to manual sync of TimeEntryStore (3h)
+  - Set TimeEntryStore.autoSynt to false
+  - Set up TimeEntry.validate() to check (partially) whether
+    the OpenProject server would be able to accept the object.
+  - Added logic in CellSelectionModel.onCellChange to save
+    the time entry only if the model is valid.
+- Editing: fixed with the change above:
+	- Save only when valid (at least with valid WorkPackage)
+	- Show error message when saving(?)
+	- Save edited values with:
+		- cell.change (excluding Project)?
+		- selection.change?
+- Fixed with the one above:
+  After changing the project, the WorkPackages drop-down
+  shows the ID of the last WP, instead of the title.
+- Saving an entry with empty WP causes OP API error
+  (because workPackageId is integer with default 0).
+  Fixed with the one above
+- WPs are shown as numbers in some situations.
+  Create debugging tab with WorkPackages?
+  Fixed with the one above
+- TimeEntryPanelController.onCellChange:
+	- isValid() doesn't check PT5H...
+	- A failing sync() returns an undefined
+	  success callback variable.
+  Fixed with the one above
+- Fixed parsing error messages from OpenProject server (3h)
+  OpenProject returns an error object when trying to save
+  hours on a project where the user doesn't have permissions.
+  The default JsonReader doesn't handle this configuration.
+  It handles 200 responses, but 4XX responses are hard-coded.
+  The solution was to overwrite the Proxy.setException()
+  method in the TimeEntryStore to achieve the correct
+  behavior.
+  - Also fixed:
+    - Trying to log hours to a project without permsissions
+      causes a correct error message from the server, which
+      is not correctly interpreted yet.
+- Add a mailto: link for authors to send out emails (0.2h)
+- Add a button to enable/disable the debugger (0.5h)
 
 
 = V0.0.1: Mock-Up with static data (finished 2022-07-09)

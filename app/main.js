@@ -41,8 +41,8 @@ function createWindow () {
         }
     })
 
-    win.loadFile('app/index.html')			// and load the index.html of the app.
-    win.webContents.openDevTools()		// Open the DevTools.
+    win.loadFile('app/index.html')		// and load the index.html of the app.
+//    win.webContents.openDevTools()		// Open the DevTools.
 
     // The user pressed the close button: cleanup
     win.on('closed', () => {
@@ -58,6 +58,11 @@ function createWindow () {
         s = win.getSize()
         stateStore.set({win:{width:s[0],height:s[1]}})
     })
+
+    // Allow the "browser" window to open the Electron debugger
+    ipcMain.on('openDevTools', (event, title) => {
+	win.webContents.openDevTools();
+    })
 }
 
 
@@ -66,7 +71,6 @@ function showWindow () { if (win === null) { createWindow() } else { win.show() 
 function hideWindow () { if (win !== null) { win.hide() } }
 function closeWindow () { if (win !== null) { win.close() } }
 function toggleWindow () { if (win === null) { createWindow() } else if (win.isVisible()) { win.hide() } else { win.show() } }
-
 
 // Inter-Process communication
 function sync (arg1, arg2, arg, verb) {
