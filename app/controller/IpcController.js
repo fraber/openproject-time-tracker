@@ -71,7 +71,7 @@ Ext.define('TSTrack.controller.IpcController', {
 
         // Send an IPC-event to the main.js process
         ipcRenderer.send('openDevTools');
-        me.getButtonDebug().hide();
+        // me.getButtonDebug().hide();
         
         console.log ('TimeEntryPanelController.onButtonDebug: Finished');
     }

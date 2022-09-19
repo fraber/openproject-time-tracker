@@ -31,10 +31,12 @@ Ext.define('TSTrack.store.OpenProjectStore', {
 
         if (!callback) {
             callback = function(r, op, success) {
-                if (!success)
+                if (!success) {
                     alert('Store '+me.storeId+' load failed'); // ToDo: replace with Ext.Message
-                if (success)
-                    console.log(me.debugStoreValues());
+		}
+                if (success) {
+                    // console.log(me.debugStoreValues());
+		}
             }
         }
         me.load({callback: callback});

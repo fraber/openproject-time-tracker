@@ -149,7 +149,7 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
         },
 */
 
-        {   text: 'Hours', dataIndex: 'hours', width: 80, editor: 'textfield'},
+        {   text: 'Hours', dataIndex: 'hours', width: 80, editor: 'timeEntryField'},
         {   text: 'Comment', dataIndex: 'comment', flex: 5, editor: 'textfield'}
 
 

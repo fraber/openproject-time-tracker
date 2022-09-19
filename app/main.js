@@ -42,7 +42,7 @@ function createWindow () {
     })
 
     win.loadFile('app/index.html')		// and load the index.html of the app.
-//    win.webContents.openDevTools()		// Open the DevTools.
+    win.webContents.openDevTools()		// Open the DevTools.
 
     // The user pressed the close button: cleanup
     win.on('closed', () => {

@@ -28,6 +28,7 @@ Ext.require([
     'TSTrack.view.AboutPanel',
     'TSTrack.view.LoginPanel',
     'TSTrack.view.TimeEntryPanel',
+    'TSTrack.view.TimeEntryField',
     
     'TSTrack.controller.IpcController',
     'TSTrack.controller.StoreLoadCoordinator',
