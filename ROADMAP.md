@@ -11,7 +11,7 @@ a financial management process chain for projects.
 - V0.0.1: Static mock-up: Released
 
 
-= V0.1.0: MVP based on TimeEntries: In Development
+# V0.1.0: MVP based on TimeEntries: In Development
 
 Minimal Viable Product to track time in OpenProject:
 Uses the OpenProject TimeEntries semantics (just date, user
@@ -40,7 +40,7 @@ ToDo:
 	- Remove sync code in main.js and other places
 
 
-= V0.2.0: Add a monthly chart: Planning
+# V0.2.0: Add a monthly chart: Planning
 
 - Monthly chart:
 	- Create a vertial bar chart with logged hours per day
@@ -57,12 +57,12 @@ ToDo:
   Is there a list of users who I may impersonate?
 
 
-= V0.3.0: Release installers for Win, Linux and Mac: Planning
+# V0.3.0: Release installers for Win, Linux and Mac: Planning
 
 - Just create and publish three installers.
 
 
-= V0.4.0: Add start/stop entries with grouping: Planning
+# V0.4.0: Add start/stop entries with grouping: Planning
 
 - Make grid a grouped grid with groupings as TimeEntries and
   details as TimeIntervalEntries
@@ -103,7 +103,7 @@ Incorporate feedback from V1.0 launch
 Done
 ====
 
-== V0.1.0: MVP based on TimeEntries (WIP)
+## V0.1.0: MVP based on TimeEntries (WIP)
 
 - Moved main folders below app/ for GitHub display (0.1h)
 - Connect stores to OpenProject REST interface (1h)
@@ -181,7 +181,7 @@ Done
 - Add a button to enable/disable the debugger (0.5h)
 
 
-== V0.0.1: Mock-Up with static data (released 2022-07-09)
+## V0.0.1: Mock-Up with static data (released 2022-07-09)
 
 Demo the general idea to a wider audience:
 Use hard-coded data in order to produce a GUI quickly.
