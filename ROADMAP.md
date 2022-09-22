@@ -34,6 +34,34 @@ compatible with OpenProject and simplify Panel/Store/Model.
 	- Check ToDo's in the source code
 	- Remove sync code in main.js and other places
 
+
+- Wieland:
+	- Graph: Distribution of hours across days (per week or month):
+	  Stacked graph with hours per project + legend
+	- (+) button on each line in order to create a duplicate
+	- Use-Cases / questions by the user:
+	  - Did I enter something wrong?
+	  - Distribution of time across work packages
+	  - Team manager: Clean up hours from multiple users:
+	    Allow for multiple users(?)
+
+Questions:
+	- Auf welchen Projekten darf ich Stunden loggen?
+	  API endpoint for permissions?
+	  => Check form for time entries: Should include links
+	     to TimeEntries. Or check form for WP?
+	- Für welchen Benutzer darf ich Stunden loggen bzw.
+	  deren Stunden verändern?
+
+
+- Bug: All projects are shown, instead of only those projects
+  where the user can log hours. Solution:
+  https://www.openproject.org/docs/api/endpoints/time-entries/
+  In these API docs there is a /api/v3/time_entries/available_projects
+  that returns only suitable projects.
+
+
+
 = V0.2.0 (no release defined yet)
 
 - Make grid a grouped grid with groupings as TimeEntries and
