@@ -4,69 +4,72 @@ Roadmap for TSTrack OpenProject Time Tracking
 TSTrack implements time tracking as the first step
 a financial management process chain for projects.
 
-- V0.3.0: Container for additional features: In planning
-- V0.2.0: Start/Stop with grouping: In planning
-- V0.1.0: MVP witout start/stop: In development, no release date yet
+- V0.4.0: Add start/stop entries with grouping: Planning
+- V0.3.0: Release installers for Win, Linux and Mac: Planning
+- V0.2.0: Add a monthly chart: Planning
+- V0.1.0: MVP without start/stop: In development
 - V0.0.1: Static mock-up: Released
 
 
-= V0.1.0: MVP based on TimeEntries (no release defined yet)
+= V0.1.0: MVP based on TimeEntries: In Development
 
 Minimal Viable Product to track time in OpenProject:
 Uses the OpenProject TimeEntries semantics (just date, user
 and work package) instead of interval times to stay 100%
 compatible with OpenProject and simplify Panel/Store/Model.
 
+ToDo:
 - TimeEntryPanel: Fix column configuration and editors
 	- Show PT5H as 5 hours...
 	- New field activty "activity"
 - Handle edge cases:
 	- Projects without work packages(?)
-	- When connected to test database from Jens
+	- Only show projects where you can log hours:
+	  https://www.openproject.org/docs/api/endpoints/time-entries/
+	  There is /api/v3/time_entries/available_projects
+	  that returns only suitable projects.
+	- Test with database from Jens
+- Check ToDo's in the source code
 - Bugs:
 	- When adding multiple new entries, there may be
 	  unforeseen behavior when saving, and multiple error
 	  messages from the server (Operation.Exceptions)
-        - When creating a new line/entry the red triangles should
-	  appear indicating that this data is not yet saved.
-- ToDo:
+        - When creating a new line/entry the red triangles
+	  don't appear yet even though data is not yet saved.
 	- Check that configData.host does not have trailing slash ("/")
-	- Check ToDo's in the source code
 	- Remove sync code in main.js and other places
 
 
-- Wieland:
-	- Graph: Distribution of hours across days (per week or month):
-	  Stacked graph with hours per project + legend
-	- (+) button on each line in order to create a duplicate
-	- Use-Cases / questions by the user:
-	  - Did I enter something wrong?
-	  - Distribution of time across work packages
-	  - Team manager: Clean up hours from multiple users:
-	    Allow for multiple users(?)
+= V0.2.0: Add a monthly chart: Planning
 
-Questions:
-	- Auf welchen Projekten darf ich Stunden loggen?
-	  API endpoint for permissions?
-	  => Check form for time entries: Should include links
-	     to TimeEntries. Or check form for WP?
-	- Für welchen Benutzer darf ich Stunden loggen bzw.
-	  deren Stunden verändern?
+- Monthly chart:
+	- Create a vertial bar chart with logged hours per day
+	  with stacked graph with hours per project/work package(?)
+	- Allows to chosse the user to show(?)
+	- Allow to choose reporting periods last week etc.
+	- Use-cases / questions users might have:
+	  - "Did I enter something incorrectly?"
+	  - Re-distribute time across work packages
+	  - Clean up hours of multiple users for team manager
+- Add option to see/edit hours for different users
+- Add a (+) button on each line to allow users to create dups
+- Allow to log/see hours for multiple users?
+  Is there a list of users who I may impersonate?
 
 
-- Bug: All projects are shown, instead of only those projects
-  where the user can log hours. Solution:
-  https://www.openproject.org/docs/api/endpoints/time-entries/
-  In these API docs there is a /api/v3/time_entries/available_projects
-  that returns only suitable projects.
+= V0.3.0: Release installers for Win, Linux and Mac: Planning
+
+- Just create and publish three installers.
 
 
-
-= V0.2.0 (no release defined yet)
+= V0.4.0: Add start/stop entries with grouping: Planning
 
 - Make grid a grouped grid with groupings as TimeEntries and
   details as TimeIntervalEntries
 - Do interval logging with break detection
+- Weekly chart:
+	- Use the ExtJS calendar view and create calendar
+	  entries for the start/stop time entries
 - Other:
 	- Make Electron font bigger and prettier
 	- Update to newer version of Electron
@@ -100,7 +103,7 @@ Incorporate feedback from V1.0 launch
 Done
 ====
 
-= V0.1.0: MVP based on TimeEntries (WIP)
+== V0.1.0: MVP based on TimeEntries (WIP)
 
 - Moved main folders below app/ for GitHub display (0.1h)
 - Connect stores to OpenProject REST interface (1h)
@@ -178,7 +181,7 @@ Done
 - Add a button to enable/disable the debugger (0.5h)
 
 
-= V0.0.1: Mock-Up with static data (finished 2022-07-09)
+== V0.0.1: Mock-Up with static data (released 2022-07-09)
 
 Demo the general idea to a wider audience:
 Use hard-coded data in order to produce a GUI quickly.
