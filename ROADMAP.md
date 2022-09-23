@@ -1,9 +1,6 @@
 Roadmap for TSTrack OpenProject Time Tracking
 =============================================
 
-TSTrack implements time tracking as the first step
-a financial management process chain for projects.
-
 - V0.4.0: Add start/stop entries with grouping: Planning
 - V0.3.0: Release installers for Win, Linux and Mac: Planning
 - V0.2.0: Add a monthly chart: Planning
@@ -55,6 +52,7 @@ ToDo:
 - Add a (+) button on each line to allow users to create dups
 - Allow to log/see hours for multiple users?
   Is there a list of users who I may impersonate?
+- Add selector for themes(?)
 
 
 # V0.3.0: Release installers for Win, Linux and Mac: Planning
