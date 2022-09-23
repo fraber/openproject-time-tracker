@@ -17,7 +17,6 @@ compatible with OpenProject and simplify Panel/Store/Model.
 
 ToDo:
 - TimeEntryPanel: Fix column configuration and editors
-	- Show PT5H as 5 hours...
 	- New field activty "activity"
 - Handle edge cases:
 	- Projects without work packages(?)
@@ -28,6 +27,7 @@ ToDo:
 	- Test with database from Jens
 - Check ToDo's in the source code
 - Bugs:
+	- Hours number field "step" doesn't work
 	- When adding multiple new entries, there may be
 	  unforeseen behavior when saving, and multiple error
 	  messages from the server (Operation.Exceptions)
@@ -177,7 +177,11 @@ Done
       is not correctly interpreted yet.
 - Add a mailto: link for authors to send out emails (0.2h)
 - Add a button to enable/disable the debugger (0.5h)
-
+- Added if (me.debug > 0) to all console.log debug code (1h)
+- Renamed sync to msg (0.5h)
+- Show PT5H as 5 hours...
+  - Created custom number field parsing PT1H30M duration
+    format(3h)
 
 ## V0.0.1: Mock-Up with static data (released 2022-07-09)
 

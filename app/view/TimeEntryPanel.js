@@ -140,9 +140,22 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
         },
 */
 
-        {   text: 'Hours', dataIndex: 'hours', width: 80, editor: 'timeEntryField'},
-        {   text: 'Comment', dataIndex: 'comment', flex: 5, editor: 'textfield'}
+        {   text: 'Hours', dataIndex: 'hours', width: 80,
+	    align: "right",
+	    editor: {
+		xtype: 'timeEntryField',   // sub-type fo numberfield
+		minValue: 0,
+		maxValue: 99,
+		step: 1,
+		hideTrigger: false
+	    },
+            renderer: function(v, el, model) {
+		var hours = TSTrack.view.TimeEntryField.durationToHours(v);
+		return ""+hours;
+	    }
+	},
 
+        {   text: 'Comment', dataIndex: 'comment', flex: 5, editor: 'textfield'}
 
 /*        
         {   text: 'Name', dataIndex: 'name', flex: 5, editor: 'textfield'},

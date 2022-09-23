@@ -8,6 +8,7 @@ const {ipcRenderer} = require('electron'); // Electron inter process communicati
 
 // Tell ExtJS to load user classes
 Ext.Loader.setPath('TSTrack', '.');	// Load classes TSTrack.x.y from local dir
+Ext.Loader.setConfig({disableCaching: false}); // Allow caching and persistent breakpoints
 Ext.require([
     'Ext.*',				// ExtJS core library, just load everything
 
