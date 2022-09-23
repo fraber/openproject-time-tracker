@@ -21,9 +21,12 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
         { ref: 'buttonDel', selector: '#buttonDel'},
     ],
 
+    controllers: {},	// List of controllers, setup during init
+
     // This is called before the viewport is created
     init: function() {
-        console.log ('TimeEntryPanelController.init:');
+	var me = this;
+        if (me.debug > 0) console.log ('TimeEntryPanelController.init:');
 
         this.control({
             '#timeEntryPanel editor': { change: function() { alert('change'); } },
@@ -43,14 +46,15 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
 
     // This is called after the viewport is created
     onLaunch: function() {
-        console.log ('TimeEntryPanelController.onLaunch:');
+	var me = this;
+        if (me.debug > 0) console.log ('TimeEntryPanelController.onLaunch:');
         return this;
     },
 
     // "We" (the TimeEntry panel) got activated via tab
     onTabChanged: function(tabPanel, newCard, oldCard, eOpts) {
-        console.log ('TimeEntryPanelController.onTabChanged: ' + newCard.title);
         var me = this;
+        if (me.debug > 0) console.log ('TimeEntryPanelController.onTabChanged: ' + newCard.title);
 
         // Show new and del buttons when selecting this tab
         if (newCard == me.getTimeEntryPanel()) {
@@ -71,8 +75,8 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
      * copying data from the currently selected (last) entry
      */
     onButtonAdd: function() {
-        console.log ('TimeEntryPanelController.onButtonAdd: Starting');
         var me = this;
+        if (me.debug > 0) console.log ('TimeEntryPanelController.onButtonAdd: Starting');
 
         var timeEntryPanel = me.getTimeEntryPanel();
         var timeEntries = timeEntryPanel.getStore();
@@ -106,13 +110,13 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
         // don't save the entry yet.
         // onCellChange below will handle that once we had got some real data.
 
-        console.log ('TimeEntryPanelController.onButtonAdd: Finished');
-        // console.log(timeEntries.debugStoreValues());
+        if (me.debug > 0) console.log ('TimeEntryPanelController.onButtonAdd: Finished');
+        // if (me.debug > 0) console.log(timeEntries.debugStoreValues());
     },
 
     onButtonDel: function() {
-        console.log ('TimeEntryPanelController.onButtonDel:');
         var me = this;
+        if (me.debug > 0) console.log ('TimeEntryPanelController.onButtonDel:');
 
         var timeEntryPanel = me.getTimeEntryPanel();
         var rowEditing = timeEntryPanel.plugins[0];
@@ -131,7 +135,7 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
         }
 
         store.remove(lastSelected); // Remove triggers destroy using the proxy of the store
-        console.log(store.debugStoreValues());
+        if (me.debug > 0) console.log(store.debugStoreValues());
     },
 
     /**
@@ -168,7 +172,7 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
      */
     onCellChange: function(cellEditing, e) {
         var me = this;
-        console.log('TimeEntryPanelController.onCellChange:'); console.log(e);
+        if (me.debug > 0) { console.log('TimeEntryPanelController.onCellChange:'); console.log(e); }
 
         switch (e.field) {
         case 'projectId':
@@ -193,15 +197,15 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
             var store = e.record.store;
             var syncOptions = {
                 success: function(batch, options) {
-                    console.log('callback: TimeEntryPanelController.onCellChange.Sync.success:');
+                    if (me.debug > 0) console.log('callback: TimeEntryPanelController.onCellChange.Sync.success:');
                     // alert('sync success');
                 },
                 failure: function(batch, options) {
-                    console.log('callback: TimeEntryPanelController.onCellChange.Sync.failure:');
+                    if (me.debug > 0) console.log('callback: TimeEntryPanelController.onCellChange.Sync.failure:');
                     var msgs = [];
                     Ext.each(batch.exceptions, function(operation) {
                         if (operation.hasException()) {
-                            console.log('Sync.failure: ' + operation.error.statusText);
+                            if (me.debug > 0) console.log('Sync.failure: ' + operation.error.statusText);
                             msgs.push(operation.error.statusText);
                         }
                     });
@@ -221,7 +225,7 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
      */
     onProjectChange: function(e, cellEditing) {
         var me = this;
-        console.log('TimeEntryPanelController.onProjectChange: projectId');
+        if (me.debug > 0) console.log('TimeEntryPanelController.onProjectChange: projectId');
 
         // Write projectTitle into model (used for display rendering)
         var projectStore = Ext.StoreManager.get('ProjectStore');
@@ -231,7 +235,7 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
 
         // Load the WP store for the new project
         callback = function(r, op, success) {
-            console.log('callback: TimeEntryPanelController.onProjectChange: projectId');
+            if (me.debug > 0) console.log('callback: TimeEntryPanelController.onProjectChange: projectId');
             
             if (!success)
                 alert('Store '+me.storeId+' load failed'); // ToDo: replace with Ext.Message
@@ -251,7 +255,7 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
                 
                 
                 // ToDo: open the ComboBox once the store is there
-                console.log(e);
+                if (me.debug > 0) console.log(e);
                 var combo = null;
                 // alert('xxx');
                 
@@ -260,7 +264,7 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
                 var field = ed.field;
 
                 var v = field.getValue();
-                console.log(v);
+                if (me.debug > 0) console.log(v);
 
                 field.setEditable(true);
                 field.expand(); // show the picker
@@ -277,7 +281,7 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
      */
     onWorkPackageChange: function(e, cellEditing) {
         var me = this;
-        console.log('TimeEntryPanelController.onWorkPackageChange: projectId');
+        if (me.debug > 0) console.log('TimeEntryPanelController.onWorkPackageChange: projectId');
 
         // Write workPackageTitle into model (used for display rendering)
         var workPackageStore = Ext.StoreManager.get('WorkPackageStore');

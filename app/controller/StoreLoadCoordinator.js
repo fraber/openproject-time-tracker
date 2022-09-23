@@ -18,10 +18,13 @@
  * the start of the actual application.
 */
 Ext.define('TSTrack.controller.StoreLoadCoordinator', {
-    debug: false,
     mixins: { observable: 'Ext.util.Observable' },
 
+    debug: 0,
+    controllers: {},
+    
     resetStoreLoadStates: function() {
+        var me = this;
         this.storeLoadStates = {};  
         Ext.each(this.stores, function(storeId) {
             this.storeLoadStates[storeId] = false;
@@ -29,10 +32,11 @@ Ext.define('TSTrack.controller.StoreLoadCoordinator', {
     },
 
     isLoadingComplete: function() {
+        var me = this;
         for (var i=0; i<this.stores.length; i++) {
             var key = this.stores[i];
             if (this.storeLoadStates[key] == false) {
-                if (this.debug) { console.log('PO.controller.StoreLoadCoordinator.isLoadingComplete: store='+key+' not loaded yet.'); }
+                if (this.debug > 0) { console.log('PO.controller.StoreLoadCoordinator.isLoadingComplete: store='+key+' not loaded yet.'); }
                 return false;
             }
         }
@@ -40,15 +44,17 @@ Ext.define('TSTrack.controller.StoreLoadCoordinator', {
     },
 
     onStoreLoad: function(store, records, successful, eOpts, storeName) {
-        if (this.debug) { console.log('PO.controller.StoreLoadCoordinator.onStoreLoad: store='+store.storeId); }
+        var me = this;
+        if (this.debug > 0) { console.log('PO.controller.StoreLoadCoordinator.onStoreLoad: store='+store.storeId); }
         this.storeLoadStates[store.storeId] = true;
         if (this.isLoadingComplete() == true) {
-            if (this.debug) { console.log('PO.controller.StoreLoadCoordinator.onStoreLoad: all stores loaded - starting application'); }
+            if (this.debug > 0) { console.log('PO.controller.StoreLoadCoordinator.onStoreLoad: all stores loaded - starting application'); }
             this.fireEvent('load');
         }
     },
 
     constructor: function (config) {
+        var me = this;
         this.mixins.observable.constructor.call(this, config);
         this.resetStoreLoadStates();
         Ext.each(this.stores, function(storeId) {

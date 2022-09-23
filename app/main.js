@@ -7,7 +7,6 @@
  * It creates a tray icon to control de application.
  */
 
-console.log('main.js: Starting')
 const {app, Menu, Tray, BrowserWindow, ipcMain} = require('electron')
 
 let tray = null	  		       		// Global reference to Tray Icon
@@ -54,7 +53,6 @@ function createWindow () {
 
     // The user resized the window: persist the new size
     win.on('resize', () => {
-        // console.log('main.js: onResize: ');
         s = win.getSize()
         stateStore.set({win:{width:s[0],height:s[1]}})
     })
@@ -76,7 +74,6 @@ function toggleWindow () { if (win === null) { createWindow() } else if (win.isV
 function sync (arg1, arg2, arg, verb) {
     if (!verb) verb = 'sync';
 
-    console.log('main.js: sync: '+verb);
     if (win === null) { createWindow() }
     win.webContents.send('sync', verb);		// Send an IPC event to the Browser window
 }
@@ -104,7 +101,6 @@ function create_tray_icon () {
 
     // Delayed login + sync
     setTimeout(function(){
-        console.log('main.js: delayed login');
         sync(null, null, null, 'login');                          // Send "login" message
     }, 1500);
 }

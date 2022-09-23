@@ -4,75 +4,64 @@
  * This code is licensed under the GNU GPL version 2.0 or later
  */
 
-// Load Electron inter process communication (IPC)
-const {ipcRenderer} = require('electron')
+const {ipcRenderer} = require('electron'); // Electron inter process communication
 
 // Tell ExtJS to load user classes
-Ext.Loader.setPath('TSTrack', '.');
-Ext.Loader.setConfig({disableCaching: false});
+Ext.Loader.setPath('TSTrack', '.');	// Load classes TSTrack.x.y from local dir
 Ext.require([
-    'Ext.*',
+    'Ext.*',				// ExtJS core library, just load everything
 
-    'TSTrack.custom.OpenProjectReader',
+    'TSTrack.custom.OpenProjectReader',	// Custom adapters for OpenProject REST API
     'TSTrack.custom.OpenProjectWriter',
-    
-    'TSTrack.model.TimeEntry',
-    'TSTrack.model.Project',
-    'TSTrack.model.WorkPackage',
 
-    'TSTrack.store.OpenProjectStore',
-    'TSTrack.store.TimeEntryStore',
-    'TSTrack.store.ProjectStore',
-    'TSTrack.store.WorkPackageStore',
+    'TSTrack.model.TimeEntry',		// An actual time entry
+    'TSTrack.model.Project',		// Projects are containers for WorkPackages
+    'TSTrack.model.WorkPackage',	// WP == Task, this is where to book hours
 
-    'TSTrack.view.AboutPanel',
-    'TSTrack.view.LoginPanel',
-    'TSTrack.view.TimeEntryPanel',
-    'TSTrack.view.TimeEntryField',
+    'TSTrack.store.OpenProjectStore',	// Superclass for all stores, handles auth
+    'TSTrack.store.TimeEntryStore',	// Time entries
+    'TSTrack.store.ProjectStore',	// Projects are WP containers
+    'TSTrack.store.WorkPackageStore',	// Hours are booked on WPs
+
+    // GUI panels that will appear as tabs in MainPanel.js
+    'TSTrack.view.AboutPanel',		// Simple panel with static HTML
+    'TSTrack.view.LoginPanel',		// Form with login fields
+    'TSTrack.view.TimeEntryPanel',	// Grid with list of time entries
+    'TSTrack.view.TimeEntryField',	// Editor to handle PTxxHyyM time format
     
-    'TSTrack.controller.IpcController',
-    'TSTrack.controller.StoreLoadCoordinator',
-    'TSTrack.controller.LoginPanelController',
-    'TSTrack.controller.TimeEntryPanelController'
+    'TSTrack.controller.IpcController',	// Electron inter-process communication
+    'TSTrack.controller.StoreLoadCoordinator',	// Load stores before starting GUI
+    'TSTrack.controller.LoginPanelController',	// Handle login process
+    'TSTrack.controller.TimeEntryPanelController' // Manage the time entry process
 ])
 
-// Global path to where images are stored, used by image buttons etc.
-var gifPath = 'images/';
-var controllers = null;
+var gifPath = 'images/';	// Global path for images, buttons etc.
+var controllers = {};		// Global list of controllers,
+    		  		// word around quirk in Ext.Application
 
-// Global functions to extract parts of JSON
-// ToDo: Move to Reader or similar object
-var globalFromJsonLastPathSegment = function(str) {
-    if (!str) return null;
-    if ("string" != typeof(str)) {
-        console.log('globalFromJsonLastPathSegment: found non-string argument');
-        console.log(str);
-        return null;
-    }
-    var pieces = str.split("/");
-    return pieces[pieces.length-1]
-};
-
-// The actual application GUI with the main tab panel
+/*
+ * The actual application GUI with the main tab panel
+ */
 function launchApplication(debug) {
-    // Create 
-    var projectStore = Ext.StoreManager.get('ProjectStore');
-    var timeEntrieStore = Ext.StoreManager.get('TimeEntryStore');
-    var workPackageStore = Ext.StoreManager.get('WorkPackageStore');
 
-    // Main application panel with viewport and all the other panels
-    var mainPanel = Ext.create('TSTrack.view.MainPanel');
+    // Main application panel with viewport.
+    // Will instantiate and load all other panels as tabs.
+    var mainPanel = Ext.create('TSTrack.view.MainPanel', {
+    	debug: debug,
+	controllers: controllers
+    });
 
     // Manually launch controllers to work around Ext.application quirks
     var ipcController = Ext.create('TSTrack.controller.IpcController');
-    ipcController.init(this);
     var loginPanelController = Ext.create('TSTrack.controller.LoginPanelController');
-    loginPanelController.init(this);
     var timeEntryPanelController = Ext.create('TSTrack.controller.TimeEntryPanelController');
+
+    // init is executed before panels 
+    ipcController.init(this);
+    loginPanelController.init(this);
     timeEntryPanelController.init(this);
 
-    // Create global list of controllers before launching them
-    controllers = {
+    controllers = {    // List of all controllers before launching panels
         ipcController: ipcController,
         loginPanelController: loginPanelController,
         timeEntryPanelController: timeEntryPanelController
@@ -81,7 +70,7 @@ function launchApplication(debug) {
     loginPanelController.controllers = controllers;
     timeEntryPanelController.controllers = controllers;
     
-    // Now launching the controllers:
+    // Now launch the controllers
     ipcController.onLaunch(this);
     loginPanelController.onLaunch(this);
     timeEntryPanelController.onLaunch(this);
@@ -91,18 +80,17 @@ function launchApplication(debug) {
  * Setup stores before calling launchApplication
  */
 Ext.onReady(function() {
-    Ext.QuickTips.init(); // No idea why this is necessary, but it seems to be...
-    var debug = 0;
+    Ext.QuickTips.init();		// No idea why this is necessary, but it is.
+    var debug = 5;	  		// 0 = silent, 5 = normal dev, 9 = verbose
 
     // Setup stores but don't load them yet. Loading happens after login.
     var projectStore = Ext.create('TSTrack.store.ProjectStore');
     var timeEntrieStore = Ext.create('TSTrack.store.TimeEntryStore');
     var workPackageStore = Ext.create('TSTrack.store.WorkPackageStore');
+
+    // Normally we would start a StoreLoadCoordinator here,
+    // but it seems to be OK without it.
     
     // Launch application without waiting for StoreLoadCoordinator
     launchApplication(debug);
 });
-
-
-
-

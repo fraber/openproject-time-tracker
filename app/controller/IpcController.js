@@ -15,12 +15,14 @@ Ext.define('TSTrack.controller.IpcController', {
         { ref: 'loginPanel', selector: '#panel #login'},
         { ref: 'buttonDebug', selector: '#buttonDebug'}
     ],
-    
-    controllers: {}, // setup during initialization
+
+    debug: 0,
+    controllers: {},	// List of controllers, setup during init
     
     // This is called before the viewport is created
     init: function() {
-        console.log ('IpcController.init: Starting');
+	var me = this;
+        if (me.debug > 0) console.log ('IpcController.init: Starting');
         // Set default Electron zoom to 1.0
         const electron = require("electron");
         const browserWindow = electron.remote.BrowserWindow;
@@ -31,20 +33,20 @@ Ext.define('TSTrack.controller.IpcController', {
             '#buttonDebug': { click: this.onButtonDebug }
         });
 
-        console.log ('IpcController.init: Finished');
+        if (me.debug > 0) console.log ('IpcController.init: Finished');
         return this;
     },
 
     // This is called after the viewport is created
     onLaunch: function() {
         var me = this;
-        console.log ('IpcController.onLaunch: Starting');
+        if (me.debug > 0) console.log ('IpcController.onLaunch: Starting');
 
         // Tray Icon: receives events when clicking on "sync" menu on Tray icon
         
         ipcRenderer.on('sync', (event, arg) => {
-            console.log('IpcController.onSync: arg='+arg);
-            console.log(event);
+            if (me.debug > 0) console.log('IpcController.onSync: arg='+arg);
+            if (me.debug > 0) console.log(event);
             switch (arg) {
             case 'sync':
                 // alert('sync: sync');
@@ -52,28 +54,28 @@ Ext.define('TSTrack.controller.IpcController', {
             case 'login':
                 // alert('IpcController.onSync');
                 var loginController = me.controllers.loginPanelController;
-                console.log(loginController);
+                if (me.debug > 0) console.log(loginController);
                 loginController.login();
                 break;
             default:
-                console.log('IpcController.onSync: Unknown IPC sync message from main.js: '+arg);
+                if (me.debug > 0) console.log('IpcController.onSync: Unknown IPC sync message from main.js: '+arg);
             }
         });
-        console.log ('IpcController.onLaunch: Finished');
+        if (me.debug > 0) console.log ('IpcController.onLaunch: Finished');
     },
    
     /**
      * Toggle (show/hide) the Developer Tools of Electron
      */
     onButtonDebug: function() {
-        console.log ('TimeEntryPanelController.onButtonDebug: Starting');
         var me = this;
+        if (me.debug > 0) console.log ('TimeEntryPanelController.onButtonDebug: Starting');
 
         // Send an IPC-event to the main.js process
         ipcRenderer.send('openDevTools');
         // me.getButtonDebug().hide();
         
-        console.log ('TimeEntryPanelController.onButtonDebug: Finished');
+        if (me.debug > 0) console.log ('TimeEntryPanelController.onButtonDebug: Finished');
     }
 
 });

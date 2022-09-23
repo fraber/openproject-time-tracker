@@ -9,6 +9,9 @@ Ext.define('TSTrack.store.OpenProjectStore', {
     extend: 'Ext.data.Store',
     autoLoad: false,
 
+    debug: 0,
+    controllers: {},
+    
     proxy: {
         type: 'ajax',
         reader: { type: 'openProjectReader' },
@@ -35,7 +38,7 @@ Ext.define('TSTrack.store.OpenProjectStore', {
                     alert('Store '+me.storeId+' load failed'); // ToDo: replace with Ext.Message
 		}
                 if (success) {
-                    // console.log(me.debugStoreValues());
+                    // if (me.debug > 0) console.log(me.debugStoreValues());
 		}
             }
         }

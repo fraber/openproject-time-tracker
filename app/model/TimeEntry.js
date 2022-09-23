@@ -6,6 +6,20 @@
  * Data related to a time entry
  *
  */
+
+// Global helper to extract last part of a string
+var globalFromJsonLastPathSegment = function(str) {
+    if (!str) return null;
+    if ("string" != typeof(str)) {
+        console.error('globalFromJsonLastPathSegment: found non-string argument');
+        console.error(str);
+        return null;
+    }
+    var pieces = str.split("/");
+    return pieces[pieces.length-1]
+};
+
+
 Ext.define('TSTrack.model.TimeEntry', {
     extend: 'Ext.data.Model',
     idProperty: 'id',

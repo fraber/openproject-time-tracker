@@ -10,13 +10,17 @@ Ext.define('TSTrack.view.TimeEntryField', {
     extend: 'Ext.form.field.Text',
     alias: 'widget.timeEntryField',
 
+    debug: 5,
+
     rawToValue: function(rawValue) {
-        console.log('TimeEntryField: rawToValue('+rawValue+') -> '+rawValue);
+        var me = this;
+        if (me.debug > 0) console.log('TimeEntryField: rawToValue('+rawValue+') -> '+rawValue);
         return rawValue;
     },
 
     valueToRaw: function(value) {
-        console.log('TimeEntryField: valueToRaw('+value+') -> '+value);
+        var me = this;
+        if (me.debug > 0) console.log('TimeEntryField: valueToRaw('+value+') -> '+value);
         return value;
     },
 
@@ -28,11 +32,11 @@ Ext.define('TSTrack.view.TimeEntryField', {
      */
     getValue: function() {
         var me = this;
-	console.log('TimeEntryField: getValue(): raw='+me.getRawValue());
+	if (me.debug > 0) console.log('TimeEntryField: getValue(): raw='+me.getRawValue());
 
 	var val = me.rawToValue(me.processRawValue(me.getRawValue()));
         me.value = val;
-        console.log('TimeEntryField: getValue(): -> '+val);
+        if (me.debug > 0) console.log('TimeEntryField: getValue(): -> '+val);
         return val;
     },
 
@@ -44,11 +48,9 @@ Ext.define('TSTrack.view.TimeEntryField', {
      */
     setValue: function(value) {
         var me = this;
-        console.log('TimeEntryField: setValue(): '+value);
+        if (me.debug > 0) console.log('TimeEntryField: setValue(): '+value);
 	var rawValue = me.valueToRaw(value);
         me.setRawValue(rawValue);
         return me.mixins.field.setValue.call(me, value);
     }
-
 });
-

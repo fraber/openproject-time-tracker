@@ -16,6 +16,9 @@ Ext.define('TSTrack.view.LoginPanel', {
     extend: 'Ext.panel.Panel',
     title: 'Login',
     id: 'loginPanel',
+    debug: 0,
+    controllers: {},
+    
     items: {
         xtype: 'form',
         itemId: 'config',

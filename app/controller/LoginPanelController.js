@@ -20,6 +20,9 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         { ref: 'timeEntryPanel', selector: '#timeEntryPanel'}
     ],
 
+    debug: 0,
+    controllers: {},	// List of controllers, setup during init
+
     /* Default values for the configuration data */
     loginDefaults: {
         host:        'http://172.16.193.143:4200',
@@ -35,7 +38,8 @@ Ext.define('TSTrack.controller.LoginPanelController', {
     
     // This is called before the viewport is created
     init: function() {
-        console.log ('LoginPanelController.init: controller initialization');
+	var me = this;
+        if (me.debug > 0) console.log ('LoginPanelController.init: controller initialization');
         this.control({
             '#loginPanel toolbar > button': { click: this.onButtonClicked },
         });
@@ -44,7 +48,8 @@ Ext.define('TSTrack.controller.LoginPanelController', {
 
     // This is called after the viewport is created
     onLaunch: function() {
-        console.log ('LoginPanelController.onLaunch: controller onLaunch');
+	var me = this;
+        if (me.debug > 0) console.log ('LoginPanelController.onLaunch: controller onLaunch');
         this.initConfiguration ();
     },
 
@@ -52,7 +57,7 @@ Ext.define('TSTrack.controller.LoginPanelController', {
     initConfiguration: function () {
         var me = this;
         var loginPanel = me.getLoginPanel();
-        console.log('LoginPanelController.initConfiguration: config('+loginPanel.id+')');
+        if (me.debug > 0) console.log('LoginPanelController.initConfiguration: config('+loginPanel.id+')');
 
         const ElectronStore = require ('electron-store');
         const configStore = new ElectronStore ({name: 'config'});
@@ -89,19 +94,19 @@ Ext.define('TSTrack.controller.LoginPanelController', {
      */
     onButtonClicked: function (button, event, eOpts) {
         var me = this;
-        // console.log ('LoginPanelController.onButtonClicked: button clicked button('+button.getText()+') action('+button.action+')');
+        // if (me.debug > 0) console.log ('LoginPanelController.onButtonClicked: button clicked button('+button.getText()+') action('+button.action+')');
         switch (button.action) {
         case 'login':
-            console.log('LoginPanelController.onButtonClicked: onLogin');
+            if (me.debug > 0) console.log('LoginPanelController.onButtonClicked: onLogin');
             if (me.formIsValid()) {
                 me.login();
             } else {
                 alert('Form is not valid');
-                console.log('Connection.login: form is not valid - cancelling request');
+                if (me.debug > 0) console.log('Connection.login: form is not valid - cancelling request');
             }
             break;
         default:
-            console.log('LoginPanelController.onButtonClicked: unknown action='+button.action);
+            if (me.debug > 0) console.log('LoginPanelController.onButtonClicked: unknown action='+button.action);
             break;
         }
     },
@@ -127,7 +132,7 @@ Ext.define('TSTrack.controller.LoginPanelController', {
      */
     login: function() {
         var me = this;
-        console.log('LoginPanelController.login: Starting');
+        if (me.debug > 0) console.log('LoginPanelController.login: Starting');
 
         var configData = me.configData;
         var url = configData.host + '/api/v3/users/me'
@@ -140,13 +145,13 @@ Ext.define('TSTrack.controller.LoginPanelController', {
             var responseObject = JSON.parse(responseJsonString);
 
             if (response.status != 200) {
-                console.log('LoginPanelController.login: not successfull');
+                if (me.debug > 0) console.log('LoginPanelController.login: not successfull');
                 Ext.Msg.alert('Login failed', 'Message from server:<br><pre>'+responseObject.message+'</pre>');
                 return;
             }
 
             if (!responseObject) {
-                console.log('LoginPanelController.login: error parsing responseText='+responseText);
+                if (me.debug > 0) console.log('LoginPanelController.login: error parsing responseText='+responseText);
                 // FIXME: Write some message somewhere
                 alert('LoginPanelController.login: error parsing responseText='+responseText);
                 return;
@@ -157,12 +162,12 @@ Ext.define('TSTrack.controller.LoginPanelController', {
             var userStatus = responseObject.status
 
             if (userName.toLowerCase() == "anonymous") {
-                console.log('LoginPanelController.login: got Anonymous user, which means auth was not successfull');
+                if (me.debug > 0) console.log('LoginPanelController.login: got Anonymous user, which means auth was not successfull');
                 Ext.Msg.alert('Login failed', 'The server/token combination is incorrect.');
                 return;                    
             }
             if (!type || !userId || !userName || !userStatus) {
-                console.log('LoginPanelController.login: no type or id responseText='+responseText);
+                if (me.debug > 0) console.log('LoginPanelController.login: no type or id responseText='+responseText);
                 alert('LoginPanelController.login: no type or id responseText='+responseText);
                 // FIXME: Write some message somewhere
                 return;
@@ -179,7 +184,7 @@ Ext.define('TSTrack.controller.LoginPanelController', {
             configData.email = responseObject.email;
             configData.language = responseObject.language
             
-            console.log(configData);
+            if (me.debug > 0) console.log(configData);
             me.saveConfigData();
             
             // Activate the TimeEntry panel
@@ -195,6 +200,6 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         }
         xhr.send();
         
-        console.log('LoginPanelController.login: Finished');
+        if (me.debug > 0) console.log('LoginPanelController.login: Finished');
     }
 });

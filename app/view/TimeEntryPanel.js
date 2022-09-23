@@ -5,92 +5,83 @@
  *
  * GridPanel with TimeEntries with editing and endless scrolling
  */
+
+/*
+ * We need to handle the events before and after modifying
+ * cells in order to load the options store for WorkPackges etc.
+ */
+var cellEditing = Ext.create('Ext.grid.plugin.CellEditing', {
+    pluginId: 'cellediting',
+    clicksToEdit: 1,
+    debug: 5,
+    controllers: {},
+
+    listeners: {
+        /**
+         * Prepare the WorkPackage editor for editing the specific entry,
+         * Veto editing for certain columns and rows.
+         */
+        beforeedit: function(editor, context, eOpts) {
+            var me = this;
+            if (me.debug > 0) console.log('TimeEntryPanel.cellediting.beforeedit');
+            var record = context.record;
+            var projectId = record.get('projectId');
+            var editor = context.column.getEditor();
+
+	    // Load the list of work package belonging to the line's project
+            var workPackageStore = Ext.StoreManager.get('WorkPackageStore');
+            if (workPackageStore.projectId !== projectId) {
+                workPackageStore.removeAll();
+                workPackageStore.projectId = projectId;
+
+                // Setup store with one entry {wpId: wpTitle} from TimeEntry model
+                var wpData = {
+                    _type: 'WorkPackage',
+                    id: record.get('workPackageId'),
+                    subject: record.get('workPackageTitle')
+                };
+                var wp = Ext.create('TSTrack.model.WorkPackage', wpData);
+                workPackageStore.add(wp);
+                workPackageStore.loadWith
+
+                var filters = '[{"project":{"operator":"=","values":["'+projectId+'"]}}]';
+		if (me.debug > 0) console.log(controllers);
+                var configData = controllers.loginPanelController.configData;
+                workPackageStore.loadWithAuth(configData, filters);
+
+            }
+            // not necessary anymore, editor works with store anyway:
+            // editor.bindStore(workPackageStore);
+            return true;
+        },
+
+        // After an edit: forward event to controller if something changed
+        edit: function(cellEditing, e) {
+            var me = this;
+            if (e.value === e.originalValue) return; // Skip if nothing has changed...
+
+	    // This is the only way to pass cellChange to controller...
+            var grid = e.grid;
+            grid.fireEvent('cellchange', cellEditing, e);
+        }
+    }
+
+});
+
+
 Ext.define('TSTrack.view.TimeEntryPanel', {
     alias:  'timeEntryPanel',
     extend: 'Ext.grid.Panel',
     title: 'Time Entry',
     id: 'timeEntryPanel',
-    debug: 0,
-    hidden: true, // Hide this tab initially. Show after login.
-   
     store: 'TimeEntryStore',
     emptyText: 'No time entries available',
+    hidden: true, // Hide this tab initially, show after login
 
-    // Enable in-line editing
-    plugins: [
-        Ext.create('Ext.grid.plugin.CellEditing', {
-            pluginId: 'cellediting',
-            clicksToEdit: 1,
-            debug: 1,
-
-            listeners: {
-                /**
-                 * Prepare the WorkPackage editor for editing the specific entry,
-                 * Veto editing for certain columns and rows.
-                 */
-                beforeedit: function(editor, context, eOpts) {
-                    var me = this;
-                    if (me.debug) console.log('TimeEntryPanel.cellediting.beforeedit');
-                    var record = context.record;
-                    var projectId = record.get('projectId');
-                    var editor = context.column.getEditor();
-
-		    // Load the list of work package belonging to the line's project
-                    var workPackageStore = Ext.StoreManager.get('WorkPackageStore');
-                    if (workPackageStore.projectId !== projectId) {
-                        workPackageStore.removeAll();
-                        workPackageStore.projectId = projectId;
-
-                        // Setup store with one entry {wpId: wpTitle} from TimeEntry model
-                        var wpData = {
-                            _type: 'WorkPackage',
-                            id: record.get('workPackageId'),
-                            subject: record.get('workPackageTitle')
-                        };
-                        var wp = Ext.create('TSTrack.model.WorkPackage', wpData);
-                        workPackageStore.add(wp);
-                        workPackageStore.loadWith
-
-                        var filters = '[{"project":{"operator":"=","values":["'+projectId+'"]}}]';
-                        var configData = controllers.loginPanelController.configData;
-                        workPackageStore.loadWithAuth(configData, filters);
-
-                    }
-                    // not necessary anymore, editor works with store anyway:
-                    // editor.bindStore(workPackageStore);
-                    return true;
-                },
-
-                // After an edit: forward event to controller if something changed
-                edit: function(cellEditing, e) {
-                    var me = this;
-                    if (e.value === e.originalValue) return;
-                    // console.log('TimeEntryPanel.edit'); console.log(e);
-                    
-                    var grid = e.grid;
-                    grid.fireEvent('cellchange', cellEditing, e);
-                },
-
-                // Check values from the editor may cause "save" operations to fail.
-                validateedit_disabled: function(editor, context, eOpts) {
-                    var me = this;
-                    if (me.debug) console.log('TimeEntryPanel.cellediting.validateedit');
-
-                    var record = context.record;
-                    if (record.get('projectId') == 0)
-                        return false;
-                    if (record.get('workPackageId') == 0)
-                        return false;
-                    if (record.get('activityId') == 0)
-                        return false;
-                    
-                    return true;
-                }
-            }
-
-
-        })
-    ],
+    debug: 0,
+    controllers: {},
+   
+    plugins: [cellEditing],    // Enable in-line editing
 
     columns: [
         {   text: 'Id', dataIndex: 'id', align: 'right', width: 40, hidden: true},

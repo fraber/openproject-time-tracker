@@ -35,7 +35,7 @@ ToDo:
 	  don't appear yet even though data is not yet saved.
 	- Check that configData.host does not have trailing slash ("/")
 	- Remove sync code in main.js and other places
-
+	- Check/remove duplicate "limit" code to set store page size
 
 # V0.2.0: Add a monthly chart: Planning
 
