@@ -191,17 +191,20 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
             return;
         }
 
+	// Check if e.record is "valid" (suitable for the OpenProject API to digest)
+	// This avoids errors from the back-end.
         var errors = e.record.validate();
         var isValid = (errors.length == 0); // e.record.isValid();
         if (isValid) {
+	    // "Sync" the current store with the back-end:
+	    // create, update and delete in one command
             var store = e.record.store;
             var syncOptions = {
                 success: function(batch, options) {
-                    if (me.debug > 0) console.log('callback: TimeEntryPanelController.onCellChange.Sync.success:');
-                    // alert('sync success');
+                    if (me.debug > 5) console.log('callback: TimeEntryPanelController.onCellChange.Sync.success:');
                 },
                 failure: function(batch, options) {
-                    if (me.debug > 0) console.log('callback: TimeEntryPanelController.onCellChange.Sync.failure:');
+                    console.error('TimeEntryPanelController.onCellChange.sync.failure: Sync failed.');
                     var msgs = [];
                     Ext.each(batch.exceptions, function(operation) {
                         if (operation.hasException()) {
@@ -210,7 +213,7 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
                         }
                     });
                     if (msgs.length > 0) {
-                        Ext.Msg.alert('Synchronization failed', 'Message from server:<br><pre>'+msgs.join("\r\n")+'</pre>');
+                        Ext.Msg.alert('Sync with OpenProject failed', 'Message from server:<br><pre>'+msgs.join("\r\n")+'</pre>');
                     }
                 }
             };

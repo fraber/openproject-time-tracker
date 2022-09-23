@@ -42,23 +42,19 @@ Ext.define('TSTrack.controller.IpcController', {
         var me = this;
         if (me.debug > 0) console.log ('IpcController.onLaunch: Starting');
 
-        // Tray Icon: receives events when clicking on "sync" menu on Tray icon
-        
-        ipcRenderer.on('sync', (event, arg) => {
-            if (me.debug > 0) console.log('IpcController.onSync: arg='+arg);
+        // Receives 'msg' events from main.js process (Tray Icon and operating system)
+        ipcRenderer.on('msg', (event, arg) => {
+            if (me.debug > 0) console.log('IpcController.onMsg: arg='+arg);
             if (me.debug > 0) console.log(event);
             switch (arg) {
-            case 'sync':
-                // alert('sync: sync');
-                break;
             case 'login':
-                // alert('IpcController.onSync');
                 var loginController = me.controllers.loginPanelController;
-                if (me.debug > 0) console.log(loginController);
                 loginController.login();
                 break;
+            case 'noop':
+                break;
             default:
-                if (me.debug > 0) console.log('IpcController.onSync: Unknown IPC sync message from main.js: '+arg);
+                console.error('IpcController.onMsg: Unknown IPC msg from main.js: '+arg);
             }
         });
         if (me.debug > 0) console.log ('IpcController.onLaunch: Finished');

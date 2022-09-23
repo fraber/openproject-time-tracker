@@ -71,17 +71,16 @@ function closeWindow () { if (win !== null) { win.close() } }
 function toggleWindow () { if (win === null) { createWindow() } else if (win.isVisible()) { win.hide() } else { win.show() } }
 
 // Inter-Process communication
-function sync (arg1, arg2, arg, verb) {
-    if (!verb) verb = 'sync';
+function msg (arg1, arg2, arg, verb) {
+    if (!verb) verb = 'noop';                   // No operation
 
     if (win === null) { createWindow() }
-    win.webContents.send('sync', verb);		// Send an IPC event to the Browser window
+    win.webContents.send('msg', verb);		// Send an IPC event to the Browser window
 }
 
 function create_tray_icon () {
     tray = new Tray('./app/images/tray.png')
     const contextMenu = Menu.buildFromTemplate([
-        {label: 'Sync', click: sync},
         {label: 'Show', click: showWindow},
         {label: 'Hide', click: hideWindow},
         {label: 'Toggle Window', click: toggleWindow},
@@ -99,9 +98,9 @@ function create_tray_icon () {
     // Show the windows. This is for better debugging...
     showWindow();
 
-    // Delayed login + sync
+    // Delayed login
     setTimeout(function(){
-        sync(null, null, null, 'login');                          // Send "login" message
+        msg(null, null, null, 'login');                          // Send "login" message
     }, 1500);
 }
 
