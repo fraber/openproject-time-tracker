@@ -190,7 +190,7 @@ Ext.define('TSTrack.controller.LoginPanelController', {
 
             // Load stores for Projects and TimeEntries
             Ext.getStore('ProjectStore').loadWithAuth(configData);
-            var timeEntriesFilters = '[{"user":{"operator":"=","values":["74087"]}}]';
+            var timeEntriesFilters = '[{"user":{"operator":"=","values":["'+userId+'"]}}]';
             Ext.getStore('TimeEntryStore').loadWithAuth(configData, timeEntriesFilters);
         }
         xhr.send();
