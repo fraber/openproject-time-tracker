@@ -35,7 +35,8 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
         this.control({
             '#tabPanel': { tabchange: this.onTabChanged },
             '#timeEntryPanel': {
-                cellchange: this.onCellChange
+                cellchange: this.onCellChange,
+		beforecelledit: this.onBeforeCellEdit
             },
             '#buttonAdd': { click: this.onButtonAdd },
             '#buttonDel': { click: this.onButtonDel }
@@ -156,6 +157,37 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
         workPackages.lastProjectId = projectId; // save, acts like a cache
     },
 
+
+    onBeforeCellEdit: function(cellediting, editor, context, eOpts) {
+	var me = this;
+	if (me.debug > 0) console.log('TimeEntryPanelController.onBeforeCellEdit: Starting');
+	
+	var record = context.record;
+        var projectId = record.get('projectId');
+        var editor = context.column.getEditor();
+
+	// Load the list of work package belonging to the line's project
+        var workPackageStore = Ext.StoreManager.get('WorkPackageStore');
+        if (workPackageStore.projectId !== projectId) {
+            workPackageStore.removeAll();
+            workPackageStore.projectId = projectId;
+
+            // Setup store with one entry {wpId: wpTitle} from TimeEntry model
+            var wpData = {
+                _type: 'WorkPackage',
+                id: record.get('workPackageId'),
+                subject: record.get('workPackageTitle')
+            };
+            var wp = Ext.create('TSTrack.model.WorkPackage', wpData);
+            workPackageStore.add(wp);
+            workPackageStore.loadWith
+
+            var filters = '[{"project":{"operator":"=","values":["'+projectId+'"]}}]';
+            var configData = controllers.loginPanelController.configData;
+            workPackageStore.loadWithAuth(configData, filters);
+        }
+    },
+    
     /**
      * Some of the cells in the Grid have changed.
      * e: {
@@ -204,7 +236,6 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
                     if (me.debug > 5) console.log('callback: TimeEntryPanelController.onCellChange.Sync.success:');
                 },
                 failure: function(batch, options) {
-                    console.error('TimeEntryPanelController.onCellChange.sync.failure: Sync failed.');
                     var msgs = [];
                     Ext.each(batch.exceptions, function(operation) {
                         if (operation.hasException()) {
@@ -213,8 +244,12 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
                         }
                     });
                     if (msgs.length > 0) {
-                        Ext.Msg.alert('Sync with OpenProject failed', 'Message from server:<br><pre>'+msgs.join("\r\n")+'</pre>');
-                    }
+			var msg = msgs.join("\r\n");
+			console.error('TimeEntryPanelController.onCellChange.sync.failure: Sync failed: '+msg);
+                        Ext.Msg.alert('Sync with OpenProject failed', 'Message from server:<br><pre>'+msg+'</pre>');
+                    } else {
+			console.error('TimeEntryPanelController.onCellChange.sync.failure: Sync failed.');
+		    }
                 }
             };
             store.sync(syncOptions);
@@ -240,8 +275,10 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
         callback = function(r, op, success) {
             if (me.debug > 0) console.log('callback: TimeEntryPanelController.onProjectChange: projectId');
             
-            if (!success)
-                alert('Store '+me.storeId+' load failed'); // ToDo: replace with Ext.Message
+            if (!success) {
+                // alert('Store '+me.storeId+' load failed'); // ToDo: replace with Ext.Message
+		Ext.Msg.alert('Loading WorkPackages', 'ToDo: add message from server<pre>'+"msg"+'</pre>');
+	    }
             if (success) {
 
                 // Set the workPackageId and Title to the first element in the workPackageStore

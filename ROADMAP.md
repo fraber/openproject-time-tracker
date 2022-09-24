@@ -16,16 +16,8 @@ and work package) instead of interval times to stay 100%
 compatible with OpenProject and simplify Panel/Store/Model.
 
 ToDo:
-- Handle edge cases:
-	- Projects without work packages(?)
-	- Only show projects where you can log hours:
-	  https://www.openproject.org/docs/api/endpoints/time-entries/
-	  There is /api/v3/time_entries/available_projects
-	  that returns only suitable projects.
-	- Test with database from Jens
 - Check ToDo's in the source code
 - Bugs:
-	- Hours number field "step" doesn't work
 	- When adding multiple new entries, there may be
 	  unforeseen behavior when saving, and multiple error
 	  messages from the server (Operation.Exceptions)
@@ -34,6 +26,7 @@ ToDo:
 	- Check that configData.host does not have trailing slash ("/")
 	- Remove sync code in main.js and other places
 	- Check/remove duplicate "limit" code to set store page size
+
 
 # V0.2.0: Add a monthly chart: Planning
 
@@ -51,6 +44,11 @@ ToDo:
 - Allow to log/see hours for multiple users?
   Is there a list of users who I may impersonate?
 - Add selector for themes(?)
+- Better handle the case of projects without work packages:(?)
+  Currently no WP will appear and the back-end returns an error.
+- Add a (+) button at the end of each grid line to create new entry
+- Bugs:
+	- Hours number field "step" doesn't work when enabled
 
 
 # V0.3.0: Release installers for Win, Linux and Mac: Planning
@@ -182,6 +180,12 @@ Done
 - Show PT5H as 5 hours...
   - Created custom number field parsing PT1H30M duration
     format(3h)
+- Only show projects where you can log hours: (0.2)
+  https://www.openproject.org/docs/api/endpoints/time-entries/
+  There is /api/v3/time_entries/available_projects
+  that returns only suitable projects.
+- Tested with database from Jens (0.5)
+
 
 ## V0.0.1: Mock-Up with static data (released 2022-07-09)
 

@@ -6,8 +6,6 @@
  * Handle user interactions in the LoginPanel
  * - Set default values
  * - Check if field values are reasonable
- *
- * ToDo: This is just a stub, not finished yet
 */
 Ext.define('TSTrack.controller.LoginPanelController', {
     extend: 'Ext.app.Controller',

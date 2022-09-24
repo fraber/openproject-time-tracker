@@ -10,7 +10,7 @@ Ext.define('TSTrack.view.TimeEntryField', {
     extend: 'Ext.form.field.Number',
     alias: 'widget.timeEntryField',
 
-    debug: 5,
+    debug: 0,
 
     statics: {
 	

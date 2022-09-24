@@ -29,6 +29,8 @@ Ext.require([
     'TSTrack.view.LoginPanel',		// Form with login fields
     'TSTrack.view.TimeEntryPanel',	// Grid with list of time entries
     'TSTrack.view.TimeEntryField',	// Editor to handle PTxxHyyM time format
+
+    'TSTrack.view.TimeEntryCellEditing',
     
     'TSTrack.controller.IpcController',	// Electron inter-process communication
     'TSTrack.controller.StoreLoadCoordinator',	// Load stores before starting GUI
