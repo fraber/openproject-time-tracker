@@ -102,7 +102,7 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
                 return v;
             }
         },
-        {   text: 'Project', dataIndex: 'projectId', width: 80,
+        {   text: 'Project', dataIndex: 'projectId', width: 100,
             editor: {
                 xtype: 'combobox',
                 store: 'ProjectStore',
@@ -115,7 +115,7 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
             renderer: function(v, el, model) { return model.get('projectTitle'); }
         },
 
-        {   text: 'Work Package', dataIndex: 'workPackageId', width: 80,
+        {   text: 'Work Package', dataIndex: 'workPackageId', width: 120,
             editor: {
                 xtype: 'combobox',
                 store: 'WorkPackageStore',
@@ -140,14 +140,14 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
         },
 */
 
-        {   text: 'Hours', dataIndex: 'hours', width: 80,
+        {   text: 'Hours', dataIndex: 'hours', width: 40,
 	    align: "right",
 	    editor: {
 		xtype: 'timeEntryField',   // sub-type fo numberfield
 		minValue: 0,
 		maxValue: 99,
 		step: 1,
-		hideTrigger: false
+		hideTrigger: true
 	    },
             renderer: function(v, el, model) {
 		var hours = TSTrack.view.TimeEntryField.durationToHours(v);

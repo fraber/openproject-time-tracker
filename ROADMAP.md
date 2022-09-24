@@ -16,8 +16,6 @@ and work package) instead of interval times to stay 100%
 compatible with OpenProject and simplify Panel/Store/Model.
 
 ToDo:
-- TimeEntryPanel: Fix column configuration and editors
-	- New field activty "activity"
 - Handle edge cases:
 	- Projects without work packages(?)
 	- Only show projects where you can log hours:
@@ -79,7 +77,9 @@ ToDo:
 	  (because they are defined on the OpenProject side)
 	- WorkPackage select: Deal with community.op.org
 	  5000 WPs using search while you type
-
+	- TimeEntryPanel: Add new field "activity"
+	- Allow for a dark theme:
+	  www.sencha.com/blog/how-to-create-a-dark-ext-js-theme-part-1/
 
 = V1.0.0 (no release defined yet)
 
