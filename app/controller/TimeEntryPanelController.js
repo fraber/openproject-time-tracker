@@ -35,7 +35,7 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
         this.control({
             '#tabPanel': { tabchange: this.onTabChanged },
             '#timeEntryPanel': {
-                cellchange: this.onCellChange,
+                aftercelledit: this.onAfterCellEdit,
 		beforecelledit: this.onBeforeCellEdit
             },
             '#buttonAdd': { click: this.onButtonAdd },
@@ -202,7 +202,7 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
      * - colIdx - The column index that was edited
      * }
      */
-    onCellChange: function(cellEditing, e) {
+    onAfterCellEdit: function(cellEditing, e) {
         var me = this;
         if (me.debug > 0) { console.log('TimeEntryPanelController.onCellChange:'); console.log(e); }
 

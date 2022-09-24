@@ -43,7 +43,7 @@ Ext.define('TSTrack.view.TimeEntryCellEditing', {
 	    // Create a new type of event here.
 	    // This is the only way to pass cellChange events to the controller.
             var grid = e.grid;
-            grid.fireEvent('cellchange', cellEditing, e);
+            grid.fireEvent('aftercelledit', cellEditing, e);
         }
     }
 

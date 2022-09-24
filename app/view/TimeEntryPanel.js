@@ -16,8 +16,11 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
 
     debug: 0,
     controllers: {},
-   
-    plugins: [Ext.create('TSTrack.view.TimeEntryCellEditing')],    // Enable in-line editing
+
+    // Enable in-line editing. This is a customized version of CellEditing
+    // that issues custom events before and after editing a cell for the
+    // controller to handle reloading stores when projects change.
+    plugins: [Ext.create('TSTrack.view.TimeEntryCellEditing')],
 
     columns: [
         {   text: 'Id', dataIndex: 'id', align: 'right', width: 40, hidden: true},
