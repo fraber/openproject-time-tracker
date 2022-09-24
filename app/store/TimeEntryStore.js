@@ -9,29 +9,30 @@ Ext.define('TSTrack.store.TimeEntryStore', {
     extend:             'TSTrack.store.OpenProjectStore',
     storeId:            'TimeEntryStore',
     model:              'TSTrack.model.TimeEntry',
-    autoSync:           false, // handled by TimeEntryController
+    autoSync:           false, // Let TimeEntryController handle save() manually
     sorters: [
         {property: 'spentOn', direction: 'DESC'},
         {property: 'start', direction: 'DESC'}
     ],
-    proxy: {
+    proxy: {                   // The proxy interfaces with the OpenProject API
         type: 'ajax',
-        urlPath: '/api/v3/time_entries',
-	batchActions: false,   // Don't put multiple updates into one operations, OpenProject doesn't support this.
-	
+        urlPath: '/api/v3/time_entries',  // Default URL that works for read and create.
+
+        // Update entries individually, OpenProject only supports updates one by one.
+        batchActions: false,
+        
         api: {
             // read: works with urlPath above
             // create: works with urlPath above
             update: '/api/v3/time_entries/',
             destroy: '/api/v3/time_entries/'
         },
-        
+
+        // Use customized ways to send/parse the communication with OpenProject API
         reader: { type: 'openProjectReader' },
         writer: { type: 'openProjectWriter', expandData: true },
 
-        success: function(a) { alert('proxy success'); },
-        failure: function(a) { alert('proxy failure'); },
-
+        // Use custom configuration (PATCH) for operations
         actionMethods: {
             create: 'POST',
             read: 'GET',
@@ -40,8 +41,24 @@ Ext.define('TSTrack.store.TimeEntryStore', {
         },
 
         /**
-         * ToDo: Not sure why we're overwriting this method...
-         * ... and what's the difference.
+         * This code overwrites Ext.data.proxy.Server.getUrl(...).
+         * The normal getUrl() assumes static URLs for GET.
+         * However, the OpenProject API requires adding the object Id
+         * at the end of the URL for update and destroy operations.
+         *
+         * Normally, this code should be part of the OpenProjectReader,
+         * but it's part of the proxy unfortunately...
+         *
+         * This is what this code adds...
+         *
+         * Original comment:
+         * Get the url for the request taking into account the order of priority,
+         * - The request
+         * - The api
+         * - The url
+         * @private
+         * @param {Ext.data.Request} request The request
+         * @return {String} The url
          */
         getUrl: function(request) {
             if (request.url)
@@ -51,7 +68,7 @@ Ext.define('TSTrack.store.TimeEntryStore', {
                 var url = this.host + this.api[request.action];
                 if (['update', 'destroy'].includes(request.action)) {
                     var timeEntryId = request.records[0].get('id');
-                    url = url + timeEntryId;
+                    url = url + timeEntryId; // add the Id to the end of the URL
                 }
                 return url;
             }
@@ -61,6 +78,11 @@ Ext.define('TSTrack.store.TimeEntryStore', {
         },
 
         /**
+         * Customize the way the Ext.data.proxy.Server (proxy...)
+         * extracts an error message after a failed transaction.
+         * OpenProject returns message in field "message".
+         *
+         * Original comment from ExtJS:
          * Extract an exception object from an error reponse.
          * Takes the message property of the
          * response (if possible), rather than statusText.
@@ -87,98 +109,3 @@ Ext.define('TSTrack.store.TimeEntryStore', {
 
     }
 });
-
-
-/*
-https://community.openproject.org/api/v3/time_entries
-filters=[{"work_package":{"operator": "=", "values": ["1", "2"]}}, {"project":{"operator":"=","values":["1"]}}]
-filters=[{"project":{"operator":"=","values":["14"]}}]
-filters=[{"user":{"operator":"=","values":["74087"]}}]
-
-{
-   "_links" : {
-      "nextByOffset" : {
-         "href" : "/api/v3/time_entries?filters=%5B%5D&offset=2&pageSize=50"
-      },
-      "createTimeEntryImmediately" : {
-         "method" : "post",
-         "href" : "/api/v3/time_entries"
-      },
-      "self" : {
-         "href" : "/api/v3/time_entries?filters=%5B%5D&offset=1&pageSize=50"
-      },
-      "changeSize" : {
-         "href" : "/api/v3/time_entries?filters=%5B%5D&offset=1&pageSize=%7Bsize%7D",
-         "templated" : true
-      },
-      "jumpTo" : {
-         "templated" : true,
-         "href" : "/api/v3/time_entries?filters=%5B%5D&offset=%7Boffset%7D&pageSize=50"
-      },
-      "createTimeEntry" : {
-         "method" : "post",
-         "href" : "/api/v3/time_entries/form"
-      }
-   },
-   "_type" : "Collection",
-   "offset" : 1,
-   "_embedded" : {
-      "elements" : [
-         {
-            "id" : 27157,
-            "updatedAt" : "2022-07-13T09:03:28Z",
-            "spentOn" : "2022-07-12",
-            "createdAt" : "2022-07-13T09:03:28Z",
-            "comment" : {
-               "format" : "plain",
-               "raw" : "Checked other migrations, developed, investigated testing options",
-               "html" : "<p>Checked other migrations, developed, investigated testing options</p>"
-            },
-            "_type" : "TimeEntry",
-            "_links" : {
-               "delete" : {
-                  "href" : "/api/v3/time_entries/27157",
-                  "method" : "delete"
-               },
-               "updateImmediately" : {
-                  "href" : "/api/v3/time_entries/27157",
-                  "method" : "patch"
-               },
-               "user" : {
-                  "href" : "/api/v3/users/74087",
-                  "title" : "Frank Bergmann"
-               },
-               "project" : {
-                  "href" : "/api/v3/projects/14",
-                  "title" : "OpenProject"
-               },
-               "schema" : {
-                  "href" : "/api/v3/time_entries/schema"
-               },
-               "update" : {
-                  "href" : "/api/v3/time_entries/27157/form",
-                  "method" : "post"
-               },
-               "workPackage" : {
-                  "title" : "Copying a project shall also copy file links attached to all work packages",
-                  "href" : "/api/v3/work_packages/41530"
-               },
-               "self" : {
-                  "href" : "/api/v3/time_entries/27157"
-               },
-               "activity" : {
-                  "href" : "/api/v3/time_entries/activities/9",
-                  "title" : "Development"
-               }
-            },
-            "hours" : "PT5H"
-         }         
-      ]
-   },
-   "total" : 10277,
-   "pageSize" : 50,
-   "count" : 50
-}
-
-
-*/

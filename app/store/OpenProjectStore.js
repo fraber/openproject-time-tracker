@@ -35,11 +35,13 @@ Ext.define('TSTrack.store.OpenProjectStore', {
         if (!callback) {
             callback = function(r, op, success) {
                 if (!success) {
-                    alert('Store '+me.storeId+' load failed'); // ToDo: replace with Ext.Message
-		}
+                    var msg = op.error.statusText;
+                    console.error('OpenProjectStore.loadWithAuth: Load failed for store='+me.storeId+' with message: '+msg);
+                    Ext.Msg.alert('Loading store "'+me.storeId+'" from OpenProject failed', 'Message from server:<br><pre>'+msg+'</pre>');
+                }
                 if (success) {
-                    // if (me.debug > 0) console.log(me.debugStoreValues());
-		}
+                    if (me.debug > 0) console.log('OpenProjectStore.loadWithAuth: Successfully loaded store='+me.storeId);
+                }
             }
         }
         me.load({callback: callback});

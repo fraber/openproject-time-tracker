@@ -15,11 +15,7 @@ Ext.define('TSTrack.view.AboutPanel', {
     alias:  'aboutPanel',
     extend: 'Ext.panel.Panel',
     title: 'About',
-    debug: 0,
-    controllers: {},
-    
     bodyPadding: 10,
-    // ToDo: mailto: doesn't work. electron handles it as a local file */
     html: [
             	        'OpenProject Time Tracking',
             	        'Version 1.0.0',

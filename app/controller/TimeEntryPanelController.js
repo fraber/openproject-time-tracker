@@ -251,6 +251,7 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
                     }
                 }
             };
+            store.sort();
             store.sync(syncOptions);
         }
         
@@ -279,33 +280,38 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
                 Ext.Msg.alert('Loading WorkPackages', 'Message from server:<br><pre>'+errorMsg+'</pre>');
             }
             if (success) {
-                // Set the workPackageId and Title to the first element in the workPackageStore
-                // var firstModel = r.getAt(0);
+		// So we just have successfully loaded the WorkPackageStore from the
+		// OpenProject backend, because the user has changed the project.
+		// The user now has to choose a new WP within this store.
+		// - We store the first WP into the new record as a default.
+		// - We start editing the WP field to save the user the Tab key or click.
+		// - We also want to open the picker with the list of WPs
                 var firstModel = r[0];
-                if (!firstModel) return;
+                if (!firstModel) return;		// Skip the rest for projects without WPs
 
-                // Invalidate the workpackage
+                // Write the first WP into the model as a default.
+		// Otherwise the WP would be from a project that's not the one in the model
                 var id = firstModel.get('id');
                 var title = firstModel.get('subject');
                 e.record.set('workPackageId', id);
                 e.record.set('workPackageTitle', title);
-                return;
-                
-                
-                // ToDo: open the ComboBox once the store is there
-                if (me.debug > 0) console.log(e);
-                var combo = null;
-                
-                var column = e.column;
-                var ed = cellEditing.getEditor(e.record, column);
-                var field = ed.field;
 
-                var v = field.getValue();
-                if (me.debug > 0) console.log(v);
+/*
+                // This code leads to an error when _clicking_ into the next column after changing 
+		// the project. Maybe catch the case of changing between columns by clicking?
 
-                field.setEditable(true);
-                field.expand(); // show the picker
-                field.reset();
+                // Search for WorkPackage column
+                var wpColumn = null;
+                var grid = cellEditing.grid;
+                for(var i = 0; i < grid.columns.length; i++) {
+                    if (grid.columns[i].dataIndex == 'workPackageId')
+                        wpColumn = grid.columns[i];
+                }
+
+		// Start editing with the WorkPackage field
+                var wpEditor = wpColumn.editor;
+                cellEditing.startEdit(e.record, wpColumn);
+*/
             }
         };
         me.loadProjectWorkPackages(projectId, callback);
