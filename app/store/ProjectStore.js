@@ -13,7 +13,9 @@ Ext.define('TSTrack.store.ProjectStore', {
 
     proxy: {
         type: 'ajax',
-        urlPath: '/api/v3/projects',
+	// Use endpoint for projects with permission to log hours
+	// instead of '/api/v3/projects' for the standard list
+        urlPath: '/api/v3/time_entries/available_projects',
         reader: {type: 'openProjectReader'},
         writer: {type: 'json'}
     },
