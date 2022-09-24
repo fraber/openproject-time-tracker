@@ -15,19 +15,6 @@ Uses the OpenProject TimeEntries semantics (just date, user
 and work package) instead of interval times to stay 100%
 compatible with OpenProject and simplify Panel/Store/Model.
 
-ToDo:
-- Check ToDo's in the source code
-- Bugs:
-	- New time entry (+) isn't saved.
-	- When adding multiple new entries, there may be
-	  unforeseen behavior when saving, and multiple error
-	  messages from the server (Operation.Exceptions)
-        - When creating a new line/entry the red triangles
-	  don't appear yet even though data is not yet saved.
-	- Check that configData.host does not have trailing slash ("/")
-	- Remove sync code in main.js and other places
-	- Check/remove duplicate "limit" code to set store page size
-
 
 # V0.2.0: Add a monthly chart: Planning
 
@@ -47,6 +34,9 @@ ToDo:
   Currently no WP will appear and the back-end returns an error.
 - Bugs:
 	- Hours number field "step" doesn't work when enabled
+	- Create a reporting period in order to limit the number
+	  of time entries to load per page
+	- Check/remove duplicate "limit" code to set store page size
 - Small features:
 	- Click in empty field -> new entry(?)
 	- Add a (+) button on each line to create dups
@@ -189,6 +179,18 @@ Done
   There is /api/v3/time_entries/available_projects
   that returns only suitable projects.
 - Tested with database from Jens (0.5)
+- Removed/processed ToDo's in the source code (3h)
+- Added Ext.msg error messages in case of backend errors (0.5h)
+- Fixed issue when adding multiple new entries.
+  OpenProject API doesn't support batch updates.
+  Modified the client to save changes one-by-one (0.2h)
+- Check that configData.host does not have trailing slash ("/"):
+  It's no problem apparently.
+- Remove sync code in main.js and other places (0.5h)
+- New time entry (+) isn't saved and there are no red triangles;
+  When creating a new line/entry the red triangles
+  don't appear yet even though data is not yet saved.
+  Now showing "triangles" (0.1h)
 
 
 ## V0.0.1: Mock-Up with static data (released 2022-07-09)

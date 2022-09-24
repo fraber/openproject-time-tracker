@@ -104,12 +104,26 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
         lastData['start'] = "";
         lastData['end'] = "";
 
+        // Auxillary functionality to create fake data entries
+	if (false) {
+            var h = Math.floor(Math.random() * 80.0) / 10.0;
+            lastData['hours'] = "PT"+Math.floor(h)+"H"+Math.floor(60.0 * (h-Math.floor(h)))+"M";
+            lastData['comment'] = randWords(8);
+            lastData['spentOn'] = randDate(new Date("2022-08-15"), new Date());
+	}
+        
         // create new entry based on template data
-        var t = Ext.create('TSTrack.model.TimeEntry', lastData);
+        // var t = Ext.create('TSTrack.model.TimeEntry', lastData);
+        var t = Ext.create('TSTrack.model.TimeEntry');
+        t.set(lastData);
+
         var added = timeEntries.insert(0, t); // add at the very top of the list (newest)
         // don't save the entry yet.
         // onCellChange below will handle that once we had got some real data.
 
+        // Re-sort store after insert
+        timeEntries.sort();
+        
         if (me.debug > 0) console.log ('TimeEntryPanelController.onButtonAdd: Finished');
         // if (me.debug > 0) console.log(timeEntries.debugStoreValues());
     },
@@ -280,17 +294,17 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
                 Ext.Msg.alert('Loading WorkPackages', 'Message from server:<br><pre>'+errorMsg+'</pre>');
             }
             if (success) {
-		// So we just have successfully loaded the WorkPackageStore from the
-		// OpenProject backend, because the user has changed the project.
-		// The user now has to choose a new WP within this store.
-		// - We store the first WP into the new record as a default.
-		// - We start editing the WP field to save the user the Tab key or click.
-		// - We also want to open the picker with the list of WPs
+                // So we just have successfully loaded the WorkPackageStore from the
+                // OpenProject backend, because the user has changed the project.
+                // The user now has to choose a new WP within this store.
+                // - We store the first WP into the new record as a default.
+                // - We start editing the WP field to save the user the Tab key or click.
+                // - We also want to open the picker with the list of WPs
                 var firstModel = r[0];
                 if (!firstModel) return;		// Skip the rest for projects without WPs
 
                 // Write the first WP into the model as a default.
-		// Otherwise the WP would be from a project that's not the one in the model
+                // Otherwise the WP would be from a project that's not the one in the model
                 var id = firstModel.get('id');
                 var title = firstModel.get('subject');
                 e.record.set('workPackageId', id);
@@ -298,7 +312,7 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
 
 /*
                 // This code leads to an error when _clicking_ into the next column after changing 
-		// the project. Maybe catch the case of changing between columns by clicking?
+                // the project. Maybe catch the case of changing between columns by clicking?
 
                 // Search for WorkPackage column
                 var wpColumn = null;
@@ -308,7 +322,7 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
                         wpColumn = grid.columns[i];
                 }
 
-		// Start editing with the WorkPackage field
+                // Start editing with the WorkPackage field
                 var wpEditor = wpColumn.editor;
                 cellEditing.startEdit(e.record, wpColumn);
 */

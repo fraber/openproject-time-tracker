@@ -42,6 +42,22 @@ var gifPath = 'images/';	// Global path for images, buttons etc.
 var controllers = {};		// Global list of controllers,
     		  		// word around quirk in Ext.Application
 
+
+// Setup functionality to create mock data
+var randWordData = [
+    "a", "about", "all", "an", "and", "are", "as", "at", "be", "been", "but", "by", "call", "can",
+    "come", "could", "day", "did", "do", "down", "each", "find", "first", "for", "from", "get", "go",
+    "had", "has", "have", "he", "her", "him", "his", "how", "i", "if", "in", "into", "is", "it", "its", "like",
+    "long", "look", "made", "make", "many", "may", "more", "my", "no", "not", "now", "number", "of",
+    "oil", "on", "one", "or", "other", "out", "part", "people", "said", "see", "she", "so", "some",
+    "than", "that", "the", "their", "them", "then", "there", "these", "they", "this", "time", "to",
+    "two", "up", "use", "was", "water", "way", "we", "were", "what", "when", "which", "who", "will",
+    "with", "word", "would", "write", "you", "your"
+];
+function randWord() { return randWordData[Math.floor(Math.random() * randWordData.length)] + " "; };
+function randWords(n) { r = ""; for(var i= 0; i < n; i++) r = r + randWord(); return r; }
+function randDate(start, end) { var d = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime())); return d.toISOString().substring(0,10); };
+
 /*
  * The actual application GUI with the main tab panel
  */
