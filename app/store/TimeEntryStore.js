@@ -17,7 +17,8 @@ Ext.define('TSTrack.store.TimeEntryStore', {
     proxy: {
         type: 'ajax',
         urlPath: '/api/v3/time_entries',
-
+	batchActions: false,   // Don't put multiple updates into one operations, OpenProject doesn't support this.
+	
         api: {
             // read: works with urlPath above
             // create: works with urlPath above

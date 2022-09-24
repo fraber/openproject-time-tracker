@@ -50,7 +50,7 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
                 forceSelection: true,
                 matchFieldWidth: false,
                 // The listeners for this field are defined in CellEditor,
-		// because there is no model available when fired from here.
+                // because there is no model available when fired from here.
             },
             renderer: function(v, el, model) { return model.get('projectTitle'); }
         },
@@ -92,20 +92,20 @@ Ext.define('TSTrack.view.TimeEntryPanel', {
 */
 
         {   text: 'Hours', dataIndex: 'hours', width: 40,
-	    align: "right",
-	    editor: {
-		xtype: 'timeEntryField',   // sub-type fo numberfield
-		minValue: 0,
-		maxValue: 99,
-		step: 1,
-		hideTrigger: true,
-		debug: this.debug
-	    },
+            align: "right",
+            editor: {
+                xtype: 'timeEntryField',   // sub-type fo numberfield
+                minValue: 0,
+                maxValue: 99,
+                step: 1,
+                hideTrigger: true,
+                debug: this.debug
+            },
             renderer: function(v, el, model) {
-		var hours = TSTrack.view.TimeEntryField.durationToHours(v);
-		return ""+hours;
-	    }
-	},
+                var hours = TSTrack.view.TimeEntryField.durationToHours(v);
+                return ""+hours;
+            }
+        },
 
         {   text: 'Comment', dataIndex: 'comment', flex: 5, editor: 'textfield'}
     ]

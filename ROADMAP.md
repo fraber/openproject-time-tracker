@@ -18,6 +18,7 @@ compatible with OpenProject and simplify Panel/Store/Model.
 ToDo:
 - Check ToDo's in the source code
 - Bugs:
+	- New time entry (+) isn't saved.
 	- When adding multiple new entries, there may be
 	  unforeseen behavior when saving, and multiple error
 	  messages from the server (Operation.Exceptions)
@@ -40,15 +41,18 @@ ToDo:
 	  - Re-distribute time across work packages
 	  - Clean up hours of multiple users for team manager
 - Add option to see/edit hours for different users
-- Add a (+) button on each line to allow users to create dups
 - Allow to log/see hours for multiple users?
   Is there a list of users who I may impersonate?
-- Add selector for themes(?)
 - Better handle the case of projects without work packages:(?)
   Currently no WP will appear and the back-end returns an error.
-- Add a (+) button at the end of each grid line to create new entry
 - Bugs:
 	- Hours number field "step" doesn't work when enabled
+- Small features:
+	- Click in empty field -> new entry(?)
+	- Add a (+) button on each line to create dups
+	- Add a (+) button at the end of each grid line to
+	  create new entry
+	- Add selector for themes(?)
 
 
 # V0.3.0: Release installers for Win, Linux and Mac: Planning

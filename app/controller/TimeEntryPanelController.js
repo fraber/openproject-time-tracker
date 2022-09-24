@@ -25,7 +25,7 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
 
     // This is called before the viewport is created
     init: function() {
-	var me = this;
+        var me = this;
         if (me.debug > 0) console.log ('TimeEntryPanelController.init:');
 
         this.control({
@@ -36,18 +36,17 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
             '#tabPanel': { tabchange: this.onTabChanged },
             '#timeEntryPanel': {
                 aftercelledit: this.onAfterCellEdit,
-		beforecelledit: this.onBeforeCellEdit
+                beforecelledit: this.onBeforeCellEdit
             },
             '#buttonAdd': { click: this.onButtonAdd },
             '#buttonDel': { click: this.onButtonDel }
-            // ToDo: Click in empty field -> new entry
         });
         return this;
     },
 
     // This is called after the viewport is created
     onLaunch: function() {
-	var me = this;
+        var me = this;
         if (me.debug > 0) console.log ('TimeEntryPanelController.onLaunch:');
         return this;
     },
@@ -159,14 +158,14 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
 
 
     onBeforeCellEdit: function(cellediting, editor, context, eOpts) {
-	var me = this;
-	if (me.debug > 0) console.log('TimeEntryPanelController.onBeforeCellEdit: Starting');
-	
-	var record = context.record;
+        var me = this;
+        if (me.debug > 0) console.log('TimeEntryPanelController.onBeforeCellEdit: Starting');
+        
+        var record = context.record;
         var projectId = record.get('projectId');
         var editor = context.column.getEditor();
 
-	// Load the list of work package belonging to the line's project
+        // Load the list of work package belonging to the line's project
         var workPackageStore = Ext.StoreManager.get('WorkPackageStore');
         if (workPackageStore.projectId !== projectId) {
             workPackageStore.removeAll();
@@ -223,13 +222,13 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
             return;
         }
 
-	// Check if e.record is "valid" (suitable for the OpenProject API to digest)
-	// This avoids errors from the back-end.
+        // Check if e.record is "valid" (suitable for the OpenProject API to digest)
+        // This avoids errors from the back-end.
         var errors = e.record.validate();
         var isValid = (errors.length == 0); // e.record.isValid();
         if (isValid) {
-	    // "Sync" the current store with the back-end:
-	    // create, update and delete in one command
+            // "Sync" the current store with the back-end:
+            // create, update and delete in one command
             var store = e.record.store;
             var syncOptions = {
                 success: function(batch, options) {
@@ -244,12 +243,12 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
                         }
                     });
                     if (msgs.length > 0) {
-			var msg = msgs.join("\r\n");
-			console.error('TimeEntryPanelController.onCellChange.sync.failure: Sync failed: '+msg);
+                        var msg = msgs.join("\r\n");
+                        console.error('TimeEntryPanelController.onCellChange.sync.failure: Sync failed: '+msg);
                         Ext.Msg.alert('Sync with OpenProject failed', 'Message from server:<br><pre>'+msg+'</pre>');
                     } else {
-			console.error('TimeEntryPanelController.onCellChange.sync.failure: Sync failed.');
-		    }
+                        console.error('TimeEntryPanelController.onCellChange.sync.failure: Sync failed.');
+                    }
                 }
             };
             store.sync(syncOptions);
@@ -276,11 +275,10 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
             if (me.debug > 0) console.log('callback: TimeEntryPanelController.onProjectChange: projectId');
             
             if (!success) {
-                // alert('Store '+me.storeId+' load failed'); // ToDo: replace with Ext.Message
-		Ext.Msg.alert('Loading WorkPackages', 'ToDo: add message from server<pre>'+"msg"+'</pre>');
-	    }
+                var errorMsg = op.error.statusText;
+                Ext.Msg.alert('Loading WorkPackages', 'Message from server:<br><pre>'+errorMsg+'</pre>');
+            }
             if (success) {
-
                 // Set the workPackageId and Title to the first element in the workPackageStore
                 // var firstModel = r.getAt(0);
                 var firstModel = r[0];
@@ -297,7 +295,6 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
                 // ToDo: open the ComboBox once the store is there
                 if (me.debug > 0) console.log(e);
                 var combo = null;
-                // alert('xxx');
                 
                 var column = e.column;
                 var ed = cellEditing.getEditor(e.record, column);
