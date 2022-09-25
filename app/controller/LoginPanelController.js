@@ -18,8 +18,8 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         { ref: 'timeEntryPanel', selector: '#timeEntryPanel'}
     ],
 
-    debug: 0,
-    controllers: {},	// List of controllers, setup during init
+    debug: 5,
+    controllers: {},        // List of controllers, setup during init
 
     /* Default values for the configuration data */
     loginDefaults: {
@@ -36,7 +36,7 @@ Ext.define('TSTrack.controller.LoginPanelController', {
     
     // This is called before the viewport is created
     init: function() {
-	var me = this;
+        var me = this;
         if (me.debug > 0) console.log ('LoginPanelController.init: controller initialization');
         this.control({
             '#loginPanel toolbar > button': { click: this.onButtonClicked },
@@ -46,7 +46,7 @@ Ext.define('TSTrack.controller.LoginPanelController', {
 
     // This is called after the viewport is created
     onLaunch: function() {
-	var me = this;
+        var me = this;
         if (me.debug > 0) console.log ('LoginPanelController.onLaunch: controller onLaunch');
         this.initConfiguration ();
     },
@@ -150,54 +150,88 @@ Ext.define('TSTrack.controller.LoginPanelController', {
 
             if (!responseObject) {
                 if (me.debug > 0) console.log('LoginPanelController.login: error parsing responseText='+responseText);
-                // FIXME: Write some message somewhere
+                // ToDo: Write some message somewhere
                 alert('LoginPanelController.login: error parsing responseText='+responseText);
                 return;
             }
-            var type = responseObject._type;
-            var userName = responseObject.name;
-            var userId = responseObject.id;
-            var userStatus = responseObject.status
 
-            if (userName.toLowerCase() == "anonymous") {
-                if (me.debug > 0) console.log('LoginPanelController.login: got Anonymous user, which means auth was not successfull');
-                Ext.Msg.alert('Login failed', 'The server/token combination is incorrect.');
-                return;                    
-            }
-            if (!type || !userId || !userName || !userStatus) {
-                if (me.debug > 0) console.log('LoginPanelController.login: no type or id responseText='+responseText);
-                alert('LoginPanelController.login: no type or id responseText='+responseText);
-                // FIXME: Write some message somewhere
-                return;
-            }
-
-            // Save configuration information
-            configData.id = userId;
-            configData.name = userName;
-            configData.status = userStatus;
-            configData.avatar = responseObject.avatar;
-            configData.first_name = responseObject.firstName;
-            configData.last_name = responseObject.lastName;
-            configData.login = responseObject.login;
-            configData.email = responseObject.email;
-            configData.language = responseObject.language
-            
-            if (me.debug > 0) console.log(configData);
-            me.saveConfigData();
-            
-            // Activate the TimeEntry panel
-            var tabPanel = me.getTabPanel();
-            var timeEntryPanel = tabPanel.child('#timeEntryPanel');
-            timeEntryPanel.tab.show();
-            tabPanel.setActiveTab(timeEntryPanel);
-
-            // Load stores for Projects and TimeEntries
-            Ext.getStore('ProjectStore').loadWithAuth(configData);
-            var timeEntriesFilters = '[{"user":{"operator":"=","values":["'+userId+'"]}}]';
-            Ext.getStore('TimeEntryStore').loadWithAuth(configData, timeEntriesFilters);
+            me.loginSuccess(responseObject); // Continue successful login process
         }
         xhr.send();
         
         if (me.debug > 0) console.log('LoginPanelController.login: Finished');
+    },
+
+    loginSuccess: function(responseObject) {
+        var me = this;
+        if (me.debug > 0) console.log('LoginPanelController.loginSuccess: Starting');
+        
+        var type = responseObject._type;
+        var userName = responseObject.name;
+        var userId = responseObject.id;
+        var userStatus = responseObject.status
+
+        if (userName.toLowerCase() == "anonymous") {
+            if (me.debug > 0) console.log('LoginPanelController.login: got Anonymous user, which means auth was not successfull');
+            Ext.Msg.alert('Login failed', 'The server/token combination is incorrect.');
+            return;                    
+        }
+        if (!type || !userId || !userName || !userStatus) {
+            if (me.debug > 0) console.log('LoginPanelController.login: no type or id responseText='+responseText);
+            alert('LoginPanelController.login: no type or id responseText='+responseText);
+            // FIXME: Write some message somewhere
+            return;
+        }
+
+        // Save configuration information
+        var configData = me.configData;
+        configData.id = userId;
+        configData.name = userName;
+        configData.status = userStatus;
+        configData.avatar = responseObject.avatar;
+        configData.first_name = responseObject.firstName;
+        configData.last_name = responseObject.lastName;
+        configData.login = responseObject.login;
+        configData.email = responseObject.email;
+        configData.language = responseObject.language
+        
+        if (me.debug > 0) console.log(configData);
+        me.saveConfigData();
+        
+        // Activate the TimeEntry panel
+        var tabPanel = me.getTabPanel();
+        var timeEntryPanel = tabPanel.child('#timeEntryPanel');
+        timeEntryPanel.tab.show();
+        tabPanel.setActiveTab(timeEntryPanel);
+
+        // Load stores for Projects
+        Ext.getStore('ProjectStore').loadWithAuth(configData);
+
+        // Load TimeEntries store and load the rest of the application
+        var timeEntryStore = Ext.getStore('TimeEntryStore');
+        var timeEntriesFilters = '[{"user":{"operator":"=","values":["'+userId+'"]}}]';
+        timeEntryStore.on('load', function() {
+            me.launchRestOfApplication();
+        });
+        timeEntryStore.loadWithAuth(configData, timeEntriesFilters); // will launch launchRestOfApp()
+    },
+    
+    /**
+     * Launch remaining part of the application after the TimeEntries
+     * store has been loaded.
+     */
+    launchRestOfApplication: function() {
+        var me = this;
+        
+        if (me.debug > 0) console.log('LoginPanelController.launchRestOfApplication: Starting');
+        var timeEntryStore = Ext.getStore('TimeEntryStore');
+        var chartPanel = Ext.create('TSTrack.view.BarChartPanel', {
+            store: timeEntryStore
+        });
+        var tabPanel = me.getTabPanel();
+        tabPanel.insert(2, chartPanel); // Insert BarChart after TimeEntry and before About
+        tabPanel.setActiveTab(chartPanel);
+        if (me.debug > 0) console.log('LoginPanelController.launchRestOfApplication: Finished');              
+        
     }
 });

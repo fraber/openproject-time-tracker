@@ -28,6 +28,7 @@ Ext.require([
     'TSTrack.view.AboutPanel',		// Simple panel with static HTML
     'TSTrack.view.LoginPanel',		// Form with login fields
     'TSTrack.view.TimeEntryPanel',	// Grid with list of time entries
+    'TSTrack.view.BarChartPanel',	// Bar chart
     'TSTrack.view.TimeEntryField',	// Editor to handle PTxxHyyM time format
 
     'TSTrack.view.TimeEntryCellEditing',
@@ -93,6 +94,11 @@ function launchApplication(debug) {
     ipcController.onLaunch(this);
     loginPanelController.onLaunch(this);
     timeEntryPanelController.onLaunch(this);
+
+    // At this point the LoginPanel and the About Panels are visible.
+    // The LoginPanelController will take over and load various stores
+    // and activate the rest of the application once the necessary
+    // credentials are there.
 }
 
 /**
