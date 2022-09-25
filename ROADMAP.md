@@ -3,25 +3,15 @@ Roadmap for TSTrack OpenProject Time Tracking
 
 - V0.4.0: Add start/stop entries with grouping: Planning
 - V0.3.0: Release installers for Win, Linux and Mac: Planning
-- V0.2.0: Add a monthly chart: Planning
-- V0.1.0: MVP without start/stop: In development
-- V0.0.1: Static mock-up: Released
-
-
-# V0.1.0: MVP based on TimeEntries: In Development
-
-Minimal Viable Product to track time in OpenProject:
-Uses the OpenProject TimeEntries semantics (just date, user
-and work package) instead of interval times to stay 100%
-compatible with OpenProject and simplify Panel/Store/Model.
+- V0.2.0: Add a monthly chart: In development
+- V0.1.0: MVP without start/stop: Released 2022-09-24
+- V0.0.1: Static mock-up: Released 2022-07-09
 
 
 # V0.2.0: Add a monthly chart: Planning
 
 - Monthly chart:
-	- Create a vertial bar chart with logged hours per day
-	  with stacked graph with hours per project/work package(?)
-	- Allows to chosse the user to show(?)
+	- Allows to choose the user to show(?)
 	- Allow to choose reporting periods last week etc.
 	- Use-cases / questions users might have:
 	  - "Did I enter something incorrectly?"
@@ -38,11 +28,15 @@ compatible with OpenProject and simplify Panel/Store/Model.
 	  of time entries to load per page
 	- Check/remove duplicate "limit" code to set store page size
 - Small features:
-	- Click in empty field -> new entry(?)
-	- Add a (+) button on each line to create dups
-	- Add a (+) button at the end of each grid line to
-	  create new entry
+	- Add a (+) button to each line to create new entry
 	- Add selector for themes(?)
+	- Click in empty field -> new entry(?)
+
+Done:
+- Monthly chart:
+	- Create a vertial bar chart with logged hours per day
+	  with stacked graph with hours per project/work package (3h)
+	- Recalculate chart with changes in TimeEntries store (3h)
 
 
 # V0.3.0: Release installers for Win, Linux and Mac: Planning
@@ -93,7 +87,12 @@ Incorporate feedback from V1.0 launch
 Done
 ====
 
-## V0.1.0: MVP based on TimeEntries (WIP)
+# V0.1.0: MVP based on TimeEntries: Released 2022-09-24
+
+Minimal Viable Product to track time in OpenProject:
+Uses the OpenProject TimeEntries semantics (just date, user
+and work package) instead of interval times to stay 100%
+compatible with OpenProject and simplify Panel/Store/Model.
 
 - Moved main folders below app/ for GitHub display (0.1h)
 - Connect stores to OpenProject REST interface (1h)
@@ -193,7 +192,7 @@ Done
   Now showing "triangles" (0.1h)
 
 
-## V0.0.1: Mock-Up with static data (released 2022-07-09)
+## V0.0.1: Mock-Up with static data: Released 2022-07-09
 
 Demo the general idea to a wider audience:
 Use hard-coded data in order to produce a GUI quickly.

@@ -51,6 +51,7 @@ Ext.define('TSTrack.controller.MainPanelController', {
         switch (newTab.id) {
         case 'timeEntryPanel':
             if (me.debug > 0) console.log('MainPanelController.onTabChange: timeEntryPanel');
+	    me.onTimeEntryPanelTabChange();
             break;
         case 'barChartPanel':
             // Re-calculate the aggregation and launch the chart
@@ -62,6 +63,14 @@ Ext.define('TSTrack.controller.MainPanelController', {
         }
     },
 
+    /**
+     * User moved from other panel back to TimeEntries
+     */
+    onTimeEntryPanelTabChange: function() {
+	var timeEntryStore = Ext.StoreManager.get('TimeEntryStore');
+	timeEntryStore.sort();
+    },
+    
     /**
      * Recalculate the BarPanel and it's aggregation store.
      */

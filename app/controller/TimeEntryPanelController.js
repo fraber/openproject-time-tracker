@@ -265,7 +265,10 @@ Ext.define('TSTrack.controller.TimeEntryPanelController', {
                     }
                 }
             };
-            store.sort();
+
+	    // Sorting the store after every change cross the grid,
+	    // moving the current entry possibly out of the viewport.
+            // store.sort();
             store.sync(syncOptions);
         }
         
