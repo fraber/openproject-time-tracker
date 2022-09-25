@@ -21,7 +21,7 @@ Ext.define('TSTrack.view.BarChartPanel', {
     axes: [{
         type: 'Numeric',
         position: 'left',
-        fields: ['id'],
+        fields: ['hoursNumeric'],
         title: 'Hours',
         grid: false,
         minimum: 0
@@ -29,7 +29,9 @@ Ext.define('TSTrack.view.BarChartPanel', {
         type: 'Time',
         position: 'bottom',
         fields: ['spentOn'],
-	dateFormat: 'Y-M-d'
+	dateFormat: 'Y-M-d',
+	label: {rotate: {degrees: 315}},
+	step: [Ext.Date.DAY, 2]
     }],
 
     series: [{
@@ -37,6 +39,6 @@ Ext.define('TSTrack.view.BarChartPanel', {
         title: 'Hours',
         axis: 'left',
         xField: 'spentOn',
-        yField: 'id'
+        yField: 'hoursNumeric'
     }]
 });

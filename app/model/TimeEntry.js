@@ -48,7 +48,21 @@ Ext.define('TSTrack.model.TimeEntry', {
             }
             
         },
+
+	// The number of hours is represented by OpenProject in
+	// ISO 8601 duration format for example "PT1H30M" = 1.5h
         { name: 'hours', type: 'string' },
+
+	// Use on-demand conversion to convert to numeric
+	{ name: 'hoursNumeric',
+          convert: function(value, record) {
+              var iso8601 = record.get('hours');
+	      var hours = TSTrack.view.TimeEntryField.durationToHours(iso8601);
+	      
+              return hours;
+          }
+	},
+	
 /*        
         { name: 'createdAt', type: 'date' },
         { name: 'updatedAt', type: 'date' },
