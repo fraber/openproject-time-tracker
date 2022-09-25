@@ -258,6 +258,21 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         // Create data array suitable for StackedBarChart
         var data = []; // An array with 
         var dateList = Object.keys(dateHash).sort();
+        var firstDate = dateList[0];
+        var lastDate = dateList[dateList.length-1];
+        for (var d = new Date(firstDate); d < new Date(lastDate); d.setDate(d.getDate()+1)) {
+            var day = d.toISOString().substring(0,10);
+            console.log(day);
+            console.log(dateHash[day]);
+            if (!dataHash[day]) {
+                dataHash[day] = {};
+	    }
+            if (!dateHash[day])
+                dateHash[day] = day;
+        }
+        dateList = Object.keys(dateHash).sort(); // Now list with empty entries
+
+        
         dateList.forEach(function(day) {
             var dayHash = dataHash[day]; // Hash: {projectTitle -> hours}
             projectTitleList.forEach(function(p) {
@@ -266,42 +281,22 @@ Ext.define('TSTrack.controller.LoginPanelController', {
             dayHash['day'] = day; // Add "day" for the data
             data.push(dayHash);
         });
-        
+
         // Aggregate the elements in timeEntryStore
         var barChartStore = Ext.create('Ext.data.JsonStore', {
             fields: fieldList,
             data: data
         });
 
-        var chartPanel = Ext.create('Ext.chart.Chart', {
-            animate: true,
-            shadow: true,    
-            layout: 'fit',
-            title: 'Bar Chart',
-            legend: {position: 'float', x: 80, y: 30},
-            store: barChartStore,
-            axes: [{
-                type: 'Numeric',
-                position: 'left',
-                fields: projectTitleList,
-                title: 'Hours',
-                minimum: 0
-            }, {
-                type: 'Time',
-                position: 'bottom',
-                fields: ['day'],
-                dateFormat: 'Y-M-d',
-                label: {rotate: {degrees: 315}},
-                step: [Ext.Date.DAY, 2]
-            }],
-            series: [{
-                type: 'column',
-                axis: 'left',
-                xField: 'day',
-                yField: projectTitleList,
-		stacked: true
-            }]
+        var chartPanel = Ext.create('TSTrack.view.BarChartPanel', {
+            store: barChartStore
         });
+
+        var yAxis = chartPanel.axes.get('left');
+        yAxis.fields = projectTitleList;
+
+        var series = chartPanel.series.getAt(0);
+        series.yField = projectTitleList;
 
         var tabPanel = me.getTabPanel();
         tabPanel.insert(2, chartPanel); // Insert BarChart after TimeEntry and before About
