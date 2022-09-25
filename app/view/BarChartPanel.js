@@ -63,7 +63,7 @@ Ext.define('TSTrack.view.BarChart', {
             renderer: function(storeItem, item) {
                 var day = storeItem.get('day');
                 var projectTitle = item.yField;
-                var hours = storeItem.get(projectTitle);
+                var hours = Math.round(100.0 * parseFloat(storeItem.get(projectTitle))) / 100.0
                 this.setTitle("Project: "+projectTitle+"<br>Date: "+day+"<br>Hours: "+hours+"h");
             }
         }

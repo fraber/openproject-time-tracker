@@ -23,6 +23,8 @@ Roadmap for TSTrack OpenProject Time Tracking
 - Better handle the case of projects without work packages:(?)
   Currently no WP will appear and the back-end returns an error.
 - Bugs:
+	- Implement the Reload button to reload and sort the
+	  time entry store
 	- Hours number field "step" doesn't work when enabled
 	- Create a reporting period in order to limit the number
 	  of time entries to load per page

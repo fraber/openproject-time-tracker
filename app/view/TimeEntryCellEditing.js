@@ -2,9 +2,14 @@
  * OpenProject Time Tracker
  * Copyright (c) 2022 Frank Bergmann (fraber@fraber.de)
  * This code is licensed under the GNU GPL version 2.0 or later
- *
- * Special version of the CellEditing grid plugin that passes
- * cell events to the controller.
+ */
+
+/**
+ * Special version of the CellEditing plugin that passes
+ * events from the cell editor to the controller.
+ * This is a workaround, because the events directly from
+ * the editors don't contain the information about the grid
+ * position.
  */
 Ext.define('TSTrack.view.TimeEntryCellEditing', {
     alias:  'timeEntryCellEditing',
