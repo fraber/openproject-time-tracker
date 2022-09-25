@@ -222,16 +222,162 @@ Ext.define('TSTrack.controller.LoginPanelController', {
      */
     launchRestOfApplication: function() {
         var me = this;
-        
         if (me.debug > 0) console.log('LoginPanelController.launchRestOfApplication: Starting');
-        var timeEntryStore = Ext.getStore('TimeEntryStore');
-        var chartPanel = Ext.create('TSTrack.view.BarChartPanel', {
-            store: timeEntryStore
+
+
+	var store = Ext.create('Ext.data.JsonStore', {
+            fields: ['year', 'comedy', 'action', 'drama', 'thriller'],
+            data: [
+                {year: 2005, comedy: 34000000, action: 23890000, drama: 18450000, thriller: 20060000},
+                {year: 2006, comedy: 56703000, action: 38900000, drama: 12650000, thriller: 21000000},
+                {year: 2007, comedy: 42100000, action: 50410000, drama: 25780000, thriller: 23040000},
+                {year: 2008, comedy: 38910000, action: 56070000, drama: 24810000, thriller: 26940000}
+            ]
+	});
+	
+	var chart = Ext.create('Ext.chart.Chart',{
+            animate: true,
+            shadow: true,
+            store: store,
+	    layout: 'fit',
+	    title: 'Stack',
+            legend: {
+                position: 'right'
+            },
+            axes: [{
+                type: 'Numeric',
+                position: 'bottom',
+                fields: ['comedy', 'action', 'drama', 'thriller'],
+                title: false,
+                grid: true,
+                label: {
+                    renderer: function(v) {
+                        return String(v).replace(/(.)00000$/, '.$1M');
+                    }
+                }
+            }, {
+                type: 'Category',
+                position: 'left',
+                fields: ['year'],
+                title: false
+            }],
+            series: [{
+                type: 'bar',
+                axis: 'bottom',
+                gutter: 80,
+                xField: 'year',
+                yField: ['comedy', 'action', 'drama', 'thriller'],
+                stacked: true,
+                tips: {
+                    trackMouse: true,
+                    width: 65,
+                    height: 28,
+                    renderer: function(storeItem, item) {
+                        this.setTitle(String(item.value[1] / 1000000) + 'M');
+                    }
+                }
+            }]
         });
+
+
+
+        var tabPanel = me.getTabPanel();
+        tabPanel.insert(2, chart); // Insert BarChart after TimeEntry and before About
+        tabPanel.setActiveTab(chart);
+
+	return;
+
+	
+        var timeEntryStore = Ext.getStore('TimeEntryStore');
+
+        // Get the list of projects actually used in the timeEntryStore
+        var projectHash = {}; // Hash from projectId to projectTitle
+        var projectHashReverse = {};
+        var dateHash = {};
+        timeEntryStore.each(function(model) {
+            var day = model.get('spentOn').toISOString().substring(0,10);
+            projectHash[model.get('projectId')] = model.get('projectTitle');
+            projectHashReverse[model.get('projectTitle')] = model.get('projectId');
+            dateHash[day] = day;
+        });
+        var projectTitleList = Object.values(projectHash).sort();
+
+        // Add "day" as the very first field of the projectTitleList,
+        // followed by the sorted list of project titles.
+        var fieldList = Array.from(projectTitleList);
+        fieldList.splice(0, 0, "day");
+        
+        // Aggregate hours by day and project
+        var dataHash = {}; // Hash from date to hash: projectTitle => hours
+        timeEntryStore.each(function(model) {
+            var day = model.get('spentOn').toISOString().substring(0,10);
+            var project = model.get('projectTitle');
+            var hours = model.get('hoursNumeric');
+            if (!dataHash[day]) dataHash[day] = {};
+            var dayHash = dataHash[day];
+            if (!dayHash[project]) dayHash[project] = 0.0;
+            dayHash[project] = dayHash[project] + hours;
+        });
+
+        // Create data array suitable for StackedBarChart
+        var data = []; // An array with 
+        var dateList = Object.keys(dateHash).sort();
+        dateList.forEach(function(day) {
+            var dayHash = dataHash[day]; // Hash: {projectTitle -> hours}
+            projectTitleList.forEach(function(p) {
+                if (!dayHash[p]) dayHash[p] = 0.0;
+            });
+            dayHash['day'] = day; // Add "day" for the data
+            data.push(dayHash);
+        });
+        
+        // Aggregate the elements in timeEntryStore
+        var barChartStore = Ext.create('Ext.data.JsonStore', {
+            fields: fieldList,
+            data: data
+        });
+
+        var chartPanel = Ext.create('Ext.chart.Chart', {
+            animate: true,
+            shadow: true,    
+            layout: 'fit',
+            header: false,
+            title: 'Bar Chart',
+            legend: { position: 'right' },
+            insetPadding: 20,
+
+            store: barChartStore,
+            
+            axes: [{
+                type: 'Numeric',
+                position: 'left',
+                fields: projectTitleList,
+                title: 'Hours',
+                grid: false,
+                minimum: 0
+            }, {
+                type: 'Time',
+                position: 'bottom',
+                fields: ['day'],
+                dateFormat: 'Y-M-d',
+                label: {rotate: {degrees: 315}},
+                step: [Ext.Date.DAY, 2]
+            }],
+
+            series: [{
+                type: 'bar',
+                axis: 'bottom',
+                title: 'Hours',
+                xField: 'day',
+                yField: projectTitleList,
+		stacked: true
+            }]
+        });
+/*
         var tabPanel = me.getTabPanel();
         tabPanel.insert(2, chartPanel); // Insert BarChart after TimeEntry and before About
         tabPanel.setActiveTab(chartPanel);
+*/
         if (me.debug > 0) console.log('LoginPanelController.launchRestOfApplication: Finished');              
-        
     }
 });

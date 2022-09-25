@@ -16,7 +16,7 @@ Ext.define('TSTrack.view.BarChartPanel', {
     legend: { position: 'right' },
     insetPadding: 20,
 
-    store: null,
+    store: null, // To be set by calling function (in LoginPanelController)
     
     axes: [{
         type: 'Numeric',
