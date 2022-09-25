@@ -23,6 +23,7 @@ Ext.require([
     'TSTrack.store.TimeEntryStore',	// Time entries
     'TSTrack.store.ProjectStore',	// Projects are WP containers
     'TSTrack.store.WorkPackageStore',	// Hours are booked on WPs
+    'TSTrack.store.BarChartStore',	// Aggregration of hours per day and project
 
     // GUI panels that will appear as tabs in MainPanel.js
     'TSTrack.view.AboutPanel',		// Simple panel with static HTML
@@ -33,6 +34,7 @@ Ext.require([
 
     'TSTrack.view.TimeEntryCellEditing',
     
+    'TSTrack.controller.MainPanelController',	// Handle changing tabs
     'TSTrack.controller.IpcController',	// Electron inter-process communication
     'TSTrack.controller.StoreLoadCoordinator',	// Load stores before starting GUI
     'TSTrack.controller.LoginPanelController',	// Handle login process
@@ -75,25 +77,30 @@ function launchApplication(debug) {
     var ipcController = Ext.create('TSTrack.controller.IpcController');
     var loginPanelController = Ext.create('TSTrack.controller.LoginPanelController');
     var timeEntryPanelController = Ext.create('TSTrack.controller.TimeEntryPanelController');
+    var mainPanelController = Ext.create('TSTrack.controller.MainPanelController');
 
     // init is executed before panels 
     ipcController.init(this);
     loginPanelController.init(this);
     timeEntryPanelController.init(this);
+    mainPanelController.init(this);
 
     controllers = {    // List of all controllers before launching panels
         ipcController: ipcController,
         loginPanelController: loginPanelController,
-        timeEntryPanelController: timeEntryPanelController
+        timeEntryPanelController: timeEntryPanelController,
+	mainPanelController: mainPanelController
     };
     ipcController.controllers = controllers;
     loginPanelController.controllers = controllers;
     timeEntryPanelController.controllers = controllers;
+    mainPanelController.controllers = controllers;
     
     // Now launch the controllers
     ipcController.onLaunch(this);
     loginPanelController.onLaunch(this);
     timeEntryPanelController.onLaunch(this);
+    mainPanelController.onLaunch(this);
 
     // At this point the LoginPanel and the About Panels are visible.
     // The LoginPanelController will take over and load various stores
