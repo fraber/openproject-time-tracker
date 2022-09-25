@@ -224,51 +224,6 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         var me = this;
         if (me.debug > 0) console.log('LoginPanelController.launchRestOfApplication: Starting');
 
-
-	var store = Ext.create('Ext.data.JsonStore', {
-            fields: ['year', 'comedy', 'action', 'drama', 'thriller'],
-            data: [
-                {year: 2005, comedy: 34000000, action: 23890000, drama: 18450000, thriller: 20060000},
-                {year: 2006, comedy: 56703000, action: 38900000, drama: 12650000, thriller: 21000000},
-                {year: 2007, comedy: 42100000, action: 50410000, drama: 25780000, thriller: 23040000},
-                {year: 2008, comedy: 38910000, action: 56070000, drama: 24810000, thriller: 26940000}
-            ]
-	});
-	
-	var chart = Ext.create('Ext.chart.Chart',{
-            animate: true,
-            shadow: true,
-            store: store,
-	    layout: 'fit',
-	    title: 'Stack',
-            axes: [{
-                type: 'Numeric',
-                position: 'bottom',
-                fields: ['comedy', 'action', 'drama', 'thriller']
-            }, {
-                type: 'Category',
-                position: 'left',
-                fields: ['year']
-            }],
-            series: [{
-                type: 'bar',
-                axis: 'left',
-                gutter: 80,
-                xField: 'year',
-                yField: ['comedy', 'action', 'drama', 'thriller'],
-                stacked: true
-            }]
-        });
-
-
-
-        var tabPanel = me.getTabPanel();
-        tabPanel.insert(2, chart); // Insert BarChart after TimeEntry and before About
-        tabPanel.setActiveTab(chart);
-
-	return;
-
-	
         var timeEntryStore = Ext.getStore('TimeEntryStore');
 
         // Get the list of projects actually used in the timeEntryStore
@@ -322,19 +277,14 @@ Ext.define('TSTrack.controller.LoginPanelController', {
             animate: true,
             shadow: true,    
             layout: 'fit',
-            header: false,
             title: 'Bar Chart',
-            legend: { position: 'right' },
-            insetPadding: 20,
-
+            legend: {position: 'float', x: 80, y: 30},
             store: barChartStore,
-            
             axes: [{
                 type: 'Numeric',
                 position: 'left',
                 fields: projectTitleList,
                 title: 'Hours',
-                grid: false,
                 minimum: 0
             }, {
                 type: 'Time',
@@ -344,21 +294,19 @@ Ext.define('TSTrack.controller.LoginPanelController', {
                 label: {rotate: {degrees: 315}},
                 step: [Ext.Date.DAY, 2]
             }],
-
             series: [{
-                type: 'bar',
-                axis: 'bottom',
-                title: 'Hours',
+                type: 'column',
+                axis: 'left',
                 xField: 'day',
                 yField: projectTitleList,
 		stacked: true
             }]
         });
-/*
+
         var tabPanel = me.getTabPanel();
         tabPanel.insert(2, chartPanel); // Insert BarChart after TimeEntry and before About
         tabPanel.setActiveTab(chartPanel);
-*/
+
         if (me.debug > 0) console.log('LoginPanelController.launchRestOfApplication: Finished');              
     }
 });

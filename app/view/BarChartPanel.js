@@ -42,3 +42,5 @@ Ext.define('TSTrack.view.BarChartPanel', {
         yField: 'hoursNumeric'
     }]
 });
+
+
