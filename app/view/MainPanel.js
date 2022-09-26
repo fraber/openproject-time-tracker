@@ -22,16 +22,17 @@ Ext.define('TSTrack.view.MainPanel', {
             Ext.create('TSTrack.view.LoginPanel', {debug: this.debug}),	    // Handle login
             Ext.create('TSTrack.view.TimeEntryPanel', {debug: this.debug}), // Show grid with time entries
             Ext.create('TSTrack.view.BarChartPanel', {debug: this.debug}),  // Chart
+//            Ext.create('TSTrack.view.OptionsPanel', {debug: this.debug}),   // Configuration options
             Ext.create('TSTrack.view.AboutPanel', {debug: this.debug})	    // About the project
         ],
         tabBar: {			// Button bar to the right of the tabs
             items: [
                 {xtype: 'tbfill' },	// keep distance to tabs
-                {xtype: 'button', id: 'buttonDebug', icon: gifPath + 'bug.png', hidden: false},
-                {xtype: 'button', id: 'buttonSave', icon: gifPath + 'disk.png', hidden: false},
-                {xtype: 'button', id: 'buttonReload', icon: gifPath + 'arrow_refresh.png', hidden: false},
-                {xtype: 'button', id: 'buttonAdd', icon: gifPath + 'add.png', hidden: false},
-                {xtype: 'button', id: 'buttonDel', icon: gifPath + 'delete.png', hidden: false}
+                {xtype: 'button', id: 'buttonDebug', icon: gifPath + 'bug.png', hidden: true},
+                {xtype: 'button', id: 'buttonSave', icon: gifPath + 'disk.png', hidden: true},
+                {xtype: 'button', id: 'buttonReload', icon: gifPath + 'arrow_refresh.png', hidden: true},
+                {xtype: 'button', id: 'buttonAdd', icon: gifPath + 'add.png', hidden: true},
+                {xtype: 'button', id: 'buttonDel', icon: gifPath + 'delete.png', hidden: true}
             ]
         }
     }

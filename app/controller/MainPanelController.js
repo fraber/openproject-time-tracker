@@ -57,6 +57,12 @@ Ext.define('TSTrack.controller.MainPanelController', {
             // Re-calculate the aggregation and launch the chart
             me.onBarChartPanelTabChange();
             break;
+        case 'loginPanel':
+            if (me.debug > 0) console.log('MainPanelController.onTabChange: loginPanel');
+            break;
+        case 'aboutPanel':
+            if (me.debug > 0) console.log('MainPanelController.onTabChange: aboutPanel');
+            break;
         default:
             console.error('MainPanelController.onTabChange: unknown option: '+newTab.id);
             break;
