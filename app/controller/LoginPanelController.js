@@ -16,6 +16,7 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         { ref: 'tabPanel', selector: '#tabPanel'},
         { ref: 'loginPanel', selector: '#loginPanel'},
         { ref: 'buttonLogin', selector: '#buttonLogin'},
+        { ref: 'impersonateFieldSet', selector: '#impersonateFieldSet'},
         { ref: 'timeEntryPanel', selector: '#timeEntryPanel'}
     ],
 
@@ -239,8 +240,9 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         var startISO = configData.startPeriod;
         var endISO = configData.endPeriod;
 
-        // Load projects store, don't wait for success
+        // Load base stores, don't wait for success
         Ext.getStore('ProjectStore').loadWithAuth(configData);
+        Ext.getStore('UserStore').loadWithAuth(configData);
 
         // Load TimeEntries store and launch the rest of the application
         var timeEntryStore = Ext.getStore('TimeEntryStore');
@@ -261,7 +263,10 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         var loginPanel = me.getLoginPanel();
         var loginFieldSet = loginPanel.down('[name='+loginFieldSet+']');
         loginFieldSet.hide();
-        
+
+	var impersonateFieldSet = me.getImpersonateFieldSet();
+	impersonateFieldSet.show();
+	
         // Activate all tabs in the TabPanel
         var tabPanel = me.getTabPanel();
         tabPanel.items.each(function(item) {

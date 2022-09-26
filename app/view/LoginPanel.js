@@ -68,21 +68,21 @@ at the right.'
                 id: 'periodFieldSet',
                 layout: 'anchor',
                 padding: 4,
-                defaults: { anchor: '60%' },
+                // defaults: { anchor: '60%' },
                 items: [{
                     xtype: 'datefield',
                     name: 'startPeriod',
                     fieldLabel: 'Start period',
                     format : "Y-m-d",
                     // value: new Date('2020-01-01'),
-                    width: 200
+                    width: 250
                 }, {
                     xtype: 'datefield',
                     name: 'endPeriod',
                     fieldLabel: 'End period',
                     format : "Y-m-d",
                     // value: new Date(),
-                    width: 200
+                    width: 250
                 }, {
                     xtype: 'label',
                     html: '<p>You can limit time entries to the specified period.</p>'
@@ -96,9 +96,14 @@ at the right.'
                 padding: 4,
                 defaults: { anchor: '60%' },
                 items: [{
-                    xtype: 'textfield',
+                    xtype: 'combobox',
                     name: 'user',
-                    fieldLabel: 'User'
+                    fieldLabel: 'User',
+                    store: 'UserStore',
+                    displayField: 'name', valueField: 'id',
+                    queryMode: 'local',
+                    forceSelection: true,
+                    matchFieldWidth: false
                 }]
             }
         ],

@@ -17,21 +17,22 @@ Ext.require([
 
     'TSTrack.model.TimeEntry',		// An actual time entry
     'TSTrack.model.Project',		// Projects are containers for WorkPackages
+    'TSTrack.model.User',		// Projects are containers for WorkPackages
     'TSTrack.model.WorkPackage',	// WP == Task, this is where to book hours
 
-    'TSTrack.store.OpenProjectStore',	// Superclass for all stores, handles auth
-    'TSTrack.store.TimeEntryStore',	// Time entries
-    'TSTrack.store.ProjectStore',	// Projects are WP containers
-    'TSTrack.store.WorkPackageStore',	// Hours are booked on WPs
     'TSTrack.store.BarChartStore',	// Aggregration of hours per day and project
+    'TSTrack.store.OpenProjectStore',	// Superclass for all stores, handles auth
+    'TSTrack.store.ProjectStore',	// Projects are WP containers
+    'TSTrack.store.TimeEntryStore',	// Time entries
+    'TSTrack.store.UserStore',  	// Projects are WP containers
+    'TSTrack.store.WorkPackageStore',	// Hours are booked on WPs
 
     // GUI panels that will appear as tabs in MainPanel.js
     'TSTrack.view.AboutPanel',		// Simple panel with static HTML
+    'TSTrack.view.BarChartPanel',	// Bar chart
     'TSTrack.view.LoginPanel',		// Form with login fields
     'TSTrack.view.TimeEntryPanel',	// Grid with list of time entries
-    'TSTrack.view.BarChartPanel',	// Bar chart
     'TSTrack.view.TimeEntryField',	// Editor to handle PTxxHyyM time format
-
     'TSTrack.view.TimeEntryCellEditing',
     
     'TSTrack.controller.MainPanelController',	// Handle changing tabs
@@ -117,6 +118,7 @@ Ext.onReady(function() {
 
     // Setup stores but don't load them yet. Loading happens after login.
     var projectStore = Ext.create('TSTrack.store.ProjectStore');
+    var userStore = Ext.create('TSTrack.store.UserStore');
     var timeEntrieStore = Ext.create('TSTrack.store.TimeEntryStore');
     var workPackageStore = Ext.create('TSTrack.store.WorkPackageStore');
 
