@@ -17,6 +17,7 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         { ref: 'loginPanel', selector: '#loginPanel'},
         { ref: 'buttonLogin', selector: '#buttonLogin'},
         { ref: 'impersonateFieldSet', selector: '#impersonateFieldSet'},
+        { ref: 'impersonateUser', selector: '#impersonateUser'},
         { ref: 'timeEntryPanel', selector: '#timeEntryPanel'}
     ],
 
@@ -114,15 +115,18 @@ Ext.define('TSTrack.controller.LoginPanelController', {
             me.configData.token = config.down('[name=token]').getValue();
 
             var startDate = config.down('[name=startPeriod]').getValue();
-            var endDate = config.down('[name=endPeriod]').getValue();
-
-            // word around Browser but in ISO conversion
-            startDate.setHours(startDate.getHours()+12);
-            endDate.setHours(endDate.getHours()+12);
-    
+            startDate.setHours(startDate.getHours()+12); // Work around Browser bug
             me.configData.startPeriod = startDate.toISOString().substring(0,10);
+
+            var endDate = config.down('[name=endPeriod]').getValue();
+            endDate.setHours(endDate.getHours()+12);
             me.configData.endPeriod = endDate.toISOString().substring(0,10);
-        }
+
+            // var user = config.down('[name=impersonateUser]').getValue();
+            var userCombo = me.getImpersonateUser();
+	    var user = userCombo.getValue();
+	    me.configData.impersonateUser = user;
+	}
 
         return formIsValid;
     },
@@ -240,6 +244,12 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         var startISO = configData.startPeriod;
         var endISO = configData.endPeriod;
 
+	var impersonateUserId = configData.impersonateUser;
+	if (!!impersonateUserId) {
+	    userId = impersonateUserId;    // Load data for this user
+	}
+
+	
         // Load base stores, don't wait for success
         Ext.getStore('ProjectStore').loadWithAuth(configData);
         Ext.getStore('UserStore').loadWithAuth(configData);
@@ -247,7 +257,7 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         // Load TimeEntries store and launch the rest of the application
         var timeEntryStore = Ext.getStore('TimeEntryStore');
         var timeEntriesUserFilters = '{"user":{"operator":"=","values":["'+userId+'"]}}';
-        var timeEntriesIntervalFilters = '{"spent_on":{"operator":"<>d","values":["'+startISO+'","'+endISO+'"]}}';
+        var timeEntriesIntervalFilters = '{"spent_on":{"operator":"<>d","values":["'+startISO+'","'+endISO+'"]}}';	
         var timeEntriesFilters = '['+timeEntriesUserFilters+','+timeEntriesIntervalFilters+']';
         timeEntryStore.on('load', function() { me.afterTimeEntryStoreLoaded(); });
         timeEntryStore.loadWithAuth(configData, timeEntriesFilters);

@@ -98,6 +98,7 @@ at the right.'
                 items: [{
                     xtype: 'combobox',
                     name: 'user',
+		    id: 'impersonateUser',
                     fieldLabel: 'User',
                     store: 'UserStore',
                     displayField: 'name', valueField: 'id',
