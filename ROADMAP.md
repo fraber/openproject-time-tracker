@@ -69,18 +69,19 @@ Done:
 	- Allow for a dark theme:
 	  www.sencha.com/blog/how-to-create-a-dark-ext-js-theme-part-1/
 
+
 = V1.0.0 (no release defined yet)
 
 Communicate project existence to the public:
 This is a communication event. The product should have been
 ready before.
-- Release on GitHub
 - Communication from OpenProject(?)
 - Inform a few frieds
 
 = V1.1.0 (no release defined yet)
 
 Incorporate feedback from V1.0 launch
+- Localization to multiple languages
 
 = V1.2.0 (no release defined yet)
 

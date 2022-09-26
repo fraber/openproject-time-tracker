@@ -51,11 +51,11 @@ Ext.define('TSTrack.controller.MainPanelController', {
         switch (newTab.id) {
         case 'timeEntryPanel':
             if (me.debug > 0) console.log('MainPanelController.onTabChange: timeEntryPanel');
-	    me.onTimeEntryPanelTabChange();
+            me.onTimeEntryPanelTabChange();
             break;
         case 'barChartPanel':
             // Re-calculate the aggregation and launch the chart
-	    me.onBarChartPanelTabChange();
+            me.onBarChartPanelTabChange();
             break;
         default:
             console.error('MainPanelController.onTabChange: unknown option: '+newTab.id);
@@ -67,8 +67,8 @@ Ext.define('TSTrack.controller.MainPanelController', {
      * User moved from other panel back to TimeEntries
      */
     onTimeEntryPanelTabChange: function() {
-	var timeEntryStore = Ext.StoreManager.get('TimeEntryStore');
-	timeEntryStore.sort();
+        var timeEntryStore = Ext.StoreManager.get('TimeEntryStore');
+        timeEntryStore.sort();
     },
     
     /**
@@ -79,17 +79,17 @@ Ext.define('TSTrack.controller.MainPanelController', {
         if (me.debug > 0) console.log('MainPanelController.onBarChartPanelTabChange: Starting');
 
         var barChartPanel = me.getBarChartPanel();
-	var barChartStore = TSTrack.store.BarChartStore.createFromTimeEntries(); // Aggregate hours
-	var chart = Ext.create('TSTrack.view.BarChart', { store: barChartStore });
+        var barChartStore = TSTrack.store.BarChartStore.createFromTimeEntries(); // Aggregate hours
+        var chart = Ext.create('TSTrack.view.BarChart', { store: barChartStore });
 
         var yAxis = chart.axes.get('left');
         var series = chart.series.getAt(0);
         yAxis.fields = barChartStore.projectTitleList;
         series.yField = barChartStore.projectTitleList;
 
-	// add the new chart to the container panel
-	barChartPanel.add(chart);
-	
+        // add the new chart to the container panel
+        barChartPanel.add(chart);
+        
         if (me.debug > 0) console.log('MainPanelController.onBarChartPanelTabChange: Finished');              
     }
     

@@ -43,7 +43,7 @@ Ext.require([
 
 var gifPath = 'images/';	// Global path for images, buttons etc.
 var controllers = {};		// Global list of controllers,
-    		  		// word around quirk in Ext.Application
+                                      // word around quirk in Ext.Application
 
 
 // Setup functionality to create mock data
@@ -69,8 +69,8 @@ function launchApplication(debug) {
     // Main application panel with viewport.
     // Will instantiate and load all other panels as tabs.
     var mainPanel = Ext.create('TSTrack.view.MainPanel', {
-    	debug: debug,
-	controllers: controllers
+            debug: debug,
+        controllers: controllers
     });
 
     // Manually launch controllers to work around Ext.application quirks
@@ -89,7 +89,7 @@ function launchApplication(debug) {
         ipcController: ipcController,
         loginPanelController: loginPanelController,
         timeEntryPanelController: timeEntryPanelController,
-	mainPanelController: mainPanelController
+        mainPanelController: mainPanelController
     };
     ipcController.controllers = controllers;
     loginPanelController.controllers = controllers;
@@ -112,8 +112,8 @@ function launchApplication(debug) {
  * Setup stores before calling launchApplication
  */
 Ext.onReady(function() {
-    Ext.QuickTips.init();		// No idea why this is necessary, but it is.
-    var debug = 5;	  		// 0 = silent, 5 = normal dev, 9 = verbose
+    Ext.QuickTips.init();               // No idea why this is necessary, but it is.
+    var debug = 5;                      // 0 = silent, 5 = normal dev, 9 = verbose
 
     // Setup stores but don't load them yet. Loading happens after login.
     var projectStore = Ext.create('TSTrack.store.ProjectStore');

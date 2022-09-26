@@ -21,8 +21,8 @@ Ext.define('TSTrack.view.MainPanel', {
         items: [			// Hard-coded list of panels, add new panels here.
             Ext.create('TSTrack.view.LoginPanel', {debug: this.debug}),	    // Handle login
             Ext.create('TSTrack.view.TimeEntryPanel', {debug: this.debug}), // Show grid with time entries
-	    Ext.create('TSTrack.view.BarChartPanel', {debug: this.debug}),  // Chart
-	    Ext.create('TSTrack.view.AboutPanel', {debug: this.debug})	    // About the project
+            Ext.create('TSTrack.view.BarChartPanel', {debug: this.debug}),  // Chart
+            Ext.create('TSTrack.view.AboutPanel', {debug: this.debug})	    // About the project
         ],
         tabBar: {			// Button bar to the right of the tabs
             items: [

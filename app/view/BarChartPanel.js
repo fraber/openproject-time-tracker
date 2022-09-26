@@ -20,6 +20,7 @@ Ext.define('TSTrack.view.BarChartPanel', {
     layout: 'fit',
     header: false,
     title: 'Bar Chart',
+    hidden: true, // Hide this tab initially, show after login
     items: [] // filled dynamically with BarChart
 });
 

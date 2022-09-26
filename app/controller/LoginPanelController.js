@@ -117,7 +117,11 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         var formIsValid = loginForm.isValid();
 
         if (formIsValid) {
-            me.configData.host = config.down('[name=host]').getValue();
+            // Replace trailing "/" characters from host
+            var host = config.down('[name=host]').getValue();
+            host = host.replace(/\/+$/, "");
+            
+            me.configData.host = host;
             me.configData.token = config.down('[name=token]').getValue();
         }
 
@@ -142,16 +146,15 @@ Ext.define('TSTrack.controller.LoginPanelController', {
             var responseJsonString = response.responseText;
             var responseObject = JSON.parse(responseJsonString);
 
-            if (response.status != 200) {
-                if (me.debug > 0) console.log('LoginPanelController.login: not successfull');
-                Ext.Msg.alert('Login failed', 'Message from server:<br><pre>'+responseObject.message+'</pre>');
+            if (!responseObject) {
+                console.error('LoginPanelController.login failed: Error parsing response');
+                Ext.Msg.alert('Login failed', 'Error parsing response.');
                 return;
             }
 
-            if (!responseObject) {
-                if (me.debug > 0) console.log('LoginPanelController.login: error parsing responseText='+responseText);
-                // ToDo: Write some message somewhere
-                alert('LoginPanelController.login: error parsing responseText='+responseText);
+            if (response.status != 200) {
+                console.error('LoginPanelController.login failed: '+ responseObject.message);
+                Ext.Msg.alert('Login failed', 'Message from server:<br><pre>'+responseObject.message+'</pre>');
                 return;
             }
 
@@ -197,13 +200,21 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         
         if (me.debug > 0) console.log(configData);
         me.saveConfigData();
-        
-        // Activate the TimeEntry panel
-        var tabPanel = me.getTabPanel();
-        var timeEntryPanel = tabPanel.child('#timeEntryPanel');
-        timeEntryPanel.tab.show();
-        tabPanel.setActiveTab(timeEntryPanel);
 
+        // Activate all tabs in the TabPanel
+        var tabPanel = me.getTabPanel();
+        tabPanel.items.each(function(item) {
+            item.tab.show();
+        });
+        
+        // Hide the Login Panel
+        var loginPanel = tabPanel.child('#loginPanel');
+        loginPanel.tab.hide();
+
+        // Activate the TimeEntry Panel
+        var timeEntryPanel = tabPanel.child('#timeEntryPanel');
+        tabPanel.setActiveTab(timeEntryPanel);
+        
         // Load stores for Projects
         Ext.getStore('ProjectStore').loadWithAuth(configData);
 
@@ -225,7 +236,7 @@ Ext.define('TSTrack.controller.LoginPanelController', {
         if (me.debug > 0) console.log('LoginPanelController.launchRestOfApplication: Starting');
 
 /*
-	var chartPanel = Ext.create('TSTrack.view.BarChartPanel'); // empty panel so far
+        var chartPanel = Ext.create('TSTrack.view.BarChartPanel'); // empty panel so far
         var tabPanel = me.getTabPanel();
         tabPanel.insert(2, chartPanel); // Insert BarChart after TimeEntry and before About
 */
