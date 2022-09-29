@@ -22,11 +22,12 @@ Ext.define('TSTrack.view.TimeEntryField', {
             var me = this;
             if (me.debug > 0) console.log('TimeEntryField: durationToHours("'+duration+'")');
 
-            var result = duration;
+            var result = 0.0;
             
             if ("string" == typeof duration) {
+		if ("" === duration) return result;
                 var array = duration.match(/PT([0-9\.]+H)?([0-9\.]+M)?([0-9\.]+S)?/);
-                if ("object" == typeof array) {
+                if (!!array && "object" == typeof array) {
                     if (me.debug > 7) { console.log('TimeEntryField: durationToHours: array='); console.log(array); }
                     var hours = 0; if (array[1]) hours = parseInt(array[1].slice(0, -1));
                     var mins = 0; if (array[2]) mins = parseInt(array[2].slice(0, -1));
