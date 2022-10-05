@@ -34,11 +34,30 @@ Roadmap for TSTrack OpenProject Time Tracking
 	- Add selector for themes(?)
 	- Click in empty field -> new entry(?)
 
+
+- User Testing Results:
+	- When (+), use the old entry's date +1
+	- Exclude closed work packages from picker
+	- Show work packages as hierarchy on picker
+	- Include work package ID on the picker(?)
+	- Chart: Show weekdays (somehow)
+	- Default width for work packages column wider
+	- Show 1 hour as 1.0 to be consistent
+	- Use INS key to create a new line at the very top,
+	  move focus to this line into the date field
+	- Tab key: Select the next cell contents, so it's
+	  faster to edit
+	 
+
 Done:
 - Monthly chart:
 	- Create a vertial bar chart with logged hours per day
 	  with stacked graph with hours per project/work package (3h)
 	- Recalculate chart with changes in TimeEntries store (3h)
+- Added ComboBox to select user to impersonate
+Bugs:
+	- Loading the UserStore fails without error message:
+	  Added setException() to UserStore (1.5h)
 
 
 # V0.3.0: Release installers for Win, Linux and Mac: Planning
